@@ -1,10 +1,14 @@
-//     q.js
+//     genie.js
 //     (c) 2013 Kent C. Dodds
-//     q.js may be freely distributed under the MIT license.
+//     genie.js may be freely distributed under the MIT license.
 /*
  * Vernacular:
- *  Q: The race in Star Trek who had the power to do anything they wanted
- *  Magic Word: Keywords used to make a wish
+ *  Genie: a spirit of Arabian folklore, as traditionally depicted
+  *   imprisoned within a bottle or oil lamp, and capable of
+   *  granting wishes when summoned.
+ *  Magic Word: Keywords used to make a wish.
+  *   The genie matches a given magic word to magic words for
+   *  a wish to find the closeset match and executes the wishe's action
  *  Wish: An action with a set of magic words
  */
 
@@ -26,24 +30,24 @@
       id = _getNextId();
     }
     
-    var qObj = {
+    var wish = {
       id: id,
       keywords: magicWords,
       action: action
     };
-    _wishes[id] = qObj;
+    _wishes[id] = wish;
     return _wishes[id];
-  }
+  } 
   
   function getMatchingWishes(magicWord) {
-    var matchingWishes = _enteredMagicWords[magicWord] || [];
-    var otherMatchingWishes = _addOtherMatchingKeywords(matchingWishes, magicWord);
-    var allIds = matchingWishes.concat(otherMatchingWishes);
-    var matchingQObjs = [];
-    for (var i = 0; i < allIds.length; i++) {
-      matchingQObjs.push(_wishes[allIds[i]]);
+    var matchingWishIds = _enteredMagicWords[magicWord] || [];
+    var otherMatchingWishId = _addOtherMatchingKeywords(matchingWishIds, magicWord);
+    var allWishIds = matchingWishIds.concat(otherMatchingWishId);
+    var matchingWishes = [];
+    for (var i = 0; i < allWishIds.length; i++) {
+      matchingWishes.push(_wishes[allWishIds[i]]);
     }
-    return matchingQObjs;
+    return matchingWishes;
   }
   
   function _addOtherMatchingKeywords(currentMatchingWishIds, givenMagicWord) {
@@ -68,15 +72,15 @@
     return false;
   }
   
-  function _stringsMatch(match, string) {
-    string = string.toLowerCase();
-    match = match.toLowerCase();
-    for (var i = 0; i < match.length; i++) {
+  function _stringsMatch(magicWord, givenMagicWord) {
+    magicWord = magicWord.toLowerCase();
+    givenMagicWord = givenMagicWord.toLowerCase();
+    for (var i = 0; i < givenMagicWord.length; i++) {
       var charNumber = 0;
-      var matchChar = match[i];
+      var matchChar = givenMagicWord[i];
       var found = false;
-      for (var j = charNumber; j < string.length; j++) {
-        var stringChar = string[j];
+      for (var j = charNumber; j < magicWord.length; j++) {
+        var stringChar = magicWord[j];
         if (stringChar == matchChar) {
           found = true;
           charNumber = j + 1;
@@ -91,6 +95,12 @@
   }
   
   function makeWish(id, magicWord) {
+    if (id === null || id === undefined) {
+      var matchingWishes = getMatchingWishes(magicWord);
+      if (matchingWishes.length > 0) {
+        id = matchingWishes[0].id;
+      }
+    }
     _wishes[id].action();
     
     // Reset entered keywords order.
@@ -108,9 +118,9 @@
     _enteredMagicWords = options.enteredKeyWords || _enteredMagicWords;
   }
   
-  global.q = registerWish;
-  global.q.getMatchingWishes = getMatchingWishes;
-  global.q.makeWish = makeWish;
-  global.q.setOptions = setOptions;
+  global.genie = registerWish;
+  global.genie.getMatchingWishes = getMatchingWishes;
+  global.genie.makeWish = makeWish;
+  global.genie.setOptions = setOptions;
 
 })(this);

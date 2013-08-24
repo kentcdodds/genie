@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Genie unit tests</title>
+    <script src="../genie.js"></script>
+    <script src="evidence.js"></script>
+  </head>
+  <body>
+    <h1>Genie unit tests</h1>
+    <p>
+      Your wish is my command...
+      See the browser console for results.
+    </p>
+    
+    <script>
+
+      Evidence.TestCase.extend('GenieTest', {
+        testActionRegistration: function(t) {
+          var picardCalled = 0;
+          genie(['picard'], function() {
+            picardCalled++;
+          });
+          var matchingWishes = genie.getMatchingWishes('q');
+          t.assertEqual(matchingWishes.length, 0);
+          matchingWishes = genie.getMatchingWishes('d');
+          genie.makeWish(matchingWishes[0].id, 'r');
+          t.assertEqual(picardCalled, 1);
+        }
+      });
+    </script>
+  </body>
+</html>
