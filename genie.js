@@ -1,16 +1,8 @@
 //     genie.js
 //     (c) 2013 Kent C. Dodds
 //     genie.js may be freely distributed under the MIT license.
-/*
- * Vernacular:
- *  Genie: a spirit of Arabian folklore, as traditionally depicted
-  *   imprisoned within a bottle or oil lamp, and capable of
-   *  granting wishes when summoned.
- *  Magic Word: Keywords used to make a wish.
-  *   The genie matches a given magic word to magic words for
-   *  a wish to find the closeset match and executes the wishe's action
- *  Wish: An action with a set of magic words
- */
+//     http://www.github.com/kentcdodds/genie.git
+//     See README.md
 
 ;(function(global){
 
