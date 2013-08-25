@@ -62,6 +62,34 @@
           
           var ringWishes = genie.getMatchingWishes('Ring');
           t.assertEqual(ringWishes.length, 1);
+        },
+        testMultipleMagicWords: function(t) {
+          prepForTest();
+          registerBlankWish(['Book', 'Music', 'Movie']);
+          registerBlankWish(['Cat', 'Dog', 'Goat']);
+          
+          var bookWish = genie.getMatchingWishes('b');
+          var mWish = genie.getMatchingWishes('m');
+          var movieWish = genie.getMatchingWishes('movie');
+          t.assertEqual(bookWish.length, 1);
+          t.assertEqual(mWish.length, 1);
+          t.assertEqual(movieWish.length, 1);
+          t.assertIdentical(bookWish[0], mWish[0]);
+          t.assertIdentical(mWish[0], movieWish[0]);
+
+
+          var catWish = genie.getMatchingWishes('cat');
+          var dWish = genie.getMatchingWishes('d');
+          var tWish = genie.getMatchingWishes('t');
+          t.assertEqual(catWish.length, 1);
+          t.assertEqual(dWish.length, 1);
+          t.assertEqual(tWish.length, 1);
+          t.assertIdentical(catWish[0], dWish[0]);
+          t.assertIdentical(dWish[0], tWish[0]);
+          
+          var oWishes = genie.getMatchingWishes('o');
+          t.assertEqual(oWishes.length, 2);
+          t.assertFalse(oWishes[0] === oWishes[1]);
         }
       });
     </script>
