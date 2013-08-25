@@ -9,23 +9,44 @@
   <body>
     <h1>Genie unit tests</h1>
     <p>
-      Your wish is my command...
+      Your wish is my command...<br />
       See the browser console for results.
     </p>
     
     <script>
-
+      function prepForTest() {
+        genie.clearWishes();
+      }
+      
+      function registerBlankWish(magicWords) {
+        genie(magicWords,function (){});
+      }
+      
       Evidence.TestCase.extend('GenieTest', {
-        testActionRegistration: function(t) {
-          var picardCalled = 0;
-          genie(['picard'], function() {
-            picardCalled++;
+        testWishRegistration: function(t) {
+          prepForTest();
+          var wishCalled = 0;
+          var wish = genie('wish', function() {
+            wishCalled++;
           });
-          var matchingWishes = genie.getMatchingWishes('q');
-          t.assertEqual(matchingWishes.length, 0);
-          matchingWishes = genie.getMatchingWishes('d');
-          genie.makeWish(matchingWishes[0].id, 'r');
-          t.assertEqual(picardCalled, 1);
+          t.assertEqual(wishCalled, 0);
+          
+          genie.makeWish(wish);
+          t.assertEqual(wishCalled, 1);
+          
+          genie.deregisterWish(wish);
+          genie.makeWish(wish);
+          t.assertEqual(wishCalled, 1);
+        },
+        testClearingWishes: function(t) {
+          prepForTest();
+          var wishCalled = 0;
+          var wish = genie('wish', function() {
+            wishCalled++;
+          });
+          genie.clearWishes();
+          genie.makeWish(wish);
+          t.assertEqual(wishCalled, 0);
         }
       });
     </script>

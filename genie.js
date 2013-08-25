@@ -38,6 +38,24 @@
     _wishes[id] = wish;
     return _wishes[id];
   } 
+
+  function deregisterWish(id) {
+    // Check if it may be a wish object
+    if (typeof id === 'object' && id.id) {
+      id = id.id;
+    }
+    delete _wishes[id];
+    for (var word in _enteredMagicWords) {
+      if (_enteredMagicWords[word].indexOf(id) != -1) {
+        _enteredMagicWords[word].splice(_enteredMagicWords[word].indexOf(id), 1);
+      }
+    }
+  }
+  
+  function clearWishes() {
+    _wishes = {};
+    _enteredMagicWords = {};
+  }
   
   function getMatchingWishes(magicWord) {
     var matchingWishIds = _enteredMagicWords[magicWord] || [];
@@ -122,5 +140,7 @@
   global.genie.getMatchingWishes = getMatchingWishes;
   global.genie.makeWish = makeWish;
   global.genie.setOptions = setOptions;
+  global.genie.deregisterWish = deregisterWish;
+  global.genie.clearWishes = clearWishes;
 
 })(this);
