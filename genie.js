@@ -93,8 +93,14 @@
   function _stringsMatch(magicWord, givenMagicWord) {
     magicWord = magicWord.toLowerCase();
     givenMagicWord = givenMagicWord.toLowerCase();
+    if (givenMagicWord.length > magicWord.length) {
+      return false;
+    }
+    if (magicWord.indexOf(givenMagicWord) != -1) {
+      return true;
+    }
+    var charNumber = 0;
     for (var i = 0; i < givenMagicWord.length; i++) {
-      var charNumber = 0;
       var matchChar = givenMagicWord[i];
       var found = false;
       for (var j = charNumber; j < magicWord.length; j++) {
@@ -113,21 +119,29 @@
   }
   
   function makeWish(id, magicWord) {
+    // Check if it may be a wish object
+    if (typeof id === 'object' && id.id) {
+      id = id.id;
+    }
     if (id === null || id === undefined) {
       var matchingWishes = getMatchingWishes(magicWord);
       if (matchingWishes.length > 0) {
         id = matchingWishes[0].id;
       }
     }
-    _wishes[id].action();
-    
-    // Reset entered keywords order.
-    _enteredMagicWords[magicWord] = _enteredMagicWords[magicWord] || [];
-    var existingIndex = _enteredMagicWords[magicWord].indexOf(id);
-    if (existingIndex != -1) {
-      _enteredMagicWords[magicWord].splice(existingIndex, 1);
+    if (_wishes[id] && _wishes[id].action) {
+      _wishes[id].action();
     }
-    _enteredMagicWords[magicWord].unshift(id);
+    
+    if (magicWord) {
+      // Reset entered keywords order.
+      _enteredMagicWords[magicWord] = _enteredMagicWords[magicWord] || [];
+      var existingIndex = _enteredMagicWords[magicWord].indexOf(id);
+      if (existingIndex != -1) {
+        _enteredMagicWords[magicWord].splice(existingIndex, 1);
+      }
+      _enteredMagicWords[magicWord].unshift(id);
+    }
   }
   
   function setOptions(options) {

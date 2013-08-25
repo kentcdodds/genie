@@ -47,6 +47,21 @@
           genie.clearWishes();
           genie.makeWish(wish);
           t.assertEqual(wishCalled, 0);
+        },
+        testMagicWords: function(t) {
+          prepForTest();
+          registerBlankWish('Lord of the Flies');
+          registerBlankWish('Pirates of the Carribean');
+          registerBlankWish('Lord of the Rings');
+          
+          var ofTheWishes = genie.getMatchingWishes('of the');
+          t.assertEqual(ofTheWishes.length, 3);
+          
+          var lordWishes = genie.getMatchingWishes('Lord of the');
+          t.assertEqual(lordWishes.length, 2);
+          
+          var ringWishes = genie.getMatchingWishes('Ring');
+          t.assertEqual(ringWishes.length, 1);
         }
       });
     </script>
