@@ -112,9 +112,14 @@
           t.assertEqual(mertzMatch[0], ethel);
           t.assertEqual(mertzMatch[1], fred);
 
-          var mertzMatch = genie.getMatchingWishes('mert');
-          t.assertEqual(mertzMatch[0], fred);
-          t.assertEqual(mertzMatch[1], ethel);
+          var mertMatch = genie.getMatchingWishes('mert');
+          t.assertEqual(mertMatch[0], fred);
+          t.assertEqual(mertMatch[1], ethel);
+          
+          genie.deregisterWish(fred);
+          mertMatch = genie.getMatchingWishes('mert');
+          t.assertEqual(mertMatch.length, 1);
+          t.assertEqual(mertMatch[0], ethel);
         }
       });
     </script>
