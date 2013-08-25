@@ -90,6 +90,31 @@
           var oWishes = genie.getMatchingWishes('o');
           t.assertEqual(oWishes.length, 2);
           t.assertFalse(oWishes[0] === oWishes[1]);
+        },
+        testSimpleEnteredMagicWords: function(t) {
+          prepForTest();
+          var fredCall = 0;
+          var ethelCall = 0;
+          
+          var fred = genie('Fred Mertz', function() {
+            fredCall++;
+          });
+          var ethel = genie('Ethel Mertz', function() {
+            ethelCall++;
+          });
+          
+          var mertzMatch = genie.getMatchingWishes('mertz');
+          t.assertEqual(mertzMatch[0], fred);
+          t.assertEqual(mertzMatch[1], ethel);
+          
+          genie.makeWish(ethel, 'mertz');
+          mertzMatch = genie.getMatchingWishes('mertz');
+          t.assertEqual(mertzMatch[0], ethel);
+          t.assertEqual(mertzMatch[1], fred);
+
+          var mertzMatch = genie.getMatchingWishes('mert');
+          t.assertEqual(mertzMatch[0], fred);
+          t.assertEqual(mertzMatch[1], ethel);
         }
       });
     </script>
