@@ -77,6 +77,7 @@ The `wishObject` has the following structure:
 ```
 var wish = {
   id: 'string',
+  data: object,
   keywords: ['string'],
   action: function() { }
 };
@@ -92,11 +93,20 @@ var enteredMagicWords = {
 You have the following api to use at your discretion:
 
 ```
-genie(magicWords [string || array | required], action [function | required], id [string | optional]);
+genie(magicWords [string || array | required], action [function | required], data [object | optional], id [string | optional]);
 // If no id is provided, one will be auto-generated via the previousId + 1
+// Returns the wish object
+// You may also register wishes with an object for convenience, like so:
+genie({
+  id: string | optional,
+  data: object | optional,
+  action: function | required,
+  magicWords: string || [string] | required
+});
 
 genie.deregisterWish(id [string || wishObject | required]);
 // Removes the wish from the registered wishes and the enteredMagicWords
+// Returns the deregisteredWish
 
 genie.clearWishes();
 // Clears all wishes and enteredMagicWords
@@ -112,8 +122,9 @@ genie.makeWish(id [string || wishObject | required], magicWord [string | optiona
 /* 
  * Executes the given wish's action.
  * If a magicWord is provided, adds the given wish to the enteredMagicWords
- * to be given preferential treatment of order in the array returned
- * by the getMatchingWishes method.
+ *   to be given preferential treatment of order in the array returned
+ *   by the getMatchingWishes method.
+ * Returns the wish object.
  */
 
 genie.options({
@@ -122,7 +133,7 @@ genie.options({
   enteredMagicWords: [object | optional]
 });
 /*
- * Returns the current genie options.
+ * Allows you to set the attributes of genie and returns the current genie options.
  *  1. wishes: All wishes (wishObject described above) currently registered
  *  2. previousId: The number used to auto-generate wish Ids if an id is not
  *    provided when a wish is registered.

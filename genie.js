@@ -14,9 +14,14 @@
     return 'q-' + _previousId++;
   }
   
-  function registerWish(magicWords, action, id) {
+  function registerWish(magicWords, action, data, id) {
     if (!Array.isArray(magicWords)) {
-      magicWords = [magicWords];
+      // If they passed an object instead.
+      if (typeof magicWords === 'object') {
+        return registerWish(magicWords.magicWords, magicWords.action, magicWords.data, magicWords.id);
+      } else {
+        magicWords = [magicWords];
+      }
     }
     if (id === undefined) {
       id = _getNextId();
@@ -24,7 +29,8 @@
     
     var wish = {
       id: id,
-      keywords: magicWords,
+      data: data,
+      magicWords: magicWords,
       action: action
     };
     _wishes[id] = wish;
@@ -36,12 +42,14 @@
     if (typeof id === 'object' && id.id) {
       id = id.id;
     }
+    var wish = _wishes[id];
     delete _wishes[id];
     for (var word in _enteredMagicWords) {
       if (_enteredMagicWords[word].indexOf(id) != -1) {
         _enteredMagicWords[word].splice(_enteredMagicWords[word].indexOf(id), 1);
       }
     }
+    return wish;
   }
   
   function clearWishes() {
@@ -51,7 +59,7 @@
   
   function getMatchingWishes(magicWord) {
     var matchingWishIds = _enteredMagicWords[magicWord] || [];
-    var otherMatchingWishId = _addOtherMatchingKeywords(matchingWishIds, magicWord);
+    var otherMatchingWishId = _addOtherMatchingMagicWords(matchingWishIds, magicWord);
     var allWishIds = matchingWishIds.concat(otherMatchingWishId);
     var matchingWishes = [];
     for (var i = 0; i < allWishIds.length; i++) {
@@ -60,12 +68,12 @@
     return matchingWishes;
   }
   
-  function _addOtherMatchingKeywords(currentMatchingWishIds, givenMagicWord) {
+  function _addOtherMatchingMagicWords(currentMatchingWishIds, givenMagicWord) {
     var otherMatchingWishIds = [];
     for (var wishId in _wishes) {
       if (currentMatchingWishIds.indexOf(wishId) == -1) {
         var wish =_wishes[wishId];
-        if (_anyKeywordsMatch(wish.keywords, givenMagicWord)) {
+        if (_anyMagicWordsMatch(wish.magicWords, givenMagicWord)) {
           otherMatchingWishIds.push(wishId);
         }
       }
@@ -73,7 +81,7 @@
     return otherMatchingWishIds;
   }
 
-  function _anyKeywordsMatch(wishesMagicWords, givenMagicWord) {
+  function _anyMagicWordsMatch(wishesMagicWords, givenMagicWord) {
     for (var i = 0; i < wishesMagicWords.length; i++) {
       if (_stringsMatch(wishesMagicWords[i], givenMagicWord)) {
         return true;
@@ -122,11 +130,11 @@
       }
     }
     if (_wishes[id] && _wishes[id].action) {
-      _wishes[id].action();
+      _wishes[id].action(_wishes[id]);
     }
     
     if (magicWord) {
-      // Reset entered keywords order.
+      // Reset entered magicWords order.
       _enteredMagicWords[magicWord] = _enteredMagicWords[magicWord] || [];
       var existingIndex = _enteredMagicWords[magicWord].indexOf(id);
       if (existingIndex != -1) {
