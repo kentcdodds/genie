@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>GenieJS</title>
+    <script src="genie.js"></script>
+    <style>
+      #genie-tester {
+        margin-top: 50px;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>GenieJS</h1>
+    <ol id="instructions-list">
+      <li></li>
+    </ol>
+    
+    <div id="genie-creator">
+      <p>
+        Create and add wishes here
+      </p>
+      <input id="wish-id" type="text" placeholder="ID" /><br />
+      <input id="wish-magic-words" type="text" placeholder="Magic Words" /><br />
+      <input id="wish-text" type="text" placeholder="Display Text" /><br />
+      <input id="wish-image" type="url" placeholder="Display Image URL" /><br />
+      <button onclick="addWish()">Create Wish</button>
+    </div>
+    
+    <div id="genie-tester">
+      <p>
+        Type below and see the list of wishes auto-populate based on what you type.
+      </p>
+      <input type="text" placeholder="Type here" />
+      
+      <div id="wishes-results">
+        <select id="wishes-selector">
+        </select>
+      </div>
+    </div>
+    
+    <script>
+      function addWish() {
+        var wishId = document.getElementById('wish-id').value;
+        var magicWords = document.getElementById('wish-magic-words').value;
+        var wishDisplay = document.getElementById('wish-text').value;
+        var wishImage = document.getElementById('wish-image').value;
+        if (magicWords.indexOf('[') == 0) {
+          magicWords = JSON.parse(magicWords);
+        }
+        var wish = genie({
+          id: wishId,
+          magicWords: magicWords,
+          data: {
+            display: wishDisplay,
+            image: wishImage
+          },
+          action: function() {
+            console.log('Your "' + this.data.display + '" wish is my command!')
+          }
+        });
+        console.log('Wish "' + wishDisplay + '" created');
+        genie.makeWish(wish);
+        return false;
+      }
+    </script>
+  </body>
+</html>
