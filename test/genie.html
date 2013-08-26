@@ -37,6 +37,20 @@
           genie.deregisterWish(wish);
           genie.makeWish(wish);
           t.assertEqual(wishCalled, 1);
+          
+          // Test registration with object.
+          var wish2 = genie({
+            id: 'wish2',
+            data: {
+              display: 'Zerahemla',
+              image: 'file/somewhere/image.png'
+            },
+            magicWords: ['Zerahemla', 'Nephite City'],
+            action: function(wish2Object) {
+              t.assertIdentical(wish2Object, wish2);
+            }
+          });
+          genie.makeWish(wish2);
         },
         testClearingWishes: function(t) {
           prepForTest();
