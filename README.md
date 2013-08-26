@@ -27,7 +27,7 @@ How to use it
 --
 Include the regular script tag:
 
-```
+```html
 <script src="./vendor/genie.js"></script>
 ```
 
@@ -35,7 +35,7 @@ This will place `genie` on the global namespace for your delight. `genie` is a
 function with a few useful functions as properties of `genie`. The flow of
 using GenieJS is simple:
 
-```
+```javascript
 /* Register wishes */
 // One magic word
 var trashWish = genie('Take out the trash', function() {
@@ -59,7 +59,7 @@ So far it doesn't look too magical, but the true magic comes in the form of geni
 preference to wishes that were recently chosen with a given keyword. To do this, you need
 to provide genie with a magic word to associate the wish with, like so:
 
-```
+```javascript
 genie.makeWish(vacuumWish, 'out'); // logs as above
 genie.getMatchingWishes('out'); // returns [vacuumWish, trashWish]; <-- Notice difference from above
 ```
@@ -74,7 +74,7 @@ goal of this library!
 Other interesting stuff
 --
 The `wishObject` has the following structure:
-```
+```javascript
 var wish = {
   id: 'string',
   data: object,
@@ -83,7 +83,7 @@ var wish = {
 };
 ```
 The `enteredMagicWords` object has the following structure:
-```
+```javascript
 var enteredMagicWords = {
   'Any Magic Word': ['wishId1', 'wishId2', 'wishId3'],
   'Another magic word': ['wishId1', 'wishId2', 'wishId3']
@@ -92,7 +92,7 @@ var enteredMagicWords = {
 
 You have the following api to use at your discretion:
 
-```
+```javascript
 genie(magicWords [string || array | required], action [function | required], data [object | optional], id [string | optional]);
 // If no id is provided, one will be auto-generated via the previousId + 1
 // Returns the wish object
