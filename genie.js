@@ -147,9 +147,11 @@
   }
   
   function options(options) {
-    _wishes = options.wishes || _wishes;
-    _previousId = options.previousId || _previousId;
-    _enteredMagicWords = options.enteredKeyWords || _enteredMagicWords;
+    if (options) {
+      _wishes = options.wishes || _wishes;
+      _previousId = options.previousId || _previousId;
+      _enteredMagicWords = options.enteredKeyWords || _enteredMagicWords;
+    }
     return {
       wishes: _wishes,
       previousId: _previousId,
@@ -160,7 +162,7 @@
   global.genie = registerWish;
   global.genie.getMatchingWishes = getMatchingWishes;
   global.genie.makeWish = makeWish;
-  global.genie.setOptions = options;
+  global.genie.options = options;
   global.genie.deregisterWish = deregisterWish;
   global.genie.clearWishes = clearWishes;
 
