@@ -58,49 +58,95 @@
   }
   
   function getMatchingWishes(magicWord) {
-    var matchingWishIds = _enteredMagicWords[magicWord] || [];
-    var otherMatchingWishId = _addOtherMatchingMagicWords(matchingWishIds, magicWord);
-    var allWishIds = matchingWishIds.concat(otherMatchingWishId);
-    var matchingWishes = [];
-    for (var i = 0; i < allWishIds.length; i++) {
+    var otherMatchingWishId, allWishIds, matchingWishes, i; //Hoist-it!
+    
+    allWishIds = _enteredMagicWords[magicWord] || [];
+    
+    otherMatchingWishId = _getOtherMatchingMagicWords(allWishIds, magicWord);
+    allWishIds = allWishIds.concat(otherMatchingWishId);
+    
+    matchingWishes = [];
+    for (i = 0; i < allWishIds.length; i++) {
       matchingWishes.push(_wishes[allWishIds[i]]);
     }
     return matchingWishes;
   }
   
-  function _addOtherMatchingMagicWords(currentMatchingWishIds, givenMagicWord) {
+  function _getOtherMatchingMagicWords(currentMatchingWishIds, givenMagicWord) {
+    var containsMagicWordWishIds = [];
+    var acronymMagicWordWishIds = [];
     var otherMatchingWishIds = [];
     for (var wishId in _wishes) {
       if (currentMatchingWishIds.indexOf(wishId) == -1) {
         var wish =_wishes[wishId];
-        if (_anyMagicWordsMatch(wish.magicWords, givenMagicWord)) {
-          otherMatchingWishIds.push(wishId);
+        var matchType = _bestMagicWordsMatch(wish.magicWords, givenMagicWord);
+        switch (matchType) {
+          case 'contains':
+            containsMagicWordWishIds.push(wishId);
+            break;
+          case 'acronym':
+            acronymMagicWordWishIds.push(wishId);
+            break;
+          case 'matches':
+            otherMatchingWishIds.push(wishId);
+            break;
+          case '':
+            break; // no match
         }
       }
     }
-    return otherMatchingWishIds;
+    return containsMagicWordWishIds.concat(acronymMagicWordWishIds).concat(otherMatchingWishIds);
   }
 
-  function _anyMagicWordsMatch(wishesMagicWords, givenMagicWord) {
+  function _bestMagicWordsMatch(wishesMagicWords, givenMagicWord) {
+    var bestMatch = '';
     for (var i = 0; i < wishesMagicWords.length; i++) {
-      if (_stringsMatch(wishesMagicWords[i], givenMagicWord)) {
-        return true;
+      var matchType = _stringsMatch(wishesMagicWords[i], givenMagicWord);
+      if ((matchType === 'contains')
+        || (matchType === 'acronym' && (bestMatch === '' || bestMatch === 'matches'))
+        || (matchType === 'matches' && bestMatch === '')) {
+        bestMatch = matchType;
+      }
+      if (bestMatch === 'contains') {
+        break;
       }
     }
-    return false;
+    return bestMatch;
   }
   
   function _stringsMatch(magicWord, givenMagicWord) {
+    var magicWordWords, splitByHyphen, acronym = '';
     magicWord = magicWord.toLowerCase();
     givenMagicWord = givenMagicWord.toLowerCase();
+    
+    // too long
     if (givenMagicWord.length > magicWord.length) {
-      return false;
+      return '';
     }
+    
+    // contains
     if (magicWord.indexOf(givenMagicWord) != -1) {
-      return true;
+      return 'contains';
     } else if (givenMagicWord.length == 1) {
-      return false;
+      return '';
     }
+    
+    // acronym
+    magicWordWords = magicWord.split(' ');
+    for (var i = 0; i < magicWordWords.length; i++) {
+      splitByHyphen = magicWordWords[i].split('-');
+      for (var j = 0; j < splitByHyphen.length; j++) {
+        acronym += splitByHyphen[j].substr(0, 1);
+      }
+    }
+    if (acronym.indexOf(givenMagicWord) != -1) {
+      return 'acronym';
+    }
+    
+    return _stringsByCharOrder(magicWord, givenMagicWord);
+  }
+  
+  function _stringsByCharOrder(magicWord, givenMagicWord) {
     var charNumber = 0;
     for (var i = 0; i < givenMagicWord.length; i++) {
       var matchChar = givenMagicWord[i];
@@ -114,10 +160,10 @@
         }
       }
       if (!found) {
-        return false;
+        return '';
       }
     }
-    return true;
+    return 'matches';
   }
   
   function makeWish(id, magicWord) {

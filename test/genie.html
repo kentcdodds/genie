@@ -19,7 +19,7 @@
       }
       
       function registerBlankWish(magicWords) {
-        genie(magicWords,function (){});
+        return genie(magicWords,function (){});
       }
       
       Evidence.TestCase.extend('GenieTest', {
@@ -167,9 +167,28 @@
           genie.deregisterWish(lucy);
           genie.makeWish(fred, 'mertz');
           mertzMatch = genie.getMatchingWishes('mertz');
-          t.assertIdentical(mertzMatch.length, 2);
+          t.assertEqual(mertzMatch.length, 2);
           t.assertIdentical(mertzMatch[0], ethel);
           t.assertIdentical(mertzMatch[1], fred);
+        },
+        testComplexMagicWords: function(t) {
+          prepForTest();
+          var ttofc = registerBlankWish('The Tail of Forty Cities');
+          var ttotc = registerBlankWish('The Tail of Two Cities');
+          var ttotcAcronym = 'ttotc';
+          
+          // Even though ttofc was registered first, acronym trumps match
+          var match = genie.getMatchingWishes(ttotcAcronym);
+          t.assertEqual(match.length, 2);
+          t.assertIdentical(match[0], ttotc);
+          t.assertIdentical(match[1], ttofc);
+          
+          // enteredMagicWords trumps acronym
+          genie.makeWish(ttofc, ttotcAcronym);
+          var match = genie.getMatchingWishes(ttotcAcronym);
+          t.assertEqual(match.length, 2);
+          t.assertIdentical(match[0], ttofc);
+          t.assertIdentical(match[1], ttotc);
         }
       });
     </script>
