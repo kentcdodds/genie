@@ -3,6 +3,10 @@ GenieJS
 *Genie* |ˈjēnē| (noun): a spirit of Arabian folklore, as traditionally depicted imprisoned
 within a bottle or oil lamp, and capable of granting wishes when summoned.
 
+[Demo](http://kentcdodds.github.io/genie)
+
+[Tests](http://kentcdodds.github.io/genie/test/genie.html)
+
 Watered Down Explanation
 --
 GenieJS is a simple library to emulate the same kind of behavior seen in apps like
@@ -23,8 +27,11 @@ Vernacular
 
 *Magic Word*: Keywords for a wish used to match it with given magic words.
 
-*King of the Hill*: The wish which gets preference for a certain magic word until another
-wish gets made with that magic word twice in a row.
+*On Deck*: The second wish of preference for a certain magic word which will be King of
+the Hill if chosen again. 
+
+*King of the Hill*: The wish which gets preference for a certain magic word until the
+On Deck wish is chosen again (it then becomes On Deck).
 
 How to use it
 --
@@ -94,9 +101,9 @@ var enteredMagicWords = {
 You have the following api to use at your discretion:
 
 ```javascript
-genie(magicWords [string || array | required], action [function | required], data [object | optional], id [string | optional]);
 // If no id is provided, one will be auto-generated via the previousId + 1
 // Returns the wish object
+genie(magicWords [string || array | required], action [function | required], data [object | optional], id [string | optional]);
 // You may also register wishes with an object for convenience, like so:
 genie({
   id: string | optional,
@@ -105,21 +112,20 @@ genie({
   magicWords: string || [string] | required
 });
 
-genie.deregisterWish(id [string || wishObject | required]);
 // Removes the wish from the registered wishes and the enteredMagicWords
 // Returns the deregisteredWish
+genie.deregisterWish(id [string || wishObject | required]);
 
-genie.clearWishes();
 // Clears all wishes and enteredMagicWords
+genie.clearWishes();
 
-genie.getMatchingWishes(magicWord [string | required]);
 /* 
  * Returns an array of wishes which match in order:
  *  1. Most recently made wishes with the given magicWord
  *  2. Following the order of their initial registration
  */
+genie.getMatchingWishes(magicWord [string | required]);
 
-genie.makeWish(id [string || wishObject | required], magicWord [string | optional]);
 /* 
  * Executes the given wish's action.
  * If a magicWord is provided, adds the given wish to the enteredMagicWords
@@ -127,12 +133,8 @@ genie.makeWish(id [string || wishObject | required], magicWord [string | optiona
  *   by the getMatchingWishes method.
  * Returns the wish object.
  */
+genie.makeWish(id [string || wishObject | required], magicWord [string | optional]);
 
-genie.options({
-  wishes: [object | optional],
-  previousId: [number | optional],
-  enteredMagicWords: [object | optional]
-});
 /*
  * Allows you to set the attributes of genie and returns the current genie options.
  *  1. wishes: All wishes (wishObject described above) currently registered
@@ -141,25 +143,41 @@ genie.options({
  *  3. enteredMagicWords: All magicWords which have been associated with wishes
  *    to give preferential treatment in the order of wishes returned by getMatchingWishes
  */
+genie.options({
+  wishes: [object | optional],
+  previousId: [number | optional],
+  enteredMagicWords: [object | optional]
+});
 ```
+
+About Matching Priority
+--
+The wishes returned from `getMatchingWishes` are ordered with the following priority
+  1. In order of most recently executed (`makeWish`) with the given magic word
+  2. If the given magic word is contained in any magic words of a wish
+  3. If the given magic word is an acronym of any magic words of a wish
+  4. If the given magic word matches the order of characters in any magic words of a wish.
+Just trust the genie. He knows best. And if you think otherwise,
+[let me know](https://github.com/kentcdodds/genie/issues) or (even better)
+[contribute](https://github.com/kentcdodds/genie/pulls) :)
 
 Contributing
 --
-I'd love to accept pull requests. Please make sure that any new functionality is fully
-tested in /test/genie.html and that all tests pass!
+I'd love to accept [pull requests](https://github.com/kentcdodds/genie/pulls). Please make
+sure that any new functionality is fully tested in /test/genie.html and that all tests pass!
 
 Issues
 --
 I'd love to accept pull requests. But seriously, if you have a problem with GenieJS
-please don't hesitate to use GitHub's issue tracker to report it. I'll do my best to get
-it resolved as quickly as I can.
+please don't hesitate to use GitHub's [issue tracker](https://github.com/kentcdodds/genie/issues)
+to report it. I'll do my best to get it resolved as quickly as I can.
 
 The Future...
 --
-... is as bright as your faith. *And* I plan on adding the following features in the future
+... [is as bright as your faith](https://www.lds.org/general-conference/2009/04/be-of-good-cheer?lang=eng).
+*And* I plan on adding the following features in the future
 
- - Better post-enteredMagicWord-match ordering
- - Any other ideas? Pull request or add an issue
+ - Finished... Ideas? Pull request or add an issue
 
 License
 --
