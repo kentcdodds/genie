@@ -98,6 +98,8 @@
     }
     if (magicWord.indexOf(givenMagicWord) != -1) {
       return true;
+    } else if (givenMagicWord.length == 1) {
+      return false;
     }
     var charNumber = 0;
     for (var i = 0; i < givenMagicWord.length; i++) {
