@@ -109,6 +109,7 @@
           prepForTest();
           var fredCall = 0;
           var ethelCall = 0;
+          var lucyCall = 0;
           
           var fred = genie('Fred Mertz', function() {
             fredCall++;
@@ -116,24 +117,59 @@
           var ethel = genie('Ethel Mertz', function() {
             ethelCall++;
           });
+          var lucy = genie('Lucy Mertz', function() {
+            lucyCall++;
+          });
           
+          // In order of their registration
           var mertzMatch = genie.getMatchingWishes('mertz');
-          t.assertEqual(mertzMatch[0], fred);
-          t.assertEqual(mertzMatch[1], ethel);
+          t.assertIdentical(mertzMatch[0], fred);
+          t.assertIdentical(mertzMatch[1], ethel);
+          t.assertIdentical(mertzMatch[2], lucy);
           
+          // In order of called then registration
           genie.makeWish(ethel, 'mertz');
           mertzMatch = genie.getMatchingWishes('mertz');
-          t.assertEqual(mertzMatch[0], ethel);
-          t.assertEqual(mertzMatch[1], fred);
+          t.assertIdentical(mertzMatch[0], ethel);
+          t.assertIdentical(mertzMatch[1], fred);
+          t.assertIdentical(mertzMatch[2], lucy);
 
-          var mertMatch = genie.getMatchingWishes('mert');
-          t.assertEqual(mertMatch[0], fred);
-          t.assertEqual(mertMatch[1], ethel);
+          /*
+           * More complicated here. A specific wish must be called
+           * twice in a row for a specific magic word for it to
+           * be first if that magic word already has a wish
+           * associated with it. So lucy must be called with
+           * 'mertz' twice in a row before she can take the
+           * top spot.
+           */
+          genie.makeWish(lucy, 'mertz');
+          mertzMatch = genie.getMatchingWishes('mertz');
+          t.assertIdentical(mertzMatch[0], ethel);
+          t.assertIdentical(mertzMatch[1], lucy);
+          t.assertIdentical(mertzMatch[2], fred);
           
-          genie.deregisterWish(fred);
-          mertMatch = genie.getMatchingWishes('mert');
-          t.assertEqual(mertMatch.length, 1);
-          t.assertEqual(mertMatch[0], ethel);
+          /*
+           * Lucy is now king of the hill.
+           * Ethel is second, and fred isn't
+           * even on the hill at all...
+           */
+          genie.makeWish(lucy, 'mertz');
+          mertzMatch = genie.getMatchingWishes('mertz');
+          t.assertIdentical(mertzMatch[0], lucy);
+          t.assertIdentical(mertzMatch[1], ethel);
+          t.assertIdentical(mertzMatch[2], fred);
+          
+          /*
+           * De-registering lucy and making a
+           * wish with fred will place ethel as
+           * king of the hill and fred as second
+           */
+          genie.deregisterWish(lucy);
+          genie.makeWish(fred, 'mertz');
+          mertzMatch = genie.getMatchingWishes('mertz');
+          t.assertIdentical(mertzMatch.length, 2);
+          t.assertIdentical(mertzMatch[0], ethel);
+          t.assertIdentical(mertzMatch[1], fred);
         }
       });
     </script>

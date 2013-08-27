@@ -23,6 +23,9 @@ Vernacular
 
 *Magic Word*: Keywords for a wish used to match it with given magic words.
 
+*King of the Hill*: The wish which gets preference for a certain magic word until another
+wish gets made with that magic word twice in a row.
+
 How to use it
 --
 Include the regular script tag:
@@ -71,19 +74,17 @@ magic word, `vacuumWish` was the wish given.
 This behavior simulates apps such as [Alfred](http://www.alfredapp.com/) which is the
 goal of this library!
 
-Other interesting stuff
+API
 --
-The `wishObject` has the following structure:
+There are a few internal objects you may want to be aware of:
 ```javascript
-var wish = {
+var wishObject = {
   id: 'string',
   data: object,
   keywords: ['string'],
   action: function() { }
 };
-```
-The `enteredMagicWords` object has the following structure:
-```javascript
+
 var enteredMagicWords = {
   'Any Magic Word': ['wishId1', 'wishId2', 'wishId3'],
   'Another magic word': ['wishId1', 'wishId2', 'wishId3']

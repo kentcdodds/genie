@@ -135,14 +135,19 @@
       _wishes[id].action(_wishes[id]);
     }
     
-    if (magicWord) {
+    if (magicWord !== undefined) {
       // Reset entered magicWords order.
       _enteredMagicWords[magicWord] = _enteredMagicWords[magicWord] || [];
-      var existingIndex = _enteredMagicWords[magicWord].indexOf(id);
+      var arry = _enteredMagicWords[magicWord];
+      var existingIndex = arry.indexOf(id);
       if (existingIndex != -1) {
-        _enteredMagicWords[magicWord].splice(existingIndex, 1);
+        arry.splice(existingIndex, 1);
+      } else if (existingIndex != 0 && arry.length > 0) {
+        var first = arry[0];
+        arry[0] = id;
+        id = first;
       }
-      _enteredMagicWords[magicWord].unshift(id);
+      arry.unshift(id);
     }
   }
   
