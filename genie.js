@@ -141,8 +141,11 @@
       var arry = _enteredMagicWords[magicWord];
       var existingIndex = arry.indexOf(id);
       if (existingIndex != -1) {
+        // If it already exists, remove it before re-adding it in the correct spot
         arry.splice(existingIndex, 1);
-      } else if (existingIndex != 0 && arry.length > 0) {
+      }
+      if (existingIndex != 1 && arry.length > 0) {
+        // If it's not "on deck" then put it in the first slot and set the King of the Hill to be the id to go first.
         var first = arry[0];
         arry[0] = id;
         id = first;

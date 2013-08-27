@@ -3,48 +3,82 @@
   <head>
     <title>GenieJS</title>
     <script src="genie.js"></script>
+    <link rel="stylesheet" href="./bootstrap.min.css" />
     <style>
-      #genie-tester {
-        margin-top: 50px;
-        text-align: center;
+      body {
+        margin: 50px 100px 50px 100px;
+      }
+      .btn {
+        margin-bottom: 12px;
+      }
+      #wish-output {
+        color: #808080;
+      }
+      a {
+        cursor: pointer;
+      }
+      #genie-export-import {
+        width: 250px;
+        height: 300px;
+      }
+      .king {
+        background-color: #6495ED;
+      }
+      .prince {
+        background-color: #679EFF;
+      }
+      .in-list {
+        background-color: #abcbff;
       }
     </style>
   </head>
   <body>
     <h1>GenieJS</h1>
+    <h2 id="wish-output">Click a wish below...</h2>
     <ol id="instructions-list">
-      <li></li>
+      <li>Create your own wishes</li>
+      <li>Use the magic word input box to filter wishes</li>
+      <li>Click the display text link of each wish to make it</li>
+      <li>Notice how genie organizes the wishes as you make them</li>
     </ol>
     
     <div id="genie-creator">
       <p>
         Create and add wishes here
       </p>
-      <input id="wish-id" type="text" placeholder="ID" /><br />
-      <input id="wish-magic-words" type="text" placeholder="Magic Words" /><br />
-      <input id="wish-text" type="text" placeholder="Display Text" /><br />
-      <input id="wish-image" type="url" placeholder="Display Image URL" /><br />
-      <button onclick="addWish()">Create Wish</button>
+      <input id="wish-id" type="text" placeholder="ID (optional)" />
+      <input id="wish-magic-words" type="text" placeholder="Magic Words (JSON Array/String)" />
+      <input id="wish-text" type="text" placeholder="Display Text" />
+      <button class="btn btn-success" onclick="addWishFromInput()">Create Wish</button>
     </div>
     
+    <p>
+      Type below and see the list of wishes auto-populate based on what you type.
+    </p>
     <div id="genie-tester">
-      <p>
-        Type below and see the list of wishes auto-populate based on what you type.
-      </p>
-      <input type="text" placeholder="Type here" />
+      <input id="magic-word-input" type="text" autofocus placeholder="Enter Magic Words here" onchange="updateWishList" />
       
       <div id="wishes-results">
-        <select id="wishes-selector">
-        </select>
+        <ul id="wishes-selector"></ul>
       </div>
+    </div>
+    <div>
+      <button class="btn btn-info" onclick="exportOrImportGenie()">Export/Import Genie</button><br />
+      <textarea id="genie-export-import" placeholder="Output/Input of Export/Import Genie"></textarea>
     </div>
     
     <script>
-      function addWish() {
+      function addWishFromInput() {
         var wishId = document.getElementById('wish-id').value;
-        var magicWords = document.getElementById('wish-magic-words').value;
         var wishDisplay = document.getElementById('wish-text').value;
-        var wishImage = document.getElementById('wish-image').value;
+        var magicWords = document.getElementById('wish-magic-words').value;
+        addWish(wishId, wishDisplay, magicWords);
+      }
+      
+      function addWish(wishId, wishDisplay, magicWords) {
+        if (magicWords === undefined) {
+          magicWords = wishDisplay;
+        }
         if (magicWords.indexOf('[') == 0) {
           magicWords = JSON.parse(magicWords);
         }
@@ -52,16 +86,105 @@
           id: wishId,
           magicWords: magicWords,
           data: {
-            display: wishDisplay,
-            image: wishImage
+            display: wishDisplay
           },
           action: function() {
-            console.log('Your "' + this.data.display + '" wish is my command!')
+            document.getElementById('wish-output').innerText = 'Your "' + this.data.display + '" wish is my command!';
           }
         });
         console.log('Wish "' + wishDisplay + '" created');
-        genie.makeWish(wish);
+        updateWishList();
         return false;
+      }
+      
+      function updateWishList() {
+        var input = document.getElementById('magic-word-input').value;
+        var wishes = genie.getMatchingWishes(input);
+        var enteredMagicWordsForInput = genie.options().enteredMagicWords[input] || [];
+        var select = document.getElementById('wishes-selector');
+        select.innerHTML = "";
+        for (var i = 0; i < wishes.length; i++) {
+          var option = document.createElement('li');
+          var anchor = document.createElement('a');
+          var span = document.createElement('span');
+          addEvent(anchor, 'click', function() {
+            var id = this.getAttribute('data-id');
+            genie.makeWish(id, document.getElementById('magic-word-input').value);
+            updateWishList();
+          });
+          
+          anchor.setAttribute('data-id', wishes[i].id);
+          anchor.innerText = wishes[i].data.display;
+          
+          span.innerText = ' - Magic Words: [' + wishes[i].magicWords.join(', ') + '] ';
+          
+          option.appendChild(anchor);
+          option.appendChild(span);
+          
+          var index = enteredMagicWordsForInput.indexOf(wishes[i].id);
+          if (index > -1) {
+            var inMagicWords = document.createElement('span');
+            var innerText = '(';
+            switch (index) {
+              case 0:
+                innerText += 'King of the Hill'; 
+                inMagicWords.className = 'king';
+                break;
+              case 1:
+                innerText += 'On deck';
+                inMagicWords.className = 'prince';
+                break;
+              default:
+                innerText += 'In enteredMagicWords';
+                inMagicWords.className = 'in-list';
+                break;
+            }
+            inMagicWords.innerText = innerText + ' for "' + input + '")';
+            option.appendChild(inMagicWords);
+          }
+          
+          select.appendChild(option);
+        }
+      }
+
+      // Add initial wishes
+      addWish(undefined, 'Create new post');
+      addWish(undefined, 'Edit profile pic');
+      addWish(undefined, 'Update contact info');
+      addWish(undefined, 'Delete account');
+      addWish(undefined, 'Block user');
+      addWish(undefined, 'Friend user');
+      addWish(undefined, 'Find friends');
+      updateWishList();
+      
+      function addEvent(object, event, method) {
+        if (object.addEventListener)
+          object.addEventListener(event, method, false);
+        else if(object.attachEvent)
+          object.attachEvent('on'+event, function(){ method(window.event) });
+      }
+
+      (function addListners() {
+        var el = document.getElementById('magic-word-input');
+        addEvent(el, 'change', function() {
+          updateWishList();
+        });
+        addEvent(el, 'keyup', function() {
+          el.blur(); // Forces 'change' event to fire
+          el.focus();
+        });
+      })();
+      
+      function exportOrImportGenie() {
+        var inOut = document.getElementById('genie-export-import');
+        if (inOut.value) {
+          // Import
+          genie.options(JSON.parse(inOut.value));
+          updateWishList();
+        } else {
+          // Export
+          inOut.value = JSON.stringify(genie.options(), null, 2);
+        }
       }
     </script>
   </body>
