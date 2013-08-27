@@ -39,7 +39,14 @@
       GenieJS was built to simulate the behavior in apps like <a href="http://www.alfredapp.com/">Alfred</a>.<br />
       Essentially, you register actions with keywords and then you can find those actions via a keyword search.<br />
       For info on the <a href="https://github.com/kentcdodds/genie#vernacular">vernacular</a> of wishes and magic words,
-      see the <a href="https://github.com/kentcdodds/genie">project on GitHub</a>.
+      see the <a href="https://github.com/kentcdodds/genie">project on GitHub</a>.<br />
+      Click <a href="./test/genie.html">here</a> to see/run the tests...
+    </p>
+
+    <hr />
+
+    <p>
+      Here are some instructions for this demo.
     </p>
     <ol id="instructions-list">
       <li>Create your own wishes</li>
@@ -47,7 +54,9 @@
       <li>Click the display text link of each wish to make it</li>
       <li>Notice how genie organizes the wishes as you make them</li>
     </ol>
-    
+
+    <hr />
+
     <div id="genie-creator">
       <p>
         Create and add wishes here
@@ -58,6 +67,8 @@
       <button class="btn btn-success" onclick="addWishFromInput()">Create Wish</button>
     </div>
     
+    <hr />
+
     <p>
       Type below and see the list of wishes auto-populate based on what you type.
     </p>
@@ -68,6 +79,9 @@
         <ul id="wishes-selector"></ul>
       </div>
     </div>
+
+    <hr />
+
     <div>
       <button class="btn btn-info" onclick="exportOrImportGenie()">Export/Import Genie</button><br />
       <textarea id="genie-export-import" placeholder="Output/Input of Export/Import Genie"></textarea>
