@@ -217,16 +217,27 @@
             magicWords: 'Hello'
           });
 
+          genie.context('newContext');
           var match = genie.getMatchingWishes('Hello');
           t.assertEqual(match.length, 1);
           genie.makeWish(hi);
           t.assertEqual(hiCall, 1);
 
-          genie.context('newContext');
+          genie.revertContext();
           genie.makeWish(hi);
-          t.assertEqual(hiCall, 1);
+          t.assertEqual(hiCall, 2);
+          match = genie.getMatchingWishes('Hello');
+          t.assertEqual(match.length, 1);
+
+          hi.context = 'differentContext';
+
+          genie.context('otherContext');
+
+          genie.makeWish(hi);
+          t.assertEqual(hiCall, 2);
           match = genie.getMatchingWishes('Hello');
           t.assertEqual(match.length, 0);
+
         }
       });
     </script>

@@ -9,8 +9,9 @@
   var _wishes = {},
     _previousId = 0,
     _enteredMagicWords = {},
-    _context = 'universe'
-    _previousContext = 'universe';
+    _defaultContext = 'universe'
+    _context = _defaultContext
+    _previousContext = _defaultContext;
   
   function _getNextId() {
     return 'g-' + _previousId++;
@@ -38,7 +39,7 @@
     
     var wish = {
       id: id,
-      context: context || 'universe',
+      context: context || _defaultContext,
       data: data,
       magicWords: magicWords,
       action: action
@@ -96,7 +97,7 @@
     for (var wishId in _wishes) {
       if (currentMatchingWishIds.indexOf(wishId) == -1) {
         var wish =_wishes[wishId];
-        if (wish.context === _context) {
+        if (_wishInContext(wish)) {
           var matchType = _bestMagicWordsMatch(wish.magicWords, givenMagicWord);
           switch (matchType) {
             case 'contains':
@@ -203,9 +204,9 @@
      *   - doesn't exist
      *   - isn't in the registry
      *   - doesn't have an action
-     *   - context doesn't match the current context
+     *   - context doesn't match the current context and the wish's context is not the _defaultContext
      */
-    if (!wish || !_wishes[wish.id] || !wish.action || wish.context !== _context) {
+    if (!wish || !_wishes[wish.id] || !wish.action || !(_wishInContext(wish))) {
       return null;
     }
 
@@ -232,6 +233,10 @@
     return wish;
   }
   
+  function _wishInContext(wish) {
+    return _context === _defaultContext || wish.context === _defaultContext || wish.context === _context;
+  }
+
   function options(options) {
     if (options) {
       _wishes = options.wishes || _wishes;
@@ -262,7 +267,7 @@
   }
 
   function restoreContext() {
-    return context('universe');
+    return context(_defaultContext);
   }
   
   global.genie = registerWish;

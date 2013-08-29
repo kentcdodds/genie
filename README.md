@@ -88,6 +88,7 @@ There are a few internal objects you may want to be aware of:
 var wishObject = {
   id: 'string',
   data: object,
+  context: 'string',
   keywords: ['string'],
   action: function() { }
 };
@@ -108,6 +109,7 @@ genie(magicWords [string || array | required], action [function | required], dat
 genie({
   id: string | optional,
   data: object | optional,
+  context: string | optional,
   action: function | required,
   magicWords: string || [string] | required
 });
@@ -142,12 +144,24 @@ genie.makeWish(id [string || wishObject | required], magicWord [string | optiona
  *    provided when a wish is registered.
  *  3. enteredMagicWords: All magicWords which have been associated with wishes
  *    to give preferential treatment in the order of wishes returned by getMatchingWishes
+ *  4. context: The current context of the genie. See below about how context affects wishes
  */
 genie.options({
-  wishes: [object | optional],
-  previousId: [number | optional],
-  enteredMagicWords: [object | optional]
+  wishes: object | optional,
+  previousId: number | optional,
+  enteredMagicWords: object | optional,
+  context: string | optional
 });
+
+// Sets and returns the current context to newContext if provided
+// Also sets an internal variable: _previousContext for the revertContext function
+genie.context(newContext [string | optional]);
+
+// Sets and returns the current context to the default context (universe)
+genie.restoreContext();
+
+// Sets and returns the current context to the previous context
+genie.revertContext();
 ```
 
 About Matching Priority
@@ -160,6 +174,20 @@ The wishes returned from `getMatchingWishes` are ordered with the following prio
 Just trust the genie. He knows best. And if you think otherwise,
 [let me know](https://github.com/kentcdodds/genie/issues) or (even better)
 [contribute](https://github.com/kentcdodds/genie/pulls) :)
+
+About Context
+--
+Genie has a concept of context that allows you to switch between sets of wishes easily.
+Each wish is given the default context which is `universe` unless one is provided when
+it is registered. Wishes with the default context will not behave differently when context
+of genie changes.
+
+When the current context is the default context, all wishes will behave
+as if the context were equal to their own context. So essentially `universe` makes it as
+though genie has no notion of contexts at all.
+
+When the context is different than the default, only wishes with an equal context will
+behave normally with `getMatchingWishes` and `makeWish`.
 
 Contributing
 --
