@@ -5,7 +5,7 @@ within a bottle or oil lamp, and capable of granting wishes when summoned.
 
 [Demo](http://kentcdodds.github.io/genie)
 
-[Tests](http://kentcdodds.github.io/genie/test/genie.html)
+[Tests](http://kentcdodds.github.io/genie/test)
 
 Watered Down Explanation
 --
@@ -164,7 +164,7 @@ Just trust the genie. He knows best. And if you think otherwise,
 Contributing
 --
 I'd love to accept [pull requests](https://github.com/kentcdodds/genie/pulls). Please make
-sure that any new functionality is fully tested in /test/genie.html and that all tests pass!
+sure that any new functionality is fully tested in /test/index.html and that all tests pass!
 
 Issues
 --
