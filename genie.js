@@ -116,6 +116,10 @@
   
   function _stringsMatch(magicWord, givenMagicWord) {
     var magicWordWords, splitByHyphen, acronym = '';
+    if (magicWord === undefined || magicWord === null || 
+      givenMagicWord === undefined || givenMagicWord === null) {
+      return '';
+    }
     magicWord = magicWord.toLowerCase();
     givenMagicWord = givenMagicWord.toLowerCase();
     
