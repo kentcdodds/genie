@@ -11,7 +11,7 @@
     _enteredMagicWords = {};
   
   function _getNextId() {
-    return 'q-' + _previousId++;
+    return 'g-' + _previousId++;
   }
   
   function registerWish(magicWords, action, data, id) {
