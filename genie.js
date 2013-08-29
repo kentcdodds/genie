@@ -26,6 +26,13 @@
     if (id === undefined) {
       id = _getNextId();
     }
+
+    // Verify none of the magic words are objects
+    for (var i = 0; i < magicWords.length; i++) {
+      if (typeof magicWords[i] === 'object') {
+        throw 'Cannot make an object a magic word!\n' + JSON.stringify(magicWords, null, 2);
+      }
+    }
     
     var wish = {
       id: id,
@@ -59,6 +66,13 @@
   
   function getMatchingWishes(magicWord) {
     var otherMatchingWishId, allWishIds, matchingWishes, i; //Hoist-it!
+    if (magicWord === undefined) {
+      magicWord = '';
+    } else if (magicWord === null) {
+      return [];
+    } else if (typeof magicWord === 'object') {
+      throw 'Cannot match wishes to an object!\n' + JSON.stringify(magicWord, null, 2);
+    }
     
     allWishIds = _enteredMagicWords[magicWord] || [];
     
@@ -116,12 +130,9 @@
   
   function _stringsMatch(magicWord, givenMagicWord) {
     var magicWordWords, splitByHyphen, acronym = '';
-    if (magicWord === undefined || magicWord === null || 
-      givenMagicWord === undefined || givenMagicWord === null) {
-      return '';
-    }
-    magicWord = magicWord.toLowerCase();
-    givenMagicWord = givenMagicWord.toLowerCase();
+    
+    magicWord = ('' + magicWord).toLowerCase();
+    givenMagicWord = ('' + givenMagicWord).toLowerCase();
     
     // too long
     if (givenMagicWord.length > magicWord.length) {
