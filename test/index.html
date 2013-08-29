@@ -22,6 +22,7 @@
     <script>
       function prepForTest() {
         genie.clearWishes();
+        genie.restoreContext();
       }
       
       function registerBlankWish(magicWords) {
@@ -202,6 +203,30 @@
           var numMatch = genie.getMatchingWishes(1);
           t.assertEqual(numMatch.length, 1);
           t.assertIdentical(numMatch[0], num);
+        },
+        testContext: function(t) {
+          prepForTest();
+          var def = 'universe';
+          var hiCall = 0;
+          t.assertEqual(genie.context(), def);
+
+          var hi = genie({
+            action: function() {
+              hiCall++
+            },
+            magicWords: 'Hello'
+          });
+
+          var match = genie.getMatchingWishes('Hello');
+          t.assertEqual(match.length, 1);
+          genie.makeWish(hi);
+          t.assertEqual(hiCall, 1);
+
+          genie.context('newContext');
+          genie.makeWish(hi);
+          t.assertEqual(hiCall, 1);
+          match = genie.getMatchingWishes('Hello');
+          t.assertEqual(match.length, 0);
         }
       });
     </script>

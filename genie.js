@@ -8,17 +8,19 @@
 
   var _wishes = {},
     _previousId = 0,
-    _enteredMagicWords = {};
+    _enteredMagicWords = {},
+    _context = 'universe'
+    _previousContext = 'universe';
   
   function _getNextId() {
     return 'g-' + _previousId++;
   }
   
-  function registerWish(magicWords, action, data, id) {
+  function registerWish(magicWords, action, context, data, id) {
     if (!Array.isArray(magicWords)) {
       // If they passed an object instead.
       if (typeof magicWords === 'object') {
-        return registerWish(magicWords.magicWords, magicWords.action, magicWords.data, magicWords.id);
+        return registerWish(magicWords.magicWords, magicWords.action, magicWords.context, magicWords.data, magicWords.id);
       } else {
         magicWords = [magicWords];
       }
@@ -36,6 +38,7 @@
     
     var wish = {
       id: id,
+      context: context || 'universe',
       data: data,
       magicWords: magicWords,
       action: action
@@ -93,19 +96,21 @@
     for (var wishId in _wishes) {
       if (currentMatchingWishIds.indexOf(wishId) == -1) {
         var wish =_wishes[wishId];
-        var matchType = _bestMagicWordsMatch(wish.magicWords, givenMagicWord);
-        switch (matchType) {
-          case 'contains':
-            containsMagicWordWishIds.push(wishId);
-            break;
-          case 'acronym':
-            acronymMagicWordWishIds.push(wishId);
-            break;
-          case 'matches':
-            otherMatchingWishIds.push(wishId);
-            break;
-          case '':
-            break; // no match
+        if (wish.context === _context) {
+          var matchType = _bestMagicWordsMatch(wish.magicWords, givenMagicWord);
+          switch (matchType) {
+            case 'contains':
+              containsMagicWordWishIds.push(wishId);
+              break;
+            case 'acronym':
+              acronymMagicWordWishIds.push(wishId);
+              break;
+            case 'matches':
+              otherMatchingWishIds.push(wishId);
+              break;
+            case '':
+              break; // no match
+          }
         }
       }
     }
@@ -181,38 +186,50 @@
     return 'matches';
   }
   
-  function makeWish(id, magicWord) {
+  function makeWish(wish, magicWord) {
+    var id, arry, existingIndex, first, matchingWishes;
     // Check if it may be a wish object
-    if (typeof id === 'object' && id.id) {
-      id = id.id;
+    if (typeof wish !== 'object') {
+      wish = _wishes[wish];
     }
-    if (id === null || id === undefined) {
-      var matchingWishes = getMatchingWishes(magicWord);
+    if (wish === null || wish === undefined) {
+      matchingWishes = getMatchingWishes(magicWord);
       if (matchingWishes.length > 0) {
-        id = matchingWishes[0].id;
+        wish = matchingWishes[0];
       }
     }
-    if (_wishes[id] && _wishes[id].action) {
-      _wishes[id].action(_wishes[id]);
+
+    /* Don't execute the wish and return null if it:
+     *   - doesn't exist
+     *   - isn't in the registry
+     *   - doesn't have an action
+     *   - context doesn't match the current context
+     */
+    if (!wish || !_wishes[wish.id] || !wish.action || wish.context !== _context) {
+      return null;
     }
-    
+
+    wish.action(wish);
+
     if (magicWord !== undefined) {
       // Reset entered magicWords order.
       _enteredMagicWords[magicWord] = _enteredMagicWords[magicWord] || [];
-      var arry = _enteredMagicWords[magicWord];
-      var existingIndex = arry.indexOf(id);
+      id = wish.id;
+      arry = _enteredMagicWords[magicWord];
+      existingIndex = arry.indexOf(id);
       if (existingIndex != -1) {
         // If it already exists, remove it before re-adding it in the correct spot
         arry.splice(existingIndex, 1);
       }
       if (existingIndex != 1 && arry.length > 0) {
         // If it's not "on deck" then put it in the first slot and set the King of the Hill to be the id to go first.
-        var first = arry[0];
+        first = arry[0];
         arry[0] = id;
         id = first;
       }
       arry.unshift(id);
     }
+    return wish;
   }
   
   function options(options) {
@@ -220,12 +237,32 @@
       _wishes = options.wishes || _wishes;
       _previousId = options.previousId || _previousId;
       _enteredMagicWords = options.enteredKeyWords || _enteredMagicWords;
+      _context = options.context || _context;
+      _previousContext = options.previousContext || _previousContext;
     }
     return {
       wishes: _wishes,
       previousId: _previousId,
-      enteredMagicWords: _enteredMagicWords
+      enteredMagicWords: _enteredMagicWords,
+      contexts: _context,
+      previousContext: _previousContext
     };
+  }
+
+  function context(newContext) {
+    if (newContext) {
+      _previousContext = _context;
+      _context = newContext;
+    }
+    return _context;
+  }
+
+  function revertContext() {
+    return context(_previousContext);
+  }
+
+  function restoreContext() {
+    return context('universe');
   }
   
   global.genie = registerWish;
@@ -234,5 +271,8 @@
   global.genie.options = options;
   global.genie.deregisterWish = deregisterWish;
   global.genie.clearWishes = clearWishes;
+  global.genie.context = context;
+  global.genie.revertContext = revertContext;
+  global.genie.restoreContext = restoreContext;
 
 })(this);
