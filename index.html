@@ -88,124 +88,141 @@
     </div>
     
     <script>
-      function addWishFromInput() {
-        var wishId = document.getElementById('wish-id').value;
-        var wishDisplay = document.getElementById('wish-text').value;
-        var magicWords = document.getElementById('wish-magic-words').value;
-        addWish(wishId, wishDisplay, magicWords);
-      }
+      (function() {
       
-      function addWish(wishId, wishDisplay, magicWords) {
-        if (magicWords === undefined) {
-          magicWords = wishDisplay;
-        }
-        if (magicWords.indexOf('[') == 0) {
-          magicWords = JSON.parse(magicWords);
-        }
-        var wish = genie({
-          id: wishId,
-          magicWords: magicWords,
-          data: {
-            display: wishDisplay
-          },
-          action: function() {
-            document.getElementById('wish-output').innerText = 'Your "' + this.data.display + '" wish is my command!';
+        function bindEvents(object, events) {
+          if (typeof object === 'string') {
+            object = document.getElementById(object);
           }
-        });
-        console.log('Wish "' + wishDisplay + '" created');
-        updateWishList();
-        return false;
-      }
+          for (var event in events) {
+            if (object.addEventListener)
+              object.addEventListener(event, events[event], false);
+            else if(object.attachEvent)
+              object.attachEvent('on' + event, function(){ events[event](window.event) });
+          }
+        }
       
-      function updateWishList() {
-        var input = document.getElementById('magic-word-input').value;
-        var wishes = genie.getMatchingWishes(input);
-        var enteredMagicWordsForInput = genie.options().enteredMagicWords[input] || [];
-        var select = document.getElementById('wishes-selector');
-        select.innerHTML = "";
-        for (var i = 0; i < wishes.length; i++) {
-          var option = document.createElement('li');
-          var anchor = document.createElement('a');
-          var span = document.createElement('span');
-          addEvent(anchor, 'click', function() {
-            var id = this.getAttribute('data-id');
-            genie.makeWish(id, document.getElementById('magic-word-input').value);
-            updateWishList();
-          });
-          
-          anchor.setAttribute('data-id', wishes[i].id);
-          anchor.innerText = wishes[i].data.display;
-          
-          span.innerText = ' - Magic Words: [' + wishes[i].magicWords.join(', ') + '] ';
-          
-          option.appendChild(anchor);
-          option.appendChild(span);
-          
-          var index = enteredMagicWordsForInput.indexOf(wishes[i].id);
-          if (index > -1) {
-            var inMagicWords = document.createElement('span');
-            var innerText = '(';
-            switch (index) {
-              case 0:
-                innerText += 'King of the Hill'; 
-                inMagicWords.className = 'king';
-                break;
-              case 1:
-                innerText += 'On deck';
-                inMagicWords.className = 'prince';
-                break;
-              default:
-                innerText += 'In enteredMagicWords';
-                inMagicWords.className = 'in-list';
-                break;
+        function addWish(wishDisplay, magicWords, action) {
+          if (magicWords === undefined) {
+            magicWords = [];
+          }
+          if (magicWords.indexOf('[') == 0) {
+            magicWords = JSON.parse(magicWords);
+          }
+          magicWords.push(wishDisplay);
+          var wish = genie({
+            magicWords: magicWords,
+            data: {
+              display: wishDisplay
+            },
+            action: action || function() {
+              document.getElementById('wish-output').innerText = 'Your "' + this.data.display + '" wish is my command!';
             }
-            inMagicWords.innerText = innerText + ' for "' + input + '")';
-            option.appendChild(inMagicWords);
+          });
+          console.log('Wish "' + wishDisplay + '" created');
+          updateWishList();
+          return false;
+        }
+      
+        function updateWishList() {
+          var input = document.getElementById('magic-word-input').value;
+          var wishes = genie.getMatchingWishes(input);
+          var enteredMagicWordsForInput = genie.options().enteredMagicWords[input] || [];
+          var select = document.getElementById('wishes-selector');
+          select.innerHTML = "";
+          for (var i = 0; i < wishes.length; i++) {
+            var option = document.createElement('li');
+            var anchor = document.createElement('a');
+            var span = document.createElement('span');
+            bindEvents(anchor, {
+              'click': function() {
+                var id = this.getAttribute('data-id');
+                genie.makeWish(id, document.getElementById('magic-word-input').value);
+                updateWishList();
+              }
+            });
+      
+            anchor.setAttribute('data-id', wishes[i].id);
+            anchor.innerText = wishes[i].data.display;
+      
+            span.innerText = ' - Magic Words: [' + wishes[i].magicWords.join(', ') + '] ';
+      
+            option.appendChild(anchor);
+            option.appendChild(span);
+      
+            var index = enteredMagicWordsForInput.indexOf(wishes[i].id);
+            if (index > -1) {
+              var inMagicWords = document.createElement('span');
+              var innerText = '(';
+              switch (index) {
+                case 0:
+                  innerText += 'King of the Hill';
+                  inMagicWords.className = 'king';
+                  break;
+                case 1:
+                  innerText += 'On deck';
+                  inMagicWords.className = 'prince';
+                  break;
+                default:
+                  innerText += 'In enteredMagicWords';
+                  inMagicWords.className = 'in-list';
+                  break;
+              }
+              inMagicWords.innerText = innerText + ' for "' + input + '")';
+              option.appendChild(inMagicWords);
+            }
+      
+            select.appendChild(option);
           }
-          
-          select.appendChild(option);
         }
-      }
-
-      // Add initial wishes
-      addWish(undefined, 'Create new post');
-      addWish(undefined, 'Edit profile pic');
-      addWish(undefined, 'Update contact info');
-      addWish(undefined, 'Delete account');
-      addWish(undefined, 'Block user');
-      addWish(undefined, 'Friend user');
-      addWish(undefined, 'Find friends');
-      updateWishList();
       
-      function addEvent(object, event, method) {
-        if (object.addEventListener)
-          object.addEventListener(event, method, false);
-        else if(object.attachEvent)
-          object.attachEvent('on'+event, function(){ method(window.event) });
-      }
-
-      (function addListners() {
-        var el = document.getElementById('magic-word-input');
-        addEvent(el, 'change', function() {
-          updateWishList();
+        // Add listners
+        bindEvents('wish-magic-words', {
+          click: function() {
+            var wishId = document.getElementById('wish-id').value;
+            var wishDisplay = document.getElementById('wish-text').value;
+            var magicWords = document.getElementById('wish-magic-words').value;
+            addWish(wishId, wishDisplay, magicWords);
+          }
         });
-        addEvent(el, 'keyup', function() {
-          el.blur(); // Forces 'change' event to fire
-          el.focus();
+      
+        bindEvents('magic-word-input', {
+          'change': function() {
+            updateWishList();
+          },
+          'keyup': function() {
+            this.blur(); // Forces 'change' event to fire
+            this.focus();
+          }
         });
+      
+        bindEvents('genie-export-import', {
+          'click': function() {
+            if (this.value) {
+              // Import
+              genie.options(JSON.parse(this.value));
+              updateWishList();
+            } else {
+              // Export
+              this.value = JSON.stringify(genie.options(), null, 2);
+            }
+          }
+        });
+      
+      
+        // Add initial wishes
+        addWish('Create new post');
+        addWish('Edit profile pic');
+        addWish('Update contact info');
+        addWish('Delete account');
+        addWish('Block user');
+        addWish('Friend user');
+        addWish('Find friends');
+        addWish('Wow!', ['Alert', 'Pop up'], function() {
+          alert('Wow!');
+        });
+        updateWishList();
       })();
-      
-      function exportOrImportGenie() {
-        var inOut = document.getElementById('genie-export-import');
-        if (inOut.value) {
-          // Import
-          genie.options(JSON.parse(inOut.value));
-          updateWishList();
-        } else {
-          // Export
-          inOut.value = JSON.stringify(genie.options(), null, 2);
-        }
-      }
     </script>
     <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
