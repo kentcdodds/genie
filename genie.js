@@ -9,8 +9,8 @@
   var _wishes = {},
     _previousId = 0,
     _enteredMagicWords = {},
-    _defaultContext = 'universe'
-    _context = _defaultContext
+    _defaultContext = 'universe',
+    _context = _defaultContext,
     _previousContext = _defaultContext;
   
   function _getNextId() {
