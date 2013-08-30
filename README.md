@@ -171,6 +171,7 @@ The wishes returned from `getMatchingWishes` are ordered with the following prio
   2. If the given magic word is contained in any magic words of a wish
   3. If the given magic word is an acronym of any magic words of a wish
   4. If the given magic word matches the order of characters in any magic words of a wish.
+
 Just trust the genie. He knows best. And if you think otherwise,
 [let me know](https://github.com/kentcdodds/genie/issues) or (even better)
 [contribute](https://github.com/kentcdodds/genie/pulls) :)
@@ -196,9 +197,9 @@ sure that any new functionality is fully tested in /test/index.html and that all
 
 Issues
 --
-I'd love to accept pull requests. But seriously, if you have a problem with GenieJS
-please don't hesitate to use GitHub's [issue tracker](https://github.com/kentcdodds/genie/issues)
-to report it. I'll do my best to get it resolved as quickly as I can.
+If you have a problem with GenieJS please don't hesitate to use GitHub's
+[issue tracker](https://github.com/kentcdodds/genie/issues) to report it. I'll do my best
+to get it resolved as quickly as I can.
 
 The Future...
 --
