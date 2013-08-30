@@ -23,6 +23,8 @@
       function prepForTest() {
         genie.clearWishes();
         genie.restoreContext();
+        genie.enabled(true);
+        genie.returnOnDisabled(true);
       }
       
       function registerBlankWish(magicWords) {
@@ -238,6 +240,37 @@
           match = genie.getMatchingWishes('Hello');
           t.assertEqual(match.length, 0);
 
+        },
+        testEnabled: function(t) {
+          prepForTest();
+          genie.enabled(false);
+          t.assertEqual(Object.keys(genie()).length, 0);
+          t.assertEqual(genie.getMatchingWishes().length, 0);
+          t.assertEqual(Object.keys(genie.makeWish()).length, 0);
+          t.assertEqual(Object.keys(genie.options()).length, 0);
+          t.assertEqual(Object.keys(genie.deregisterWish()).length, 0);
+          t.assertEqual(Object.keys(genie.clearWishes()), 0);
+          t.assertEqual(genie.context(), '');
+          t.assertEqual(genie.revertContext(), '');
+          t.assertEqual(genie.restoreContext(), '');
+          t.assertEqual(genie.enabled(), false);
+          t.assertEqual(genie.returnOnDisabled(), true);
+
+          genie.enabled(true);
+          genie.returnOnDisabled(false);
+          genie.enabled(false);
+
+          t.assertEqual(genie(), undefined);
+          t.assertEqual(genie.getMatchingWishes(), undefined);
+          t.assertEqual(genie.makeWish(), undefined);
+          t.assertEqual(genie.options(), undefined);
+          t.assertEqual(genie.deregisterWish(), undefined);
+          t.assertEqual(genie.clearWishes(), undefined);
+          t.assertEqual(genie.context(), undefined);
+          t.assertEqual(genie.revertContext(), undefined);
+          t.assertEqual(genie.restoreContext(), undefined);
+          t.assertEqual(genie.enabled(), false); // Special case. Enabled always runs.
+          t.assertEqual(genie.returnOnDisabled(), undefined);
         }
       });
     </script>

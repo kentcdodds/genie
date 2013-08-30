@@ -145,12 +145,18 @@ genie.makeWish(id [string || wishObject | required], magicWord [string | optiona
  *  3. enteredMagicWords: All magicWords which have been associated with wishes
  *    to give preferential treatment in the order of wishes returned by getMatchingWishes
  *  4. context: The current context of the genie. See below about how context affects wishes
+ *  5. enabled: Control whether genie's functions will actually run
+ *  6. returnOnDisabled: If enabled is set to false and this is true, will return an empty
+ *    object/array/string to prevent the need to do null/undefined checking wherever genie
+ *    is used.
  */
 genie.options({
   wishes: object | optional,
   previousId: number | optional,
   enteredMagicWords: object | optional,
-  context: string | optional
+  context: string | optional,
+  enabled: boolean | optional,
+  returnOnDisabled: boolean | optional
 });
 
 // Sets and returns the current context to newContext if provided
@@ -162,6 +168,12 @@ genie.restoreContext();
 
 // Sets and returns the current context to the previous context
 genie.revertContext();
+
+// Sets and returns the enabled state
+genie.enabled(boolean | optional);
+
+// Sets and returns the returnOnDisabled state
+genie.returnOnDisabled(boolean | optional);
 ```
 
 About Matching Priority
@@ -189,6 +201,15 @@ though genie has no notion of contexts at all.
 
 When the context is different than the default, only wishes with an equal context will
 behave normally with `getMatchingWishes` and `makeWish`.
+
+Enabling & Disabiling
+--
+To give you a little more control, you can enable and disable genie globally. All genie
+functions go through a check to make sure genie is enabled. If it is enabled, everything
+works as expected. If it is disabled, then genie will return an empty object/array/string
+depending on what the function you're calling is expecting. This behavior is to prevent
+the need to do null/undefined checking everywhere you use `genie` and can be disabled as
+well via the returnOnDisabled function.
 
 Contributing
 --

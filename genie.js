@@ -11,7 +11,9 @@
     _enteredMagicWords = {},
     _defaultContext = 'universe',
     _context = _defaultContext,
-    _previousContext = _defaultContext;
+    _previousContext = _defaultContext,
+    _enabled = true,
+    _returnOnDisabled = true;
   
   function _getNextId() {
     return 'g-' + _previousId++;
@@ -64,8 +66,10 @@
   }
   
   function clearWishes() {
+    var oldWishes = _wishes;
     _wishes = {};
     _enteredMagicWords = {};
+    return oldWishes;
   }
   
   function getMatchingWishes(magicWord) {
@@ -244,18 +248,21 @@
       _enteredMagicWords = options.enteredKeyWords || _enteredMagicWords;
       _context = options.context || _context;
       _previousContext = options.previousContext || _previousContext;
+      _enabled = options.enabled || _enabled;
+      _returnOnDisabled = options.returnOnDisabled || _returnOnDisabled;
     }
     return {
       wishes: _wishes,
       previousId: _previousId,
       enteredMagicWords: _enteredMagicWords,
       contexts: _context,
-      previousContext: _previousContext
+      previousContext: _previousContext,
+      enabled: _enabled
     };
   }
 
   function context(newContext) {
-    if (newContext) {
+    if (newContext !== undefined) {
       _previousContext = _context;
       _context = newContext;
     }
@@ -269,15 +276,41 @@
   function restoreContext() {
     return context(_defaultContext);
   }
+
+  function enabled(newState) {
+    if (newState !== undefined) {
+      _enabled = newState;
+    }
+    return _enabled;
+  }
+
+  function returnOnDisabled(newState) {
+    if (newState !== undefined) {
+      _returnOnDisabled = newState;
+    }
+    return _returnOnDisabled;
+  }
+
+  function _passThrough(fn, emptyRetObject) {
+    return function() {
+      if (_enabled || fn === enabled) {
+        return fn.apply(this, arguments);
+      } else if (_returnOnDisabled) {
+        return emptyRetObject;
+      }
+    }
+  }
   
-  global.genie = registerWish;
-  global.genie.getMatchingWishes = getMatchingWishes;
-  global.genie.makeWish = makeWish;
-  global.genie.options = options;
-  global.genie.deregisterWish = deregisterWish;
-  global.genie.clearWishes = clearWishes;
-  global.genie.context = context;
-  global.genie.revertContext = revertContext;
-  global.genie.restoreContext = restoreContext;
+  global.genie = _passThrough(registerWish, {});
+  global.genie.getMatchingWishes = _passThrough(getMatchingWishes, []);
+  global.genie.makeWish = _passThrough(makeWish, {});
+  global.genie.options = _passThrough(options, {});
+  global.genie.deregisterWish = _passThrough(deregisterWish, {});
+  global.genie.clearWishes = _passThrough(clearWishes, {});
+  global.genie.context = _passThrough(context, '');
+  global.genie.revertContext = _passThrough(revertContext, '');
+  global.genie.restoreContext = _passThrough(restoreContext, '');
+  global.genie.enabled = _passThrough(enabled, false);
+  global.genie.returnOnDisabled = _passThrough(returnOnDisabled, true);
 
 })(this);
