@@ -222,6 +222,9 @@
       id = wish.id;
       arry = _enteredMagicWords[magicWord];
       existingIndex = arry.indexOf(id);
+      if (existingIndex === 0) {
+        return;
+      }
       if (existingIndex != -1) {
         // If it already exists, remove it before re-adding it in the correct spot
         arry.splice(existingIndex, 1);
