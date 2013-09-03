@@ -118,8 +118,8 @@ genie({
 // Returns the deregisteredWish
 genie.deregisterWish(id [string || wishObject | required]);
 
-// Clears all wishes and enteredMagicWords
-genie.clearWishes();
+// calls options() with default options and returns the old options
+genie.reset();
 
 /* 
  * Returns an array of wishes which match in order:

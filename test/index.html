@@ -21,7 +21,7 @@
     
     <script>
       function prepForTest() {
-        genie.clearWishes();
+        genie.reset();
         genie.restoreContext();
         genie.enabled(true);
         genie.returnOnDisabled(true);
@@ -61,13 +61,13 @@
           });
           genie.makeWish(wish2);
         },
-        testClearingWishes: function(t) {
+        testResettingGenie: function(t) {
           prepForTest();
           var wishCalled = 0;
           var wish = genie('wish', function() {
             wishCalled++;
           });
-          genie.clearWishes();
+          genie.reset();
           genie.makeWish(wish);
           t.assertEqual(wishCalled, 0);
         },
@@ -249,7 +249,7 @@
           t.assertEqual(Object.keys(genie.makeWish()).length, 0);
           t.assertEqual(Object.keys(genie.options()).length, 0);
           t.assertEqual(Object.keys(genie.deregisterWish()).length, 0);
-          t.assertEqual(Object.keys(genie.clearWishes()), 0);
+          t.assertEqual(Object.keys(genie.reset()), 0);
           t.assertEqual(genie.context(), '');
           t.assertEqual(genie.revertContext(), '');
           t.assertEqual(genie.restoreContext(), '');
@@ -265,7 +265,7 @@
           t.assertEqual(genie.makeWish(), undefined);
           t.assertEqual(genie.options(), undefined);
           t.assertEqual(genie.deregisterWish(), undefined);
-          t.assertEqual(genie.clearWishes(), undefined);
+          t.assertEqual(genie.reset(), undefined);
           t.assertEqual(genie.context(), undefined);
           t.assertEqual(genie.revertContext(), undefined);
           t.assertEqual(genie.restoreContext(), undefined);

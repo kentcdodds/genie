@@ -65,11 +65,17 @@
     return wish;
   }
   
-  function clearWishes() {
-    var oldWishes = _wishes;
-    _wishes = {};
-    _enteredMagicWords = {};
-    return oldWishes;
+  function reset() {
+    var oldOptions = options();
+    options({
+      wishes: {},
+      previousId: 0,
+      enteredMagicWords: [],
+      contexts: _defaultContext,
+      previousContext: _defaultContext,
+      enabled: true
+    });
+    return oldOptions;
   }
   
   function getMatchingWishes(magicWord) {
@@ -309,7 +315,7 @@
   global.genie.makeWish = _passThrough(makeWish, {});
   global.genie.options = _passThrough(options, {});
   global.genie.deregisterWish = _passThrough(deregisterWish, {});
-  global.genie.clearWishes = _passThrough(clearWishes, {});
+  global.genie.reset = _passThrough(reset, {});
   global.genie.context = _passThrough(context, '');
   global.genie.revertContext = _passThrough(revertContext, '');
   global.genie.restoreContext = _passThrough(restoreContext, '');
