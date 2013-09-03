@@ -271,6 +271,24 @@
           t.assertEqual(genie.restoreContext(), undefined);
           t.assertEqual(genie.enabled(), false); // Special case. Enabled always runs.
           t.assertEqual(genie.returnOnDisabled(), undefined);
+        },
+        testRegistrationOfObjects: function(t) {
+          var registeredWishes = genie([
+            {
+              magicWords: ['Zerahemla', 'Nephite City'],
+              action: function(wish1Object) {
+                t.assertIdentical(wish1Object, registeredWishes[0]);
+              }
+            },
+            {
+              magicWords: ['Jerusalem', 'Jewish City'],
+              action: function(wish2Object) {
+                t.assertIdentical(wish2Object, registeredWishes[1]);
+              }
+            }
+          ]);
+          genie.makeWish(registeredWishes[0]);
+          genie.makeWish(registeredWishes[1]);
         }
       });
     </script>

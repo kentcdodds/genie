@@ -27,6 +27,13 @@
       } else {
         magicWords = [magicWords];
       }
+    } else if (typeof magicWords[0] === 'object') {
+      var wishesRegistered = [];
+      // They gave an array of objects to register.
+      for (var i = 0; i < magicWords.length; i++) {
+        wishesRegistered.push(registerWish(magicWords[i]));
+      }
+      return wishesRegistered;
     }
     if (id === undefined) {
       id = _getNextId();
