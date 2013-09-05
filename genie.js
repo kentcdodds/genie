@@ -1,8 +1,10 @@
-//     genie.js
-//     (c) 2013 Kent C. Dodds
-//     genie.js may be freely distributed under the MIT license.
-//     http://www.github.com/kentcdodds/genie.git
-//     See README.md
+/** 
+ * genie.js @license
+ * (c) 2013 Kent C. Dodds
+ * genie.js may be freely distributed under the MIT license.
+ * http://www.github.com/kentcdodds/genie.git
+ * See README.md
+ */
 
 ;(function(global){
 
