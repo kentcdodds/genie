@@ -1,0 +1,60 @@
+
+body {
+  margin: 50px 100px 50px 100px;
+}
+
+.btn {
+  margin-bottom: 12px;
+}
+#wish-output {
+  color: #808080;
+}
+
+#genie-export-import {
+  width: 250px;
+  height: 300px;
+}
+
+/* ng-genie styles */
+.genie-container {
+  position: fixed;
+  top: 10%;
+  left: 50%;
+  z-index: 1050;
+  width: 400px;
+  margin-left: -200px;
+  background-color: #F7F7F7;
+  padding: 20px;
+  -mos-border-radius: 20px;
+  border-radius: 20px;
+  box-shadow: 0px 0px 26px 6px #888888;
+}
+
+.genie-container > input {
+  width: 344px;
+  line-height: 60px;
+  padding: 0px 25px 0px 25px;
+  font-size: 40px;
+  height: 60px;
+  -moz-border-radius: 20px;
+  border-radius: 20px;
+}
+
+.genie-options {
+  width: 397px;
+  max-height: 300px;
+  margin-top: -2px;
+  font-size: 30px;
+  cursor: pointer;
+  overflow-y: auto;
+}
+
+.genie-option {
+  padding: 0px 25px 0px 25px;
+  line-height: 50px;
+}
+
+.genie-option.focused {
+  background-color: #DDD;
+  border-radius: 10px;
+}

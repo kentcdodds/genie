@@ -2,7 +2,7 @@
  * genie.js @license
  * (c) 2013 Kent C. Dodds
  * genie.js may be freely distributed under the MIT license.
- * http://www.github.com/kentcdodds/genie.git
+ * http://www.github.com/kentcdodds/genie
  * See README.md
  */
 

@@ -1,229 +1,62 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="genieApp" ng-controller="GenieCtrl" ng-keyup="onKeyup($event)">
   <head>
     <title>GenieJS</title>
     <script src="genie.js"></script>
-    <link rel="stylesheet" href="vendor/bootstrap.min.css" />
-    <style>
-      body {
-        margin: 50px 100px 50px 100px;
-      }
-      .btn {
-        margin-bottom: 12px;
-      }
-      #wish-output {
-        color: #808080;
-      }
-      a {
-        cursor: pointer;
-      }
-      #genie-export-import {
-        width: 250px;
-        height: 300px;
-      }
-      .king {
-        background-color: #6495ED;
-      }
-      .prince {
-        background-color: #679EFF;
-      }
-      .in-list {
-        background-color: #abcbff;
-      }
-    </style>
+    <link rel="stylesheet" href="demo-files/vendor/bootstrap.min.css" />
+    <link rel="stylesheet" href="demo-files/style.css" />
   </head>
   <body>
-    <h1>GenieJS</h1>
-    <h2 id="wish-output">Click a wish below...</h2>
-    <p>
-      GenieJS was built to simulate the behavior in apps like <a href="http://www.alfredapp.com/">Alfred</a>.<br />
-      Essentially, you register actions with keywords and then you can find those actions via a keyword search.<br />
-      For info on the <a href="https://github.com/kentcdodds/genie#vernacular">vernacular</a> of wishes and magic words,
-      see the <a href="https://github.com/kentcdodds/genie">project on GitHub</a>.<br />
-      Click <a href="./test">here</a> to see/run the tests...
-    </p>
-
-    <hr />
-
-    <p>
-      Here are some instructions for this demo.
-    </p>
-    <ol id="instructions-list">
-      <li>Create your own wishes</li>
-      <li>Use the magic word input box to filter wishes</li>
-      <li>Click the display text link of each wish to make it</li>
-      <li>Notice how genie organizes the wishes as you make them</li>
-    </ol>
-
-    <hr />
-
-    <div id="genie-creator">
+    <header>
+      <h1>GenieJS</h1>
+      <h2 id="wish-output">Press Ctrl+Space to <a href="http://www.youtube.com/watch?v=pwsTXpDJSVE">rub the lamp</a></h2>
       <p>
-        Create and add wishes here
+        GenieJS was built to simulate the behavior in apps like <a href="http://www.alfredapp.com/">Alfred</a>.<br />
+        Essentially, you register actions with keywords and then you can find those actions via a keyword search.<br />
+        For info on the <a href="https://github.com/kentcdodds/genie#vernacular">vernacular</a> of wishes and magic words,
+        see the <a href="https://github.com/kentcdodds/genie">project on GitHub</a>.<br />
+        Click <a href="./test">here</a> to see/run the tests...
       </p>
-      <input id="wish-id" type="text" placeholder="ID (optional)" />
-      <input id="wish-magic-words" type="text" placeholder="Magic Words (JSON Array/String)" />
-      <input id="wish-text" type="text" placeholder="Display Text" />
-      <button class="btn btn-success" onclick="addWishFromInput()">Create Wish</button>
-    </div>
-    
-    <hr />
-
-    <p>
-      Type below and see the list of wishes auto-populate based on what you type.
-    </p>
-    <div id="genie-tester">
-      <input id="magic-word-input" type="text" autofocus placeholder="Enter Magic Words here" onchange="updateWishList" />
-      
-      <div id="wishes-results">
-        <ul id="wishes-selector"></ul>
-      </div>
-    </div>
+    </header>
 
     <hr />
 
     <div>
-      <button class="btn btn-info" onclick="exportOrImportGenie()">Export/Import Genie</button><br />
-      <textarea id="genie-export-import" placeholder="Output/Input of Export/Import Genie"></textarea>
+      <p>
+        Here are some instructions for this demo.
+      </p>
+      <ol id="instructions-list">
+        <li>Create your own wishes</li>
+        <li>Use the magic word input box to filter wishes</li>
+        <li>Click the display text link of each wish to make it</li>
+        <li>Notice how genie organizes the wishes as you make them</li>
+      </ol>
+    </div>
+
+    <hr />
+
+    <div id="wish-creator">
+      <p>
+        Create and add wishes here
+      </p>
+      <form name="wishCreator">
+        <input type="text" ng-model="id" placeholder="ID (optional)" />
+        <input type="text" ng-model="magicWords" placeholder="Magic Words (JSON Array/String)" />
+        <input type="text" ng-model="text" placeholder="Display Text" />
+        <button type="submit" class="btn btn-success" ng-click="addWishFromInput()">Create Wish</button>
+      </form>
     </div>
     
-    <script>
-      (function() {
-      
-        function bindEvents(object, events) {
-          if (typeof object === 'string') {
-            object = document.getElementById(object);
-          }
-          for (var event in events) {
-            if (object.addEventListener)
-              object.addEventListener(event, events[event], false);
-            else if(object.attachEvent)
-              object.attachEvent('on' + event, function(){ events[event](window.event) });
-          }
-        }
-      
-        function addWish(wishDisplay, magicWords, action) {
-          if (magicWords === undefined) {
-            magicWords = [];
-          }
-          if (magicWords.indexOf('[') == 0) {
-            magicWords = JSON.parse(magicWords);
-          }
-          magicWords.push(wishDisplay);
-          var wish = genie({
-            magicWords: magicWords,
-            data: {
-              display: wishDisplay
-            },
-            action: action || function() {
-              document.getElementById('wish-output').innerText = 'Your "' + this.data.display + '" wish is my command!';
-            }
-          });
-          console.log('Wish "' + wishDisplay + '" created');
-          updateWishList();
-          return false;
-        }
-      
-        function updateWishList() {
-          var input = document.getElementById('magic-word-input').value;
-          var wishes = genie.getMatchingWishes(input);
-          var enteredMagicWordsForInput = genie.options().enteredMagicWords[input] || [];
-          var select = document.getElementById('wishes-selector');
-          select.innerHTML = "";
-          for (var i = 0; i < wishes.length; i++) {
-            var option = document.createElement('li');
-            var anchor = document.createElement('a');
-            var span = document.createElement('span');
-            bindEvents(anchor, {
-              'click': function() {
-                var id = this.getAttribute('data-id');
-                genie.makeWish(id, document.getElementById('magic-word-input').value);
-                updateWishList();
-              }
-            });
-      
-            anchor.setAttribute('data-id', wishes[i].id);
-            anchor.innerText = wishes[i].data.display;
-      
-            span.innerText = ' - Magic Words: [' + wishes[i].magicWords.join(', ') + '] ';
-      
-            option.appendChild(anchor);
-            option.appendChild(span);
-      
-            var index = enteredMagicWordsForInput.indexOf(wishes[i].id);
-            if (index > -1) {
-              var inMagicWords = document.createElement('span');
-              var innerText = '(';
-              switch (index) {
-                case 0:
-                  innerText += 'King of the Hill';
-                  inMagicWords.className = 'king';
-                  break;
-                case 1:
-                  innerText += 'On deck';
-                  inMagicWords.className = 'prince';
-                  break;
-                default:
-                  innerText += 'In enteredMagicWords';
-                  inMagicWords.className = 'in-list';
-                  break;
-              }
-              inMagicWords.innerText = innerText + ' for "' + input + '")';
-              option.appendChild(inMagicWords);
-            }
-      
-            select.appendChild(option);
-          }
-        }
-      
-        // Add listners
-        bindEvents('wish-magic-words', {
-          click: function() {
-            var wishId = document.getElementById('wish-id').value;
-            var wishDisplay = document.getElementById('wish-text').value;
-            var magicWords = document.getElementById('wish-magic-words').value;
-            addWish(wishId, wishDisplay, magicWords);
-          }
-        });
-      
-        bindEvents('magic-word-input', {
-          'change': function() {
-            updateWishList();
-          },
-          'keyup': function() {
-            this.blur(); // Forces 'change' event to fire
-            this.focus();
-          }
-        });
-      
-        bindEvents('genie-export-import', {
-          'click': function() {
-            if (this.value) {
-              // Import
-              genie.options(JSON.parse(this.value));
-              updateWishList();
-            } else {
-              // Export
-              this.value = JSON.stringify(genie.options(), null, 2);
-            }
-          }
-        });
-      
-      
-        // Add initial wishes
-        addWish('Create new post');
-        addWish('Edit profile pic');
-        addWish('Update contact info');
-        addWish('Delete account');
-        addWish('Block user');
-        addWish('Friend user');
-        addWish('Find friends');
-        addWish('Wow!', ['Alert', 'Pop up'], function() {
-          alert('Wow!');
-        });
-        updateWishList();
-      })();
-    </script>
+    <hr />
+
+    <div>
+      <button class="btn btn-info" ng-click="exportOrImportGenie()">Export/Import Genie</button><br />
+      <textarea id="genie-export-import" ng-model="genieExportImport" placeholder="Output/Input of Export/Import Genie"></textarea>
+    </div>
+    <div ng-genie ng-genie-visible="genieVisible"></div>
+    <script src="./demo-files/vendor/angular.min.js"></script>
+    <script src="./demo-files/app.js"></script>
+    <script src="./demo-files/vendor/ngGenie.js"></script>
     <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
