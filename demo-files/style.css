@@ -45,16 +45,16 @@ body {
   border-radius: 20px;
 }
 
-.genie-options {
+.genie-wishes {
   margin-top: -2px;
   cursor: pointer;
   overflow-y: auto;
 }
 
-.genie-option {
+.genie-wish {
 }
 
-.genie-option.focused {
+.genie-wish.focused {
   border-radius: 10px;
 }
 
@@ -65,7 +65,7 @@ body {
   box-shadow: 0px 0px 26px 6px #888888;
 }
 
-#ngLampContainer.light .genie-option.focused {
+#ngLampContainer.light .genie-wish.focused {
   background-color: #DDD;
 }
 
@@ -82,7 +82,7 @@ body {
   color: white;
 }
 
-#ngLampContainer.dark .genie-option.focused {
+#ngLampContainer.dark .genie-wish.focused {
   background-color: #2E2E2E;
 }
 
@@ -102,13 +102,13 @@ body {
   height: 60px;
 }
 
-#ngLampContainer.large .genie-options {
+#ngLampContainer.large .genie-wishes {
   width: 397px;
   max-height: 300px;
   font-size: 30px;
 }
 
-#ngLampContainer.large .genie-option {
+#ngLampContainer.large .genie-wish {
   padding: 0px 25px 0px 25px;
   line-height: 50px;
 }
@@ -128,13 +128,13 @@ body {
   height: 54px;
 }
 
-#ngLampContainer.small .genie-options {
+#ngLampContainer.small .genie-wishes {
   width: 297px;
   max-height: 216px;
   font-size: 24px;
 }
 
-#ngLampContainer.small .genie-option {
+#ngLampContainer.small .genie-wish {
   padding: 0px 12px 0px 12px;
   line-height: 36px;
 }
