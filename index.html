@@ -26,10 +26,13 @@
         Here are some instructions for this demo.
       </p>
       <ol id="instructions-list">
-        <li>Create your own wishes</li>
-        <li>Use the magic word input box to filter wishes</li>
-        <li>Click the display text link of each wish to make it</li>
+        <li>Press Ctrl+Space to open the Genie Search Box</li>
+        <li>Optionally type an apostrophe (') to show all wishes (about this feature)</li>
+        <li>Type anything to filter the wishes</li>
+        <li>Mouse over or arrow down to the wish you wish and click/press return</li>
         <li>Notice how genie organizes the wishes as you make them</li>
+        <li>Create your own wishes below</li>
+        <li>Change the lamp's styles below</li>
       </ol>
     </div>
 
@@ -40,11 +43,43 @@
         Create and add wishes here
       </p>
       <form name="wishCreator">
-        <input type="text" ng-model="id" placeholder="ID (optional)" />
-        <input type="text" ng-model="magicWords" placeholder="Magic Words (JSON Array/String)" />
-        <input type="text" ng-model="text" placeholder="Display Text" />
+        <input type="text" ng-model="wish.id" placeholder="ID (optional)" />
+        <input type="text" ng-model="wish.magicWords" placeholder="Magic Words (JSON Array/String)" />
+        <input type="text" ng-model="wish.text" placeholder="Display Text" />
         <button type="submit" class="btn btn-success" ng-click="addWishFromInput()">Create Wish</button>
       </form>
+    </div>
+    
+    <hr />
+    
+    <div id="styles-control" class="row">
+      <p>
+        Change Lamp Styles
+      </p>
+      <div class="span1">
+        <label class="radio">
+          <input type="radio" value="light" ng-model="genieStyle.color"> Light
+        </label>
+        <label class="radio">
+          <input type="radio" value="dark" ng-model="genieStyle.color"> Dark
+        </label>
+      </div>
+      <div class="span1">
+        <label class="radio">
+          <input type="radio" value="large" ng-model="genieStyle.size"> Large
+        </label>
+        <label class="radio">
+          <input type="radio" value="small" ng-model="genieStyle.size"> Small
+        </label>
+      </div>
+      <div class="span1">
+        <label class="radio">
+          <input type="radio" value="fast" ng-model="genieStyle.animationSpeed"> Fast
+        </label>
+        <label class="radio">
+          <input type="radio" value="slow" ng-model="genieStyle.animationSpeed"> Slow
+        </label>
+      </div>
     </div>
     
     <hr />
@@ -53,7 +88,9 @@
       <button class="btn btn-info" ng-click="exportOrImportGenie()">Export/Import Genie</button><br />
       <textarea id="genie-export-import" ng-model="genieExportImport" placeholder="Output/Input of Export/Import Genie"></textarea>
     </div>
-    <div ng-genie ng-genie-visible="genieVisible"></div>
+    <div id="ngLampContainer" class="{{genieStyle.color + ' ' + genieStyle.size + ' ' + genieStyle.animationSpeed}}">
+      <div ng-lamp rub-class="visible"></div>
+    </div>
     <script src="./demo-files/vendor/angular.min.js"></script>
     <script src="./demo-files/app.js"></script>
     <script src="./demo-files/vendor/ngGenie.js"></script>

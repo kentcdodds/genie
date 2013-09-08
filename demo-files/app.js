@@ -1,5 +1,5 @@
-
 'use strict';
+
 (function() {
   var app = angular.module('genieApp', ['ngGenie']);
 
@@ -10,6 +10,12 @@
 
     $scope.genieVisible = false;
     
+    $scope.genieStyle = {
+      color: 'light',
+      size: 'large',
+      animationSpeed: 'fast'
+    }
+    
     $scope.exportOrImportGenie = function() {
       if ($scope.genieExportImport) {
         genie.options(JSON.parse($scope.genieExportImport));
@@ -19,23 +25,37 @@
     };
     
     $scope.addWishFromInput = function() {
-      var w = $scope.wishCreator;
-      addWish(w.id, w.magicWords, w.displayText);
+      addWish($scope.wish.displayText, $scope.wish.magicWords, $scope.wish.id);
+      $scope.wish.displayText = '';
+      $scope.wish.magicWords = '';
+      $scope.wish.id = '';
     };
 
     function addWish(wishDisplay, magicWords, action) {
+      var id = undefined;
       if (typeof magicWords === 'function') {
         action = magicWords;
         magicWords = undefined;
       }
       if (magicWords === undefined) {
         magicWords = [];
+      } else if (typeof magicWords === 'string') {
+        magicWords = [magicWords];
       }
       if (magicWords.indexOf('[') == 0) {
         magicWords = JSON.parse(magicWords);
       }
-      magicWords.push(wishDisplay);
+      if (typeof action === 'string') {
+        id = action;
+        action = undefined;
+      }
+      if (typeof wishDisplay === 'string') {
+        magicWords.push(wishDisplay);
+      } else {
+        wishDisplay = magicWords[0];
+      }
       var wish = genie({
+        id: id,
         magicWords: magicWords,
         data: {
           displayText: wishDisplay
@@ -49,14 +69,11 @@
     addWish('GenieJS on GitHub', function() {
       window.open('http://www.github.com/kentcdodds/genie', '_blank');
     });
-    addWish('ng-GenieJS on GitHub', function() {
+    addWish('NG-GenieJS on GitHub', function() {
       window.open('http://www.github.com/kentcdodds/ng-genie', '_blank');
     });
-    addWish('GenieJS Demo', function() {
-      window.open('/', '_blank');
-    });
     addWish('GenieJS Tests', function() {
-      window.open('/test', '_blank');
+      window.open('./test', '_blank');
     });
     addWish('Create new post');
     addWish('Edit profile pic');

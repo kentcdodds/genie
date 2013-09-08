@@ -6,26 +6,44 @@
  * See README.md
  */
 
-angular.module('ngGenie', []).directive('ngGenie', function(genie, $timeout, $document) {
+angular.module('ngGenie', []).directive('ngLamp', function(genie, $timeout, $document) {
   return {
-    restrict: 'EA',
     replace: true,
-    template: ['<div class="genie-container" ng-show="ngGenieVisible">',
-      '<input type="text" ng-model="genieInput" />',
-      '<div class="genie-options">',
-        '<div class="genie-option" ' +
-          'ng-repeat="wish in matchingWishes" ' +
-          'ng-class="{focused: focusedWish == wish}" ' +
-          'ng-click="makeWish(wish)" ' +
-          'ng-mouseenter="focusOnWish(wish, false)">',
-        '{{wish.data.displayText}}',
-      '</div></div></div>'].join(''),
+    template: function(el, attr) {
+      var ngShow = ' ng-show="ngGenieVisible"';
+      if (attr.rubClass) {
+        ngShow = '';
+      }
+      return ['<div class="genie-container"' + ngShow + '>',
+        '<input type="text" ng-model="genieInput" />',
+        '<div class="genie-options">',
+          '<div class="genie-option" ' +
+            'ng-repeat="wish in matchingWishes" ' +
+            'ng-class="{focused: focusedWish == wish}" ' +
+            'ng-click="makeWish(wish)" ' +
+            'ng-mouseenter="focusOnWish(wish, false)">',
+          '{{wish.data.displayText}}',
+        '</div></div></div>'].join('');
+    },
     scope: {
-      ngGenieVisible: '='
+      rubClass: '@',
+      rubShortcut: '@',
+      rubModifier: '@',
+      rubEventType: '@'
     },
     link: function(scope, el, attr) {
       var inputEl = angular.element(el.children()[0]);
       var genieOptionContainer = angular.element(el.children()[1]);
+      if (!scope.rubShortcut) {
+        scope.rubShortcut = "32";
+        scope.rubModifier = "ctrlKey";
+      }
+      var rubShortcut = parseInt(scope.rubShortcut, 10);
+      if (isNaN(rubShortcut)) {
+        rubShortcut = scope.rubShortcut[0].charCodeAt(0);
+      }
+
+      scope.ngGenieVisible = false;
 
       // Wish focus
       scope.focusOnWish = function(wishElement, autoScroll) {
@@ -34,7 +52,7 @@ angular.module('ngGenie', []).directive('ngGenie', function(genie, $timeout, $do
           scrollToWish(scope.matchingWishes.indexOf(wishElement));
         }
       };
-      
+
       function scrollToWish(index) {
         var containerHeight = genieOptionContainer[0].offsetHeight || genieOptionContainer[0].clientHeight;
         var focusedWishElement = genieOptionContainer.children()[index];
@@ -62,17 +80,24 @@ angular.module('ngGenie', []).directive('ngGenie', function(genie, $timeout, $do
           });
         }
       });
-      
-      $document.bind('keydown', function(event) {
-        switch(event.keyCode) {
-          case 32:
-            if (event.ctrlKey) {
-              event.preventDefault();
+
+      $document.bind(scope.rubEventType || 'keydown', function(event) {
+        if (event.keyCode === rubShortcut) {
+          event.preventDefault();
+          if (scope.rubModifier) {
+            if (event[scope.rubModifier]) {
               scope.ngGenieVisible = !scope.ngGenieVisible;
             }
-            break;
-          case 27:
-            scope.ngGenieVisible = false;
+          } else {
+            scope.ngGenieVisible = !scope.ngGenieVisible;
+          }
+        }
+      });
+
+      $document.bind('keydown', function(event) {
+        if (event.keyCode === 27 && scope.ngGenieVisible) {
+          event.preventDefault();
+          scope.ngGenieVisible = false;
         }
       });
 
@@ -132,6 +157,9 @@ angular.module('ngGenie', []).directive('ngGenie', function(genie, $timeout, $do
       // Updating list of wishes
       function updateMatchingWishes(magicWord) {
         if (magicWord) {
+          if (magicWord.indexOf('\'') === 0) {
+            magicWord = magicWord.substring(1);
+          }
           scope.matchingWishes = genie.getMatchingWishes(magicWord);
           if (scope.matchingWishes.length > 0) {
             scope.focusedWish = scope.matchingWishes[0];
@@ -146,13 +174,17 @@ angular.module('ngGenie', []).directive('ngGenie', function(genie, $timeout, $do
 
       scope.$watch('ngGenieVisible', function(newVal) {
         if (newVal) {
+          el.addClass(scope.rubClass);
           // Needs to be visible before it can be selected
           $timeout(function() {
             inputEl[0].select();
           }, 25);
+        } else {
+          el.removeClass(scope.rubClass);
+          inputEl[0].blur();
         }
       });
-
+      
       scope.$watch('genieInput', function(newVal) {
         updateMatchingWishes(newVal);
       });
