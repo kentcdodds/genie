@@ -180,9 +180,10 @@ About Matching Priority
 --
 The wishes returned from `getMatchingWishes` are ordered with the following priority
   1. In order of most recently executed (`makeWish`) with the given magic word
-  2. If the given magic word is contained in any magic words of a wish
-  3. If the given magic word is an acronym of any magic words of a wish
-  4. If the given magic word matches the order of characters in any magic words of a wish.
+  2. If the given magic word is equal to any magic words of a wish
+  3. If the given magic word is contained in any magic words of a wish
+  4. If the given magic word is an acronym of any magic words of a wish
+  5. If the given magic word matches the order of characters in any magic words of a wish.
 
 Just trust the genie. He knows best. And if you think otherwise,
 [let me know](https://github.com/kentcdodds/genie/issues) or (even better)
