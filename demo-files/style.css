@@ -2,6 +2,10 @@ body {
   margin: 50px 100px 50px 100px;
 }
 
+h3 {
+  color: #999
+}
+
 .btn {
   margin-bottom: 12px;
 }
