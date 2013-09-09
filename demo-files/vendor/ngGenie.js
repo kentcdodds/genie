@@ -16,7 +16,7 @@ angular.module('ngGenie', []).directive('ngLamp', function(genie, $timeout, $doc
       }
       return ['<div class="genie-container"' + ngShow + '>',
         '<input type="text" ng-model="genieInput" />',
-        '<div class="genie-wishes">',
+        '<div ng-show="matchingWishes.length > 0" class="genie-wishes">',
           '<div class="genie-wish" ' +
             'ng-repeat="wish in matchingWishes" ' +
             'ng-class="{focused: focusedWish == wish}" ' +

@@ -19,15 +19,16 @@ body {
 }
 
 #ngLampContainer.fast .genie-container {
-  transition: opacity .2s ease-in-out;
+  transition: all .2s ease-in-out;
 }
 
 #ngLampContainer.slow .genie-container {
-  transition: opacity 1s ease-in-out;
+  transition: all 1s ease-in-out;
 }
 
 .genie-container.visible {
   opacity: 1;
+  z-index: 1050;
 }
 
 /* ng-genie default styles */
@@ -35,7 +36,7 @@ body {
   position: fixed;
   top: 10%;
   left: 50%;
-  z-index: 1050;
+  z-index: -1;
   -mos-border-radius: 8px;
   border-radius: 8px;
 }
@@ -43,7 +44,7 @@ body {
 .genie-container > input {
   -mos-border-radius: 8px;
   border-radius: 8px;
-  margin-bottom: 0px;
+  margin: 0px;
 }
 
 .genie-wishes {
@@ -91,27 +92,27 @@ body {
 
 /* ng-genie large styles */
 #ngLampContainer.large .genie-container {
-  width: 400px;
-  margin-left: -200px;
-  padding: 20px;
+  width: 384px;
+  margin-left: -208px;
+  padding: 16px;
 }
 
 #ngLampContainer.large .genie-container > input {
-  width: 344px;
+  width: 358px;
   line-height: 60px;
-  padding: 0px 25px 0px 25px;
+  padding: 0px 12px 0px 12px;
   font-size: 40px;
   height: 60px;
 }
 
 #ngLampContainer.large .genie-wishes {
-  width: 397px;
+  width: 384px;
   max-height: 300px;
   font-size: 30px;
 }
 
 #ngLampContainer.large .genie-wish {
-  padding: 0px 25px 0px 25px;
+  padding: 0px 12px 0px 12px;
   line-height: 50px;
 }
 
