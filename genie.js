@@ -15,7 +15,14 @@
     _context = _defaultContext,
     _previousContext = _defaultContext,
     _enabled = true,
-    _returnOnDisabled = true;
+    _returnOnDisabled = true,
+    _matchRankMap = {
+      equals: 4,
+      contains: 3,
+      acronym: 2,
+      matches: 1,
+      noMatch: 0
+    };
   
   function _getNextId() {
     return 'g-' + _previousId++;
@@ -113,40 +120,45 @@
     var containsMagicWordWishIds = [];
     var acronymMagicWordWishIds = [];
     var otherMatchingWishIds = [];
+    var equalsMagicWordWishIds = [];
     for (var wishId in _wishes) {
       if (currentMatchingWishIds.indexOf(wishId) == -1) {
         var wish =_wishes[wishId];
         if (_wishInContext(wish)) {
           var matchType = _bestMagicWordsMatch(wish.magicWords, givenMagicWord);
           switch (matchType) {
-            case 'contains':
+            case _matchRankMap.equals:
+              equalsMagicWordWishIds.push(wishId);
+              break;
+            case _matchRankMap.contains:
               containsMagicWordWishIds.push(wishId);
               break;
-            case 'acronym':
+            case _matchRankMap.acronym:
               acronymMagicWordWishIds.push(wishId);
               break;
-            case 'matches':
+            case _matchRankMap.matches:
               otherMatchingWishIds.push(wishId);
               break;
-            case '':
+            default:
               break; // no match
           }
         }
       }
     }
-    return containsMagicWordWishIds.concat(acronymMagicWordWishIds).concat(otherMatchingWishIds);
+    return equalsMagicWordWishIds.
+      concat(containsMagicWordWishIds).
+      concat(acronymMagicWordWishIds).
+      concat(otherMatchingWishIds);
   }
 
   function _bestMagicWordsMatch(wishesMagicWords, givenMagicWord) {
-    var bestMatch = '';
+    var bestMatch = _matchRankMap.noMatch;
     for (var i = 0; i < wishesMagicWords.length; i++) {
-      var matchType = _stringsMatch(wishesMagicWords[i], givenMagicWord);
-      if ((matchType === 'contains')
-        || (matchType === 'acronym' && (bestMatch === '' || bestMatch === 'matches'))
-        || (matchType === 'matches' && bestMatch === '')) {
-        bestMatch = matchType;
+      var matchRank = _stringsMatch(wishesMagicWords[i], givenMagicWord);
+      if (matchRank > bestMatch) {
+        bestMatch = matchRank;
       }
-      if (bestMatch === 'contains') {
+      if (bestMatch === _matchRankMap.equals) {
         break;
       }
     }
@@ -154,33 +166,38 @@
   }
   
   function _stringsMatch(magicWord, givenMagicWord) {
-    var magicWordWords, splitByHyphen, acronym = '';
+    var magicWordWords, splitByHyphen, acronym = '', i, j;
     
     magicWord = ('' + magicWord).toLowerCase();
     givenMagicWord = ('' + givenMagicWord).toLowerCase();
     
     // too long
     if (givenMagicWord.length > magicWord.length) {
-      return '';
+      return _matchRankMap.noMatch;
+    }
+    
+    // equals
+    if (magicWord === givenMagicWord) {
+      return _matchRankMap.equals;
     }
     
     // contains
-    if (magicWord.indexOf(givenMagicWord) != -1) {
-      return 'contains';
-    } else if (givenMagicWord.length == 1) {
-      return '';
+    if (magicWord.indexOf(givenMagicWord) !== -1) {
+      return _matchRankMap.contains;
+    } else if (givenMagicWord.length === 1) {
+      return _matchRankMap.noMatch;
     }
     
     // acronym
     magicWordWords = magicWord.split(' ');
-    for (var i = 0; i < magicWordWords.length; i++) {
+    for (i = 0; i < magicWordWords.length; i++) {
       splitByHyphen = magicWordWords[i].split('-');
-      for (var j = 0; j < splitByHyphen.length; j++) {
+      for (j = 0; j < splitByHyphen.length; j++) {
         acronym += splitByHyphen[j].substr(0, 1);
       }
     }
     if (acronym.indexOf(givenMagicWord) != -1) {
-      return 'acronym';
+      return _matchRankMap.acronym;
     }
     
     return _stringsByCharOrder(magicWord, givenMagicWord);
@@ -200,10 +217,10 @@
         }
       }
       if (!found) {
-        return '';
+        return _matchRankMap.noMatch;
       }
     }
-    return 'matches';
+    return _matchRankMap.matches;
   }
   
   function makeWish(wish, magicWord) {

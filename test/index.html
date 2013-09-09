@@ -182,22 +182,28 @@
         },
         testComplexMagicWords: function(t) {
           prepForTest();
-          var ttofc = registerBlankWish('The Tail of Forty Cities');
-          var ttotc = registerBlankWish('The Tail of Two Cities');
+          var matchWish = registerBlankWish('The Tail of Forty Cities'); // match
+          var acronym = registerBlankWish('The Tail of Two Cities'); // acronym
+          var contains = registerBlankWish('The ttotc container'); // contains
+          var equal = registerBlankWish('tTOtc'); // equal ignoring case
           var ttotcAcronym = 'ttotc';
           
-          // Even though ttofc was registered first, acronym trumps match
+          // Even though they were registered in reverse order, the matching should follow this pattern
           var match = genie.getMatchingWishes(ttotcAcronym);
-          t.assertEqual(match.length, 2);
-          t.assertIdentical(match[0], ttotc);
-          t.assertIdentical(match[1], ttofc);
+          t.assertEqual(match.length, 4);
+          t.assertIdentical(match[0], equal);
+          t.assertIdentical(match[1], contains);
+          t.assertIdentical(match[2], acronym);
+          t.assertIdentical(match[3], matchWish);
           
-          // enteredMagicWords trumps acronym
-          genie.makeWish(ttofc, ttotcAcronym);
+          // enteredMagicWords trumps acronym and equal
+          genie.makeWish(matchWish, ttotcAcronym);
           var match = genie.getMatchingWishes(ttotcAcronym);
-          t.assertEqual(match.length, 2);
-          t.assertIdentical(match[0], ttofc);
-          t.assertIdentical(match[1], ttotc);
+          t.assertEqual(match.length, 4);
+          t.assertIdentical(match[0], matchWish);
+          t.assertIdentical(match[1], equal);
+          t.assertIdentical(match[2], contains);
+          t.assertIdentical(match[3], acronym);
         },
         testNonStringMagicWords: function(t) {
           prepForTest();
