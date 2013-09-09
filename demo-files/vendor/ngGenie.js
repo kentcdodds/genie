@@ -74,11 +74,21 @@ angular.module('ngGenie', []).directive('ngLamp', function(genie, $timeout, $doc
 
       // Document events
       $document.bind('click', function(event) {
-        if (el.find(event.srcElement).length < 1) {
-          scope.$apply(function() {
-            scope.ngGenieVisible = false;
-          });
+        // If it's not part of the lamp, then make the lamp invisible.
+        var clickedElement = event.srcElement || event.target;
+        if (clickedElement === el[0]) {
+          return;
         }
+        var children = el.children();
+        for (var i = 0; i < children.length; i++) {
+          if (clickedElement === children[i]) {
+            return;
+          }
+        }
+        
+        scope.$apply(function() {
+          scope.ngGenieVisible = false;
+        });
       });
 
       $document.bind(scope.rubEventType || 'keydown', function(event) {
@@ -172,23 +182,24 @@ angular.module('ngGenie', []).directive('ngLamp', function(genie, $timeout, $doc
         }
       }
 
-      scope.$watch('ngGenieVisible', function(newVal) {
-        if (newVal) {
-          el.addClass(scope.rubClass);
-          // Needs to be visible before it can be selected
-          $timeout(function() {
-            inputEl[0].select();
-          }, 25);
-        } else {
-          el.removeClass(scope.rubClass);
-          inputEl[0].blur();
-        }
-      });
+      if (scope.rubClass) {
+        scope.$watch('ngGenieVisible', function(newVal) {
+          if (newVal) {
+            el.addClass(scope.rubClass);
+            // Needs to be visible before it can be selected
+            $timeout(function() {
+              inputEl[0].select();
+            }, 25);
+          } else {
+            el.removeClass(scope.rubClass);
+            inputEl[0].blur();
+          }
+        });
+      }
       
       scope.$watch('genieInput', function(newVal) {
         updateMatchingWishes(newVal);
       });
-
     }
   }
 });
