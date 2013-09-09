@@ -1,7 +1,7 @@
 'use strict';
 
 (function() {
-  var app = angular.module('genieApp', ['ngGenie', 'ga']);
+  var app = angular.module('genieApp', ['uxGenie', 'ga']);
 
   // Makes this modular if we don't just use the global instance and use it as a module instead  
   app.constant('genie', genie);
@@ -72,8 +72,8 @@
     addWish('GenieJS on GitHub', function() {
       window.open('http://www.github.com/kentcdodds/genie', '_blank');
     });
-    addWish('NG-GenieJS on GitHub', function() {
-      window.open('http://www.github.com/kentcdodds/ng-genie', '_blank');
+    addWish('UX-GenieJS on GitHub', function() {
+      window.open('http://www.github.com/kentcdodds/ux-genie', '_blank');
     });
     addWish('GenieJS Tests', function() {
       window.open('./test', '_blank');

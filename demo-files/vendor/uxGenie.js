@@ -1,16 +1,16 @@
 /**
- * ngGenie.js @license
+ * uxGenie.js @license
  * (c) 2013 Kent C. Dodds
- * ngGenie.js may be freely distributed under the MIT license.
- * http://www.github.com/kentcdodds/ng-genie
+ * uxGenie.js may be freely distributed under the MIT license.
+ * http://www.github.com/kentcdodds/ux-genie
  * See README.md
  */
 
-angular.module('ngGenie', []).directive('ngLamp', function(genie, $timeout, $document) {
+angular.module('uxGenie', []).directive('uxLamp', function(genie, $timeout, $document) {
   return {
     replace: true,
     template: function(el, attr) {
-      var ngShow = ' ng-show="ngGenieVisible"';
+      var ngShow = ' ng-show="uxGenieVisible"';
       if (attr.rubClass) {
         ngShow = '';
       }
@@ -43,7 +43,7 @@ angular.module('ngGenie', []).directive('ngLamp', function(genie, $timeout, $doc
         rubShortcut = scope.rubShortcut[0].charCodeAt(0);
       }
 
-      scope.ngGenieVisible = false;
+      scope.uxGenieVisible = false;
 
       // Wish focus
       scope.focusOnWish = function(wishElement, autoScroll) {
@@ -87,7 +87,7 @@ angular.module('ngGenie', []).directive('ngLamp', function(genie, $timeout, $doc
         }
         
         scope.$apply(function() {
-          scope.ngGenieVisible = false;
+          scope.uxGenieVisible = false;
         });
       });
 
@@ -96,18 +96,18 @@ angular.module('ngGenie', []).directive('ngLamp', function(genie, $timeout, $doc
           event.preventDefault();
           if (scope.rubModifier) {
             if (event[scope.rubModifier]) {
-              scope.ngGenieVisible = !scope.ngGenieVisible;
+              scope.uxGenieVisible = !scope.uxGenieVisible;
             }
           } else {
-            scope.ngGenieVisible = !scope.ngGenieVisible;
+            scope.uxGenieVisible = !scope.uxGenieVisible;
           }
         }
       });
 
       $document.bind('keydown', function(event) {
-        if (event.keyCode === 27 && scope.ngGenieVisible) {
+        if (event.keyCode === 27 && scope.uxGenieVisible) {
           event.preventDefault();
-          scope.ngGenieVisible = false;
+          scope.uxGenieVisible = false;
         }
       });
 
@@ -151,7 +151,7 @@ angular.module('ngGenie', []).directive('ngLamp', function(genie, $timeout, $doc
       scope.makeWish = function(wish) {
         genie.makeWish(wish, scope.genieInput);
         updateMatchingWishes(scope.genieInput);
-        scope.ngGenieVisible = false;
+        scope.uxGenieVisible = false;
       }
 
       el.bind('keyup', function(event) {
@@ -159,7 +159,7 @@ angular.module('ngGenie', []).directive('ngLamp', function(genie, $timeout, $doc
           genie.makeWish(scope.focusedWish, scope.genieInput);
           scope.$apply(function() {
             updateMatchingWishes(scope.genieInput);
-            scope.ngGenieVisible = false;
+            scope.uxGenieVisible = false;
           });
         }
       });
@@ -183,7 +183,7 @@ angular.module('ngGenie', []).directive('ngLamp', function(genie, $timeout, $doc
       }
 
       if (scope.rubClass) {
-        scope.$watch('ngGenieVisible', function(newVal) {
+        scope.$watch('uxGenieVisible', function(newVal) {
           if (newVal) {
             el.addClass(scope.rubClass);
             // Needs to be visible before it can be selected

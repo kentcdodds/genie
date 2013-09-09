@@ -22,11 +22,11 @@ h3 {
   opacity: 0;
 }
 
-#ngLampContainer.fast .genie-container {
+#uxLampContainer.fast .genie-container {
   transition: all .2s ease-in-out;
 }
 
-#ngLampContainer.slow .genie-container {
+#uxLampContainer.slow .genie-container {
   transition: all 1s ease-in-out;
 }
 
@@ -66,42 +66,42 @@ h3 {
 }
 
 /* ng-genie light styles */
-#ngLampContainer.light .genie-container {
+#uxLampContainer.light .genie-container {
   color: #333;
   background-color: #F7F7F7;
   box-shadow: 0px 0px 26px 6px #888888;
 }
 
-#ngLampContainer.light .genie-wish.focused {
+#uxLampContainer.light .genie-wish.focused {
   background-color: #DDD;
 }
 
 /* ng-genie light styles */
-#ngLampContainer.dark .genie-container {
+#uxLampContainer.dark .genie-container {
   color: rgb(238, 238, 238);
   background-color: #474747;
   box-shadow: 0px 0px 26px 6px #CCCCCC;
 }
 
-#ngLampContainer.dark .genie-container > input {
+#uxLampContainer.dark .genie-container > input {
   background-color: #272727;
   border-color: #2E2E2E;
   color: white;
 }
 
-#ngLampContainer.dark .genie-wish.focused {
+#uxLampContainer.dark .genie-wish.focused {
   background-color: #2E2E2E;
 }
 
 
 /* ng-genie large styles */
-#ngLampContainer.large .genie-container {
+#uxLampContainer.large .genie-container {
   width: 384px;
   margin-left: -208px;
   padding: 16px;
 }
 
-#ngLampContainer.large .genie-container > input {
+#uxLampContainer.large .genie-container > input {
   width: 358px;
   line-height: 60px;
   padding: 0px 12px 0px 12px;
@@ -109,25 +109,25 @@ h3 {
   height: 60px;
 }
 
-#ngLampContainer.large .genie-wishes {
+#uxLampContainer.large .genie-wishes {
   width: 384px;
   max-height: 300px;
   font-size: 30px;
 }
 
-#ngLampContainer.large .genie-wish {
+#uxLampContainer.large .genie-wish {
   padding: 0px 12px 0px 12px;
   line-height: 50px;
 }
 
 /* ng-genie small styles */
-#ngLampContainer.small .genie-container {
+#uxLampContainer.small .genie-container {
   width: 300px;
   margin-left: -150px;
   padding: 12px;
 }
 
-#ngLampContainer.small .genie-container > input {
+#uxLampContainer.small .genie-container > input {
   width: 274px;
   line-height: 50px;
   padding: 0px 12px 0px 12px;
@@ -135,13 +135,13 @@ h3 {
   height: 54px;
 }
 
-#ngLampContainer.small .genie-wishes {
+#uxLampContainer.small .genie-wishes {
   width: 297px;
   max-height: 216px;
   font-size: 24px;
 }
 
-#ngLampContainer.small .genie-wish {
+#uxLampContainer.small .genie-wish {
   padding: 0px 12px 0px 12px;
   line-height: 36px;
 }
