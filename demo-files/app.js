@@ -1,7 +1,7 @@
 'use strict';
 
 (function() {
-  var app = angular.module('genieApp', ['ngGenie']);
+  var app = angular.module('genieApp', ['ngGenie', 'ga']);
 
   // Makes this modular if we don't just use the global instance and use it as a module instead  
   app.constant('genie', genie);
@@ -25,10 +25,13 @@
     };
     
     $scope.addWishFromInput = function() {
-      addWish($scope.wish.displayText, $scope.wish.magicWords, $scope.wish.id);
-      $scope.wish.displayText = '';
-      $scope.wish.magicWords = '';
-      $scope.wish.id = '';
+      if ($scope.wish) {
+        ga('send', 'event', 'button', 'click', 'Create Wish');
+        addWish($scope.wish.displayText, $scope.wish.magicWords, $scope.wish.id);
+        $scope.wish.displayText = '';
+        $scope.wish.magicWords = '';
+        $scope.wish.id = '';
+      }
     };
 
     function addWish(wishDisplay, magicWords, action) {
