@@ -211,9 +211,9 @@ depending on what the function you're calling is expecting. This behavior is to 
 the need to do null/undefined checking everywhere you use `genie` and can be disabled as
 well via the returnOnDisabled function.
 
-NG-Genie
+UX-Genie
 --
-There is a [AngularJS](https://www.angularjs.org) directive available for GenieJS. Genie is awesome, but it's not too useful without a way to interact with it. I use it in the demo for GenieJS. Feel free to go to that project [here](https://www.github.com/kentcdodds/ng-genie).
+There is a [AngularJS](https://www.angularjs.org) directive available for GenieJS. Genie is awesome, but it's not too useful without a way to interact with it. It is used in the demo for GenieJS. Feel free to go to that project [here](https://www.github.com/kentcdodds/ux-genie).
 
 Contributing
 --
