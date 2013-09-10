@@ -44,6 +44,12 @@ angular.module('uxGenie', []).directive('uxLamp', function(genie, $timeout, $doc
 
       scope.uxGenieVisible = false;
 
+      function toggleVisibility() {
+        scope.$apply(function() {
+          scope.uxGenieVisible = !scope.uxGenieVisible;
+        });
+      }
+
       // Wish focus
       scope.focusOnWish = function(wishElement, autoScroll) {
         scope.focusedWish = wishElement;
@@ -95,11 +101,11 @@ angular.module('uxGenie', []).directive('uxLamp', function(genie, $timeout, $doc
           if (rubModifier) {
             if (event[rubModifier]) {
               event.preventDefault();
-              scope.uxGenieVisible = !scope.uxGenieVisible;
+              toggleVisibility();
             }
           } else {
             event.preventDefault();
-            scope.uxGenieVisible = !scope.uxGenieVisible;
+            toggleVisibility();
           }
         }
       });
@@ -107,7 +113,9 @@ angular.module('uxGenie', []).directive('uxLamp', function(genie, $timeout, $doc
       $document.bind('keydown', function(event) {
         if (event.keyCode === 27 && scope.uxGenieVisible) {
           event.preventDefault();
-          scope.uxGenieVisible = false;
+          scope.$apply(function() {
+            scope.uxGenieVisible = false;
+          });
         }
       });
 
