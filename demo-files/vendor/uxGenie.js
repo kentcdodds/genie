@@ -34,13 +34,12 @@ angular.module('uxGenie', []).directive('uxLamp', function(genie, $timeout, $doc
     link: function(scope, el, attr) {
       var inputEl = angular.element(el.children()[0]);
       var genieOptionContainer = angular.element(el.children()[1]);
-      if (!scope.rubShortcut) {
-        scope.rubShortcut = "32";
-        scope.rubModifier = "ctrlKey";
-      }
-      var rubShortcut = parseInt(scope.rubShortcut, 10);
+      var rubShortcut = scope.rubShortcut || '32';
+      var rubModifier = scope.rubModifier || 'ctrlKey';
+      
+      rubShortcut = parseInt(rubShortcut, 10);
       if (isNaN(rubShortcut)) {
-        rubShortcut = scope.rubShortcut[0].charCodeAt(0);
+        rubShortcut = rubShortcut[0].charCodeAt(0);
       }
 
       scope.uxGenieVisible = false;
@@ -93,12 +92,13 @@ angular.module('uxGenie', []).directive('uxLamp', function(genie, $timeout, $doc
 
       $document.bind(scope.rubEventType || 'keydown', function(event) {
         if (event.keyCode === rubShortcut) {
-          event.preventDefault();
-          if (scope.rubModifier) {
-            if (event[scope.rubModifier]) {
+          if (rubModifier) {
+            if (event[rubModifier]) {
+              event.preventDefault();
               scope.uxGenieVisible = !scope.uxGenieVisible;
             }
           } else {
+            event.preventDefault();
             scope.uxGenieVisible = !scope.uxGenieVisible;
           }
         }
