@@ -6,7 +6,7 @@
  * See README.md
  */
 
-;(function(global){
+;(function(global) {
 
   var _wishes = {},
     _previousId = 0,
@@ -16,6 +16,7 @@
     _previousContext = _defaultContext,
     _enabled = true,
     _returnOnDisabled = true,
+    _callback = function() {},
     _matchRankMap = {
       equals: 4,
       contains: 3,
@@ -277,14 +278,26 @@
   }
 
   function options(options) {
+    var newWishes;
     if (options) {
-      _wishes = options.wishes || _wishes;
+      if (options.wishes) {
+        newWishes = {};
+        for (var wishId in options.wishes) {
+          var wish = options.wishes[wishId];
+          if (_wishes[wishId]) {
+            wish.action = _wishes[wishId].action;
+          }
+          newWishes[wishId] = wish;
+        }
+      }
+      _wishes = newWishes || _wishes;
       _previousId = options.previousId || _previousId;
       _enteredMagicWords = options.enteredKeyWords || _enteredMagicWords;
       _context = options.context || _context;
       _previousContext = options.previousContext || _previousContext;
       _enabled = options.enabled || _enabled;
       _returnOnDisabled = options.returnOnDisabled || _returnOnDisabled;
+      _callback = options.callback || _callback;
     }
     return {
       wishes: _wishes,
@@ -292,7 +305,8 @@
       enteredMagicWords: _enteredMagicWords,
       contexts: _context,
       previousContext: _previousContext,
-      enabled: _enabled
+      enabled: _enabled,
+      callback: _callback
     };
   }
 
@@ -325,11 +339,20 @@
     }
     return _returnOnDisabled;
   }
+  
+  function callback(newCallback) {
+    if (newCallback !== undefined) {
+      _callback = newCallback;
+    }
+    return _callback;
+  }
 
   function _passThrough(fn, emptyRetObject) {
     return function() {
       if (_enabled || fn === enabled) {
-        return fn.apply(this, arguments);
+        var ret = fn.apply(this, arguments);
+        _callback(fn.name);
+        return ret;
       } else if (_returnOnDisabled) {
         return emptyRetObject;
       }
@@ -347,5 +370,6 @@
   global.genie.restoreContext = _passThrough(restoreContext, '');
   global.genie.enabled = _passThrough(enabled, false);
   global.genie.returnOnDisabled = _passThrough(returnOnDisabled, true);
+  global.genie.callback = _passThrough(callback, function(){});
 
 })(this);
