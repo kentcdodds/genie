@@ -140,24 +140,30 @@ genie.makeWish(id [string || wishObject | required], magicWord [string | optiona
 /*
  * Allows you to set the attributes of genie and returns the current genie options.
  *  1. wishes: All wishes (wishObject described above) currently registered
- *  2. previousId: The number used to auto-generate wish Ids if an id is not
+ *  2. noWishMerge: Instead of adding wishes, replace the current list of wishes with the given list.
+ *    More about this below...
+ *  3. previousId: The number used to auto-generate wish Ids if an id is not
  *    provided when a wish is registered.
- *  3. enteredMagicWords: All magicWords which have been associated with wishes
+ *  4. enteredMagicWords: All magicWords which have been associated with wishes
  *    to give preferential treatment in the order of wishes returned by getMatchingWishes
- *  4. context: The current context of the genie. See below about how context affects wishes
- *  5. enabled: Control whether genie's functions will actually run
- *  6. returnOnDisabled: If enabled is set to false and this is true, will return an empty
+ *  5. context: The current context of the genie. See below about how context affects wishes
+ *  6. enabled: Control whether genie's functions will actually run
+ *  7. returnOnDisabled: If enabled is set to false and this is true, will return an empty
  *    object/array/string to prevent the need to do null/undefined checking wherever genie
  *    is used.
  */
 genie.options({
   wishes: object | optional,
+  noWishMerge: boolean | optional,
   previousId: number | optional,
   enteredMagicWords: object | optional,
   context: string | optional,
   enabled: boolean | optional,
   returnOnDisabled: boolean | optional
 });
+
+// Merges the given wishes with existing wishes. (See Merging Wishes below)
+genie.mergeWishes(wishes);
 
 // Sets and returns the current context to newContext if provided
 // Also sets an internal variable: _previousContext for the revertContext function
@@ -212,9 +218,28 @@ depending on what the function you're calling is expecting. This behavior is to 
 the need to do null/undefined checking everywhere you use `genie` and can be disabled as
 well via the returnOnDisabled function.
 
+Merging Wishes
+--
+To persist the user's experience, you may want to store the result of `genie.options()` in
+`localStorage` or even a database associated with the user. Then after you have registered
+all the wishes for the user you load the options by calling `genie.options({wishes: usersOptions})`.
+The problem with this is that `usersOptions` wont have the actions for wishes, so this would
+overwrite the wishes with a bunch that don't have actions.
+
+To prevent this, by default when you call `genie.options` genie will merge the wishes. So
+any new wishes provided will either overwrite wishes with the same ID, but preserve the
+action of the old version if the new version doesn't have an action already. It will also
+preserve wishes which existed before and don't have matching ids.
+
+To completely overwrite the existing wishes, simply pass in `noWishMerge` along with the wishes.
+
+Note: Genie provides direct access to the `mergeWishes` function as well.
+
 UX-Genie
 --
-There is a [AngularJS](https://www.angularjs.org) directive available for GenieJS. Genie is awesome, but it's not too useful without a way to interact with it. It is used in the demo for GenieJS. Feel free to go to that project [here](https://www.github.com/kentcdodds/ux-genie).
+There is a [AngularJS](https://www.angularjs.org) directive available for GenieJS. Genie is
+awesome, but it's not too useful without a way to interact with it. It is used in the demo for
+GenieJS. Feel free to go to that project [here](https://www.github.com/kentcdodds/ux-genie).
 
 Contributing
 --

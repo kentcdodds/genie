@@ -85,6 +85,7 @@
     var oldOptions = options();
     options({
       wishes: {},
+      noWishMerge: true,
       previousId: 0,
       enteredMagicWords: [],
       contexts: _defaultContext,
@@ -275,21 +276,19 @@
   function _wishInContext(wish) {
     return _context === _defaultContext || wish.context === _defaultContext || wish.context === _context;
   }
+  
+  // Begin API functions. //
 
   function options(options) {
     var newWishes;
     if (options) {
       if (options.wishes) {
-        newWishes = {};
-        for (var wishId in options.wishes) {
-          var wish = options.wishes[wishId];
-          if (_wishes[wishId]) {
-            wish.action = _wishes[wishId].action;
-          }
-          newWishes[wishId] = wish;
+        if (options.noWishMerge) {
+          _wishes = options.wishes;
+        } else {
+          mergeWishes(options.wishes);
         }
       }
-      _wishes = newWishes || _wishes;
       _previousId = options.previousId || _previousId;
       _enteredMagicWords = options.enteredMagicWords || _enteredMagicWords;
       _context = options.context || _context;
@@ -305,6 +304,22 @@
       previousContext: _previousContext,
       enabled: _enabled
     };
+  }
+  
+  function mergeWishes(wishes) {
+    var newWish;
+    for (var wishId in wishes) {
+      newWish = wishes[wishId];
+      if (!newWish.action) {
+        if (_wishes[wishId]) {
+          newWish.action = _wishes[wishId].action;
+        }
+      }
+      if (newWish.action) {
+        _wishes[wishId] = newWish;
+      }
+    }
+    return _wishes;
   }
 
   function context(newContext) {
@@ -351,6 +366,7 @@
   global.genie.getMatchingWishes = _passThrough(getMatchingWishes, []);
   global.genie.makeWish = _passThrough(makeWish, {});
   global.genie.options = _passThrough(options, {});
+  global.genie.mergeWishes = _passThrough(mergeWishes, {});
   global.genie.deregisterWish = _passThrough(deregisterWish, {});
   global.genie.reset = _passThrough(reset, {});
   global.genie.context = _passThrough(context, '');
