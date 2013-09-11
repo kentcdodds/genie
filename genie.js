@@ -16,7 +16,6 @@
     _previousContext = _defaultContext,
     _enabled = true,
     _returnOnDisabled = true,
-    _callback = function() {},
     _matchRankMap = {
       equals: 4,
       contains: 3,
@@ -297,7 +296,6 @@
       _previousContext = options.previousContext || _previousContext;
       _enabled = options.enabled || _enabled;
       _returnOnDisabled = options.returnOnDisabled || _returnOnDisabled;
-      _callback = options.callback || _callback;
     }
     return {
       wishes: _wishes,
@@ -305,8 +303,7 @@
       enteredMagicWords: _enteredMagicWords,
       contexts: _context,
       previousContext: _previousContext,
-      enabled: _enabled,
-      callback: _callback
+      enabled: _enabled
     };
   }
 
@@ -339,20 +336,11 @@
     }
     return _returnOnDisabled;
   }
-  
-  function callback(newCallback) {
-    if (newCallback !== undefined) {
-      _callback = newCallback;
-    }
-    return _callback;
-  }
 
   function _passThrough(fn, emptyRetObject) {
     return function() {
       if (_enabled || fn === enabled) {
-        var ret = fn.apply(this, arguments);
-        _callback(fn.name);
-        return ret;
+        return fn.apply(this, arguments);
       } else if (_returnOnDisabled) {
         return emptyRetObject;
       }
@@ -370,6 +358,5 @@
   global.genie.restoreContext = _passThrough(restoreContext, '');
   global.genie.enabled = _passThrough(enabled, false);
   global.genie.returnOnDisabled = _passThrough(returnOnDisabled, true);
-  global.genie.callback = _passThrough(callback, function(){});
 
 })(this);
