@@ -29,7 +29,8 @@ angular.module('uxGenie', []).directive('uxLamp', function(genie, $timeout, $doc
       rubClass: '@',
       rubShortcut: '@',
       rubModifier: '@',
-      rubEventType: '@'
+      rubEventType: '@',
+      wishCallback: '&'
     },
     link: function(scope, el, attr) {
       var inputEl = angular.element(el.children()[0]);
@@ -157,18 +158,16 @@ angular.module('uxGenie', []).directive('uxLamp', function(genie, $timeout, $doc
 
       // Making a wish
       scope.makeWish = function(wish) {
-        genie.makeWish(wish, scope.genieInput);
-        updateMatchingWishes(scope.genieInput);
-        scope.uxGenieVisible = false;
+        scope.wishCallback(genie.makeWish(wish, scope.genieInput));
+        scope.$apply(function() {
+          updateMatchingWishes(scope.genieInput);
+          scope.uxGenieVisible = false;
+        });
       }
 
       el.bind('keyup', function(event) {
         if (event.keyCode === 13 && scope.focusedWish) {
-          genie.makeWish(scope.focusedWish, scope.genieInput);
-          scope.$apply(function() {
-            updateMatchingWishes(scope.genieInput);
-            scope.uxGenieVisible = false;
-          });
+          scope.makeWish(scope.focusedWish);
         }
       });
 

@@ -14,6 +14,10 @@
       color: 'light',
       size: 'large',
       animationSpeed: 'fast'
+    };
+    $scope.wishesMade = 0;
+    $scope.wishMade = function() {
+      $scope.wishesMade++;
     }
     
     $scope.exportOrImportGenie = function() {
