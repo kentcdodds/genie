@@ -291,7 +291,7 @@
       }
       _wishes = newWishes || _wishes;
       _previousId = options.previousId || _previousId;
-      _enteredMagicWords = options.enteredKeyWords || _enteredMagicWords;
+      _enteredMagicWords = options.enteredMagicWords || _enteredMagicWords;
       _context = options.context || _context;
       _previousContext = options.previousContext || _previousContext;
       _enabled = options.enabled || _enabled;
