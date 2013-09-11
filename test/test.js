@@ -184,6 +184,20 @@
       t.assertIdentical(match[2], contains);
       t.assertIdentical(match[3], acronym);
     },
+    testStartsWithMagicWord: function(t) {
+      prepForTest();
+      var magicWord = 'f';
+      var noMatch = registerBlankWish('Hello World');
+      var contains = registerBlankWish('I like life');
+      var notFirstButStartsWith = registerBlankWish('I like fish');
+      var veryFirstStartsWith = registerBlankWish('Fish like me');
+
+      var match = genie.getMatchingWishes(magicWord);
+      t.assertEqual(match.length, 3);
+      t.assertIdentical(match[0], veryFirstStartsWith);
+      t.assertIdentical(match[1], notFirstButStartsWith);
+      t.assertIdentical(match[2], contains);
+    },
     testNonStringMagicWords: function(t) {
       prepForTest();
       var num = registerBlankWish([1,2,'hey3']);

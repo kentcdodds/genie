@@ -17,7 +17,9 @@
     _enabled = true,
     _returnOnDisabled = true,
     _matchRankMap = {
-      equals: 4,
+      equals: 6,
+      startsWith: 5,
+      wordStartsWith: 4,
       contains: 3,
       acronym: 2,
       matches: 1,
@@ -118,38 +120,28 @@
   }
 
   function _getOtherMatchingMagicWords(currentMatchingWishIds, givenMagicWord) {
-    var containsMagicWordWishIds = [];
-    var acronymMagicWordWishIds = [];
-    var otherMatchingWishIds = [];
-    var equalsMagicWordWishIds = [];
+    var matchIdArrays = [];
+    var returnedIds = [];
+    
     for (var wishId in _wishes) {
       if (currentMatchingWishIds.indexOf(wishId) == -1) {
         var wish =_wishes[wishId];
         if (_wishInContext(wish)) {
           var matchType = _bestMagicWordsMatch(wish.magicWords, givenMagicWord);
-          switch (matchType) {
-            case _matchRankMap.equals:
-              equalsMagicWordWishIds.push(wishId);
-              break;
-            case _matchRankMap.contains:
-              containsMagicWordWishIds.push(wishId);
-              break;
-            case _matchRankMap.acronym:
-              acronymMagicWordWishIds.push(wishId);
-              break;
-            case _matchRankMap.matches:
-              otherMatchingWishIds.push(wishId);
-              break;
-            default:
-              break; // no match
+          if (matchType !== _matchRankMap.noMatch) {
+            matchIdArrays[matchType] = matchIdArrays[matchType]  || [];
+            matchIdArrays[matchType].push(wishId);
           }
         }
       }
     }
-    return equalsMagicWordWishIds.
-      concat(containsMagicWordWishIds).
-      concat(acronymMagicWordWishIds).
-      concat(otherMatchingWishIds);
+    for (var i = matchIdArrays.length; i > 0; i--) {
+      var arry = matchIdArrays[i - 1];
+      if (arry) {
+        returnedIds = returnedIds.concat(arry);
+      }
+    }
+    return returnedIds;
   }
 
   function _bestMagicWordsMatch(wishesMagicWords, givenMagicWord) {
@@ -180,6 +172,16 @@
     // equals
     if (magicWord === givenMagicWord) {
       return _matchRankMap.equals;
+    }
+    
+    // starts with
+    if (magicWord.indexOf(givenMagicWord) === 0) {
+      return _matchRankMap.startsWith;
+    }
+    
+    // word starts with
+    if (magicWord.indexOf(' ' + givenMagicWord) !== -1) {
+      return _matchRankMap.wordStartsWith;
     }
 
     // contains
@@ -280,7 +282,6 @@
   // Begin API functions. //
 
   function options(options) {
-    var newWishes;
     if (options) {
       if (options.wishes) {
         if (options.noWishMerge) {
