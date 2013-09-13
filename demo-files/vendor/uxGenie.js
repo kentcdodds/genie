@@ -48,7 +48,9 @@ angular.module('uxGenie', []).directive('uxLamp', function(genie, $timeout, $doc
       scope.uxGenieVisible = false;
 
       function toggleVisibility() {
-        scope.uxGenieVisible = !scope.uxGenieVisible;
+        scope.$apply(function() {
+          scope.uxGenieVisible = !scope.uxGenieVisible;
+        });
       }
 
       // Wish focus
@@ -160,8 +162,10 @@ angular.module('uxGenie', []).directive('uxLamp', function(genie, $timeout, $doc
       scope.makeWish = function(wish) {
         scope.wishCallback(genie.makeWish(wish, scope.genieInput));
         saveToLocalStorage(wish);
-        updateMatchingWishes(scope.genieInput);
-        scope.uxGenieVisible = false;
+        scope.$apply(function() {
+          updateMatchingWishes(scope.genieInput);
+          scope.uxGenieVisible = false;
+        });
       }
 
       el.bind('keyup', function(event) {
