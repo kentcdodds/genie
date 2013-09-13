@@ -30,13 +30,15 @@ angular.module('uxGenie', []).directive('uxLamp', function(genie, $timeout, $doc
       rubShortcut: '@',
       rubModifier: '@',
       rubEventType: '@',
-      wishCallback: '&'
+      wishCallback: '&',
+      localStorage: '='
     },
     link: function(scope, el, attr) {
       var inputEl = angular.element(el.children()[0]);
       var genieOptionContainer = angular.element(el.children()[1]);
       var rubShortcut = scope.rubShortcut || '32';
       var rubModifier = scope.rubModifier || 'ctrlKey';
+      var saveToLocalStorage = function() {};
       
       rubShortcut = parseInt(rubShortcut, 10);
       if (isNaN(rubShortcut)) {
@@ -46,9 +48,7 @@ angular.module('uxGenie', []).directive('uxLamp', function(genie, $timeout, $doc
       scope.uxGenieVisible = false;
 
       function toggleVisibility() {
-        scope.$apply(function() {
-          scope.uxGenieVisible = !scope.uxGenieVisible;
-        });
+        scope.uxGenieVisible = !scope.uxGenieVisible;
       }
 
       // Wish focus
@@ -159,10 +159,9 @@ angular.module('uxGenie', []).directive('uxLamp', function(genie, $timeout, $doc
       // Making a wish
       scope.makeWish = function(wish) {
         scope.wishCallback(genie.makeWish(wish, scope.genieInput));
-        scope.$apply(function() {
-          updateMatchingWishes(scope.genieInput);
-          scope.uxGenieVisible = false;
-        });
+        saveToLocalStorage(wish);
+        updateMatchingWishes(scope.genieInput);
+        scope.uxGenieVisible = false;
       }
 
       el.bind('keyup', function(event) {
@@ -202,6 +201,20 @@ angular.module('uxGenie', []).directive('uxLamp', function(genie, $timeout, $doc
             inputEl[0].blur();
           }
         });
+      }
+
+      if (scope.localStorage && localStorage) {
+        // Load machine's preferences
+        var options = {
+          enteredMagicWords: JSON.parse(localStorage.getItem('genie'))
+        };
+        genie.options(options);
+    
+        // Setup update machine's preferences 
+        saveToLocalStorage = function(wish) {
+          // This way 'genie' is never set in local storage until a wish is made.
+          localStorage.setItem('genie', JSON.stringify(genie.options().enteredMagicWords, null, 2));
+        }
       }
       
       scope.$watch('genieInput', function(newVal) {

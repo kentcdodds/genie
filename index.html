@@ -91,7 +91,7 @@
       <textarea id="genie-export-import" ng-model="genieExportImport" placeholder="Output/Input of Export/Import Genie"></textarea>
     </div>
     <div id="uxLampContainer" class="{{genieStyle.color + ' ' + genieStyle.size + ' ' + genieStyle.animationSpeed}}">
-      <div ux-lamp rub-class="visible" wish-callback="wishMade()"></div>
+      <div ux-lamp rub-class="visible" wish-callback="wishMade()" local-storage="true"></div>
     </div>
     <script src="./demo-files/vendor/angular.min.js"></script>
     <script src="./demo-files/app.js"></script>
