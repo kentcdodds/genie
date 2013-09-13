@@ -98,7 +98,7 @@
   }
 
   function getMatchingWishes(magicWord) {
-    var otherMatchingWishId, allWishIds, matchingWishes, i; //Hoist-it!
+    var otherMatchingWishId, allWishIds, matchingWishes, i, wish; //Hoist-it!
     if (magicWord === undefined) {
       magicWord = '';
     } else if (magicWord === null) {
@@ -114,7 +114,10 @@
 
     matchingWishes = [];
     for (i = 0; i < allWishIds.length; i++) {
-      matchingWishes.push(_wishes[allWishIds[i]]);
+      wish = _wishes[allWishIds[i]];
+      if (wish && _wishInContext(wish)) {
+        matchingWishes.push(wish);
+      }
     }
     return matchingWishes;
   }
@@ -122,16 +125,14 @@
   function _getOtherMatchingMagicWords(currentMatchingWishIds, givenMagicWord) {
     var matchIdArrays = [];
     var returnedIds = [];
-    
+
     for (var wishId in _wishes) {
       if (currentMatchingWishIds.indexOf(wishId) == -1) {
         var wish =_wishes[wishId];
-        if (_wishInContext(wish)) {
-          var matchType = _bestMagicWordsMatch(wish.magicWords, givenMagicWord);
-          if (matchType !== _matchRankMap.noMatch) {
-            matchIdArrays[matchType] = matchIdArrays[matchType]  || [];
-            matchIdArrays[matchType].push(wishId);
-          }
+        var matchType = _bestMagicWordsMatch(wish.magicWords, givenMagicWord);
+        if (matchType !== _matchRankMap.noMatch) {
+          matchIdArrays[matchType] = matchIdArrays[matchType]  || [];
+          matchIdArrays[matchType].push(wishId);
         }
       }
     }
@@ -173,12 +174,12 @@
     if (magicWord === givenMagicWord) {
       return _matchRankMap.equals;
     }
-    
+
     // starts with
     if (magicWord.indexOf(givenMagicWord) === 0) {
       return _matchRankMap.startsWith;
     }
-    
+
     // word starts with
     if (magicWord.indexOf(' ' + givenMagicWord) !== -1) {
       return _matchRankMap.wordStartsWith;
@@ -278,7 +279,7 @@
   function _wishInContext(wish) {
     return _context === _defaultContext || wish.context === _defaultContext || wish.context === _context;
   }
-  
+
   // Begin API functions. //
 
   function options(options) {
@@ -306,7 +307,7 @@
       enabled: _enabled
     };
   }
-  
+
   function mergeWishes(wishes) {
     var newWish;
     for (var wishId in wishes) {
