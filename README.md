@@ -220,7 +220,7 @@ genie.context = ['grandparent', 'parent', 'child'];
 wish1.context = ['grandparent']; // In context
 wish2.context = ['grandparent', 'parent']; // In context
 wish3.context = ['grandparent', 'parent', 'child']; // In context
-wish4.context = ['grandparent', 'parent', 'child', 'great-grandchild']; // In context
+wish4.context = ['grandparent', 'parent', 'child', 'great-grandchild']; // Out of context
 wish5.context = ['grandparent', 'child']; // Out of context
 ```
 
