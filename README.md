@@ -167,7 +167,7 @@ genie.mergeWishes(wishes);
 
 // Sets and returns the current context to newContext if provided
 // Also sets an internal variable: _previousContext for the revertContext function
-genie.context(newContext [string | optional]);
+genie.context(newContext [string || array | optional]);
 
 // Sets and returns the current context to the default context (universe)
 genie.restoreContext();
@@ -201,15 +201,28 @@ About Context
 --
 Genie has a concept of context that allows you to switch between sets of wishes easily.
 Each wish is given the default context which is `universe` unless one is provided when
-it is registered. Wishes with the default context will not behave differently when context
-of genie changes.
+it is registered. Wishes will only behave normally in `getMatchingWishes and `makeWish`
+when they are in context.
 
-When the current context is the default context, all wishes will behave
-as if the context were equal to their own context. So essentially `universe` makes it as
-though genie has no notion of contexts at all.
+There are a few ways for a wish to be in context:
+  1. Genie's current context is the default context
+  2. The wish's context is the default context
+  3. The current context and the wish's context are equal
+  4. The current context is a decendent of the wish's context
 
-When the context is different than the default, only wishes with an equal context will
-behave normally with `getMatchingWishes` and `makeWish`.
+There's something to be said about the last one. Context can be an array as well as a
+string. If it is an array, Genie will iterate through the wish's context array and compare
+it with genie's context to determine whether each item in genie's context is equal to
+the corresponding item in the wish's array. For example:
+
+```javascript
+genie.context = ['grandparent', 'parent', 'child'];
+wish1.context = ['grandparent']; // In context
+wish2.context = ['grandparent', 'parent']; // In context
+wish3.context = ['grandparent', 'parent', 'child']; // In context
+wish4.context = ['grandparent', 'parent', 'child', 'great-grandchild']; // In context
+wish5.context = ['grandparent', 'child']; // Out of context
+```
 
 Enabling & Disabiling
 --

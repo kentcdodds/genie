@@ -282,10 +282,12 @@
     var wishContextIsCurrentContext = wish.context === _context;
     var wishContextIsDecendentContext = false;
 
-    if (Array.isArray(wish.context) && Array.isArray(_context)
-      && _context.length >= wish.context.length) {
-      for (var i = 0; i < wish.context.length; i++) {
-        wishContextIsDecendentContext = wish.context[i] === _context[i];
+    var wishContext = Array.isArray(wish.context) ? wish.context : [wish.context];
+    var currentContext = Array.isArray(_context) ? _context : [_context];
+
+    if (currentContext.length >= wishContext.length) {
+      for (var i = 0; i < wishContext.length; i++) {
+        wishContextIsDecendentContext = wishContext[i] === currentContext[i];
         if (!wishContextIsDecendentContext) {
           break;
         }
