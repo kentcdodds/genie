@@ -244,7 +244,7 @@
      *   - doesn't exist
      *   - isn't in the registry
      *   - doesn't have an action
-     *   - context doesn't match the current context and the wish's context is not the _defaultContext
+     *   - wish is not in context
      */
     if (!wish || !_wishes[wish.id] || !wish.action || !(_wishInContext(wish))) {
       return null;
@@ -277,7 +277,22 @@
   }
 
   function _wishInContext(wish) {
-    return _context === _defaultContext || wish.context === _defaultContext || wish.context === _context;
+    var currentContextIsDefault = _context === _defaultContext;
+    var wishContextIsDefault = wish.context === _defaultContext;
+    var wishContextIsCurrentContext = wish.context === _context;
+    var wishContextIsDecendentContext = false;
+
+    if (Array.isArray(wish.context) && Array.isArray(_context)
+      && _context.length >= wish.context.length) {
+      for (var i = 0; i < wish.context.length; i++) {
+        wishContextIsDecendentContext = wish.context[i] === _context[i];
+        if (!wishContextIsDecendentContext) {
+          break;
+        }
+      }
+    }
+    
+    return currentContextIsDefault || wishContextIsDefault || wishContextIsCurrentContext || wishContextIsDecendentContext;
   }
 
   // Begin API functions. //
