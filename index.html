@@ -2,12 +2,14 @@
 <html ng-app="genieApp" ng-controller="GenieCtrl" ng-keyup="onKeyup($event)">
   <head>
     <title>GenieJS</title>
-    <script src="genie.js"></script>
+    <meta name="author" content="Kent C. Dodds">
+    <meta name="keywords" content="GenieJS, Alfred App, JavaScript, User Experience, UX">
+    <meta name="description" content="GenieJS is a JavaScript library to improve user expereince by allowing users to perform actions with their keyboard. GenieJS also learns the user's preferences over time.">
     <link rel="stylesheet" href="demo-files/vendor/bootstrap.min.css" />
     <link rel="stylesheet" href="demo-files/style.css" />
   </head>
   <body>
-    <a href="https://github.com/kentcdodds/genie"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+    <a href="https://github.com/kentcdodds/genie"><img style="position: absolute; top: 0; right: 0; border: 0;" src="./demo-files/vendor/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
     <header>
       <h1>GenieJS</h1>
       <h2 id="wish-output">Press Ctrl+Space to <a href="http://www.youtube.com/watch?v=pwsTXpDJSVE" ga>rub the lamp</a></h2>
@@ -94,6 +96,8 @@
     <div id="uxLampContainer" class="{{genieStyle.color + ' ' + genieStyle.size + ' ' + genieStyle.animationSpeed}}">
       <div ux-lamp rub-class="visible" wish-callback="wishMade()" local-storage="true"></div>
     </div>
+    
+    <script src="genie.js"></script>
     <script src="./demo-files/vendor/angular.min.js"></script>
     <script src="./demo-files/app.js"></script>
     <script src="./demo-files/vendor/uxGenie.js"></script>

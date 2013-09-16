@@ -6,7 +6,7 @@
   // Makes this modular if we don't just use the global instance and use it as a module instead  
   app.constant('genie', genie);
 
-  app.controller('GenieCtrl', function($scope, genie) {
+  app.controller('GenieCtrl', function($scope, genie, ga) {
 
     $scope.genieVisible = false;
     
@@ -16,8 +16,9 @@
       animationSpeed: 'fast'
     };
     $scope.wishesMade = 0;
-    $scope.wishMade = function() {
+    $scope.wishMade = function(wish) {
       $scope.wishesMade++;
+      ga('send', 'event', 'wish', 'made', $scope.wishesMade);
     }
     
     $scope.exportOrImportGenie = function() {
@@ -38,7 +39,7 @@
       }
     };
 
-    function addWish(wishDisplay, magicWords, action) {
+    function addWish(magicWords, action) {
       var id = undefined;
       if (typeof magicWords === 'function') {
         action = magicWords;
@@ -56,39 +57,48 @@
         id = action;
         action = undefined;
       }
-      if (typeof wishDisplay === 'string') {
-        magicWords.push(wishDisplay);
-      } else {
-        wishDisplay = magicWords[0];
-      }
       var wish = genie({
         id: id,
         magicWords: magicWords,
-        data: {
-          displayText: wishDisplay
-        },
-        action: action || function() {
-          alert('Your "' + this.data.displayText + '" wish is my command!');
+        action: action || function(wish) {
+          alert('Your "' + wish.magicWords[0] + '" wish is my command!');
         }
       });
     }
+    
+    function addStyleWish(style, altStyle, property) {
+      var styleLabel = 'Style Genie: ' + style;
+      var altStyleLabel = 'Style Genie: ' + altStyle;
+      addWish(styleLabel, function(wish) {
+        if (wish.magicWords[0] === styleLabel) {
+          $scope.$apply(function() {
+            wish.magicWords[0] = altStyleLabel;
+            $scope.genieStyle[property] = style.toLowerCase();
+          });
+        } else {
+          $scope.$apply(function() {
+            wish.magicWords[0] = styleLabel;
+            $scope.genieStyle[property] = altStyle.toLowerCase();
+          });
+        }
+      });
+    }
+    
+    function addDestinationWish(magicWord, destination) {
+      addWish('Go to ' + magicWord, function() {
+        window.open(destination, '_blank');
+      });      
+    }
 
-    addWish('GenieJS on GitHub', function() {
-      window.open('http://www.github.com/kentcdodds/genie', '_blank');
-    });
-    addWish('UX-GenieJS on GitHub', function() {
-      window.open('http://www.github.com/kentcdodds/ux-genie', '_blank');
-    });
-    addWish('GenieJS Tests', function() {
-      window.open('./test', '_blank');
-    });
-    addWish('Create new post');
-    addWish('Edit profile pic');
-    addWish('Update contact info');
-    addWish('Delete account');
-    addWish('Block user');
-    addWish('Friend user');
-    addWish('Find friends');
+    addDestinationWish('Genie on GitHub', 'http://www.github.com/kentcdodds/genie');
+    addDestinationWish('UX-Genie on GitHub', 'http://www.github.com/kentcdodds/ux-genie');
+    addDestinationWish('Genie Tests', './test');
+    
+    addStyleWish('Dark', 'Light', 'color');
+    addStyleWish('Small', 'Large', 'size');
+    addStyleWish('Slow', 'Fast', 'animationSpeed');
+    
+    addWish('Alert!!!');
 
   });
 
