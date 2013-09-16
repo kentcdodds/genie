@@ -259,7 +259,7 @@
       arry = _enteredMagicWords[magicWord];
       existingIndex = arry.indexOf(id);
       if (existingIndex === 0) {
-        return;
+        return wish;
       }
       if (existingIndex != -1) {
         // If it already exists, remove it before re-adding it in the correct spot
