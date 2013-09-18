@@ -145,3 +145,35 @@ h3 {
   padding: 0px 12px 0px 12px;
   line-height: 36px;
 }
+
+/*
+ * uxSesame styles
+ */
+#uxSesameContainer {
+    background-color: rgba(30, 30, 30, 0.75);
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    text-align: center;
+    padding-top: 16%;
+    color: white;
+}
+
+#uxSesameContainer .sesame-interface {
+  margin: 10% 10% 0% 10%
+}
+
+#uxSesameContainer .sesame-interface .sesame-input {
+  float: left;
+  font-size: 26px;
+  margin: 20px;
+}
+
+#uxSesameContainer .sesame-interface .sesame-mic {
+  float: right;
+  margin: 20px;
+}

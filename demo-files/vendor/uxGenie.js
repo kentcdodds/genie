@@ -227,3 +227,19 @@ angular.module('uxGenie', []).directive('uxLamp', function(genie, $timeout, $doc
     }
   }
 });
+
+angular.module('uxGenie', []).directive('uxSesame', function(genie) {
+  return {
+    replace: true,
+    transclude: true,
+    template: function(el, attr) {
+      return ['<div ng-transclude></div>'].join('');
+    },
+    scope: {
+      
+    },
+    link: function(scope, el, attr) {
+      
+    }
+  }
+});
