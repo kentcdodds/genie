@@ -159,21 +159,67 @@ h3 {
     left: 0;
     right: 0;
     text-align: center;
-    padding-top: 16%;
+    padding-top: 6%;
     color: white;
 }
 
 #uxSesameContainer .sesame-interface {
-  margin: 10% 10% 0% 10%
+  margin: 0% 10% 0% 10%;
 }
 
-#uxSesameContainer .sesame-interface .sesame-input {
-  float: left;
+#uxSesameContainer .sesame-mic {
+  margin-top:40px;
+  border-radius: 50%;
+  height: 250px; 
+  width: 250px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+#uxSesameContainer .sesame-mic .icon-mic {
+  font-size: 150px;
+  width: 244px;
+  padding-top: 44px;
+  height: 200px;
+  background-color: rgba(128, 128, 128, 0.5);
+  line-height: 150px;
+  border-radius: 50%;
+}
+
+#uxSesameContainer .genie-controls {
   font-size: 26px;
-  margin: 20px;
+  margin: 50px;
 }
 
-#uxSesameContainer .sesame-interface .sesame-mic {
-  float: right;
-  margin: 20px;
+#uxSesameContainer .genie-controls .speech-text {
+  margin-bottom: 30px;
+}
+
+#uxSesameContainer .genie-controls .speech-text .unsure {
+  color: #AAA;
+}
+
+#uxSesameContainer .sesame-options {
+  line-height: 30px;
+  text-align: left;
+  background-color: rgba(128, 128, 128, 0.5);
+  border-radius: 16px;
+}
+
+#uxSesameContainer .sesame-option {
+  padding: 10px;
+  margin: 5px 0px 5px 0px;
+}
+
+#uxSesameContainer .sesame-option.focused:first-child {
+  border-radius: 16px 16px 0px 0px;
+}
+
+#uxSesameContainer .sesame-option.focused:last-child {
+  border-radius: 0px 0px 16px 16px;
+}
+
+#uxSesameContainer .sesame-option.focused {
+  background-color: white;
+  color: black;
 }

@@ -7,6 +7,7 @@
     <meta name="description" content="GenieJS is a JavaScript library to improve user expereince by allowing users to perform actions with their keyboard. GenieJS also learns the user's preferences over time.">
     <link rel="stylesheet" href="demo-files/vendor/bootstrap.min.css" />
     <link rel="stylesheet" href="demo-files/style.css" />
+    <link rel="stylesheet" href="demo-files/vendor/fontello/css/fontello.css" />
   </head>
   <body>
     <a href="https://github.com/kentcdodds/genie"><img style="position: absolute; top: 0; right: 0; border: 0;" src="./demo-files/vendor/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
@@ -98,10 +99,21 @@
     </div>
     <div id="uxSesameContainer">
       <div ux-sesame>
-        <h1>Your wish is my command</h1>
+        <h1>Your wish is my command...</h1>
         <div class="sesame-interface">
-          <span class="sesame-input">What you said...</span>
-          <span class="sesame-mic"></span>
+          <div class="sesame-mic"><i class="icon-mic"></i></div>
+          <div class="genie-controls">
+            <div class="speech-text">
+              <span class="sure">What</span>
+              <span class="unsure"> you said</span>
+            </div>
+            <div class="sesame-options">
+              <div class="sesame-option focused">1. Option 1</div>
+              <div class="sesame-option">2. Option 2</div>
+              <div class="sesame-option">3. Option 3</div>
+              <div class="sesame-option">4. Option 4</div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
