@@ -97,21 +97,19 @@
     <div id="uxLampContainer" class="{{genieStyle.color + ' ' + genieStyle.size + ' ' + genieStyle.animationSpeed}}">
       <div ux-lamp rub-class="visible" wish-callback="wishMade()" local-storage="true"></div>
     </div>
-    <div id="uxSesameContainer">
-      <div ux-sesame sesame="sesame">
-        <h1>Your wish is my command...</h1>
-        <div class="sesame-interface">
-          <div class="sesame-mic"><i class="icon-mic"></i></div>
-          <div class="genie-controls">
-            <div class="speech-text">
-              <span class="sure">{{sesame.words.sure}}</span>
-              <span class="unsure"> {{sesame.words.unsure}}</span>
-            </div>
-            <div class="sesame-wish-options">
-              <div class="sesame-wish-option"
-                ng-repeat="sesameWish in sesame.wishes"
-                ng-class="{focused: focusedSesameWish == sesameWish}">{{($index + 1) + '. ' + sesameWish.displayText}}</div>
-            </div>
+    <div id="uxSesameContainer" ux-sesame sesame="sesame">
+      <h1>Your wish is my command...</h1>
+      <div class="sesame-interface">
+        <div class="sesame-mic"><i class="icon-mic"></i></div>
+        <div class="genie-controls">
+          <div class="speech-text">
+            <span class="sure">{{sesame.words.sure}}</span>
+            <span class="unsure"> {{sesame.words.unsure}}</span>
+          </div>
+          <div class="sesame-wish-options">
+            <div class="sesame-wish-option"
+            ng-repeat="sesameWish in sesame.wishes"
+            ng-class="{focused: focusedSesameWish == sesameWish}">{{($index + 1) + '. ' + sesameWish.displayText}}</div>
           </div>
         </div>
       </div>

@@ -228,7 +228,12 @@ angular.module('uxGenie', []).directive('uxLamp', function(genie, $timeout, $doc
   }
 });
 
-angular.module('uxGenie', []).directive('uxSesame', function(genie) {
+angular.module('uxGenie', []).directive('uxSesame', function(genie, $window) {
+  var SpeechRecognition = $window.webkitSpeechRecognition ||
+      $window.mozSpeechRecognition ||
+      $window.msSpeechRecognition ||
+      $window.oSpeechRecognition ||
+      $window.SpeechRecognition;
   return {
     replace: true,
     transclude: true,
@@ -239,6 +244,9 @@ angular.module('uxGenie', []).directive('uxSesame', function(genie) {
       sesame: '='
     },
     link: function(scope, el, attr) {
+      if (!SpeechRecognition) {
+        el.remove();
+      }
       scope.sesame = {
         wishes:
         [
