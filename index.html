@@ -98,20 +98,19 @@
       <div ux-lamp rub-class="visible" wish-callback="wishMade()" local-storage="true"></div>
     </div>
     <div id="uxSesameContainer">
-      <div ux-sesame>
+      <div ux-sesame sesame="sesame">
         <h1>Your wish is my command...</h1>
         <div class="sesame-interface">
           <div class="sesame-mic"><i class="icon-mic"></i></div>
           <div class="genie-controls">
             <div class="speech-text">
-              <span class="sure">What</span>
-              <span class="unsure"> you said</span>
+              <span class="sure">{{sesame.words.sure}}</span>
+              <span class="unsure"> {{sesame.words.unsure}}</span>
             </div>
-            <div class="sesame-options">
-              <div class="sesame-option focused">1. Option 1</div>
-              <div class="sesame-option">2. Option 2</div>
-              <div class="sesame-option">3. Option 3</div>
-              <div class="sesame-option">4. Option 4</div>
+            <div class="sesame-wish-options">
+              <div class="sesame-wish-option"
+                ng-repeat="sesameWish in sesame.wishes"
+                ng-class="{focused: focusedSesameWish == sesameWish}">{{($index + 1) + '. ' + sesameWish.displayText}}</div>
             </div>
           </div>
         </div>

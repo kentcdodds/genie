@@ -199,7 +199,7 @@ h3 {
   color: #AAA;
 }
 
-#uxSesameContainer .sesame-options {
+#uxSesameContainer .sesame-wish-options {
   line-height: 30px;
   text-align: left;
   background-color: rgba(128, 128, 128, 0.5);
@@ -209,20 +209,20 @@ h3 {
   margin-right: auto;
 }
 
-#uxSesameContainer .sesame-option {
+#uxSesameContainer .sesame-wish-option {
   padding: 10px;
   margin: 5px 0px 5px 0px;
 }
 
-#uxSesameContainer .sesame-option.focused:first-child {
+#uxSesameContainer .sesame-wish-option.focused:first-child {
   border-radius: 16px 16px 0px 0px;
 }
 
-#uxSesameContainer .sesame-option.focused:last-child {
+#uxSesameContainer .sesame-wish-option.focused:last-child {
   border-radius: 0px 0px 16px 16px;
 }
 
-#uxSesameContainer .sesame-option.focused {
+#uxSesameContainer .sesame-wish-option.focused {
   background-color: white;
   color: black;
 }

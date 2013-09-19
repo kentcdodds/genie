@@ -236,10 +236,21 @@ angular.module('uxGenie', []).directive('uxSesame', function(genie) {
       return ['<div ng-transclude></div>'].join('');
     },
     scope: {
-      
+      sesame: '='
     },
     link: function(scope, el, attr) {
-      
+      scope.sesame = {
+        wishes:
+        [
+          {
+            displayText: 'hi'
+          }
+        ],
+        words: {
+          sure: 'Make me',
+          unsure: 'a sandwich'
+        }
+      }
     }
   }
 });
