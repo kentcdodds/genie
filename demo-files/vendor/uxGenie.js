@@ -6,7 +6,9 @@
  * See README.md
  */
 
-angular.module('uxGenie', []).directive('uxLamp', function(genie, $timeout, $document) {
+angular.module('uxGenie', []); // Create the module
+
+angular.module('uxGenie').directive('uxLamp', function(genie, $timeout, $document) {
   return {
     replace: true,
     template: function(el, attr) {
@@ -228,12 +230,7 @@ angular.module('uxGenie', []).directive('uxLamp', function(genie, $timeout, $doc
   }
 });
 
-angular.module('uxGenie', []).directive('uxSesame', function(genie, $window) {
-  var SpeechRecognition = $window.webkitSpeechRecognition ||
-      $window.mozSpeechRecognition ||
-      $window.msSpeechRecognition ||
-      $window.oSpeechRecognition ||
-      $window.SpeechRecognition;
+angular.module('uxGenie').directive('uxSesame', function(genie, uxSpeechRecognition) {
   return {
     replace: true,
     transclude: true,
@@ -244,9 +241,36 @@ angular.module('uxGenie', []).directive('uxSesame', function(genie, $window) {
       sesame: '='
     },
     link: function(scope, el, attr) {
-      if (!SpeechRecognition) {
+      if (uxSpeechRecognition.unsupported) {
         el.remove();
+        return;
       }
+      uxSpeechRecognition.initialize({
+        autoStart: true,
+        activationCommands: {
+          'genie': function() {
+            console.log('Hey Genie!!!');
+          }
+        },
+        debugState: true
+      });
+      
+      scope.$watch(function() {
+        return uxSpeechRecognition.getSureResults();
+      }, function(newVal) {
+        if (newVal) {
+          scope.sesame.words.sure = newVal[0];
+        }
+      });
+      
+      scope.$watch(function() {
+        return uxSpeechRecognition.getUnsureResults();
+      }, function(newVal) {
+        if (newVal) {
+          scope.sesame.words.unsure = newVal[0];
+        }
+      });
+      
       scope.sesame = {
         wishes:
         [
@@ -261,4 +285,150 @@ angular.module('uxGenie', []).directive('uxSesame', function(genie, $window) {
       }
     }
   }
+});
+
+angular.module('uxGenie').factory('uxSpeechRecognition', function($window) {
+  var SpeechRecognition = $window.webkitSpeechRecognition ||
+      $window.mozSpeechRecognition ||
+      $window.msSpeechRecognition ||
+      $window.oSpeechRecognition ||
+      $window.SpeechRecognition;
+
+  var recognition, debugState, listening, activationCommands,
+    onSureResult, onUnsureResult;
+
+  if (!SpeechRecognition) {
+    return {unsupported: true};
+  }
+  
+  uxSpeechRecognition = {
+    initialize: function(options) {
+      options = options || {};
+      recognition = new SpeechRecognition();
+      
+      recognition.maxAlternatives = 5;
+      recognition.continuous = true;
+      recognition.lang = 'en-US';
+      recognition.interimResults = true;
+
+      listening = options.listening ? options.listening : false;
+      debugState = options.debugState ? options.debugState : false;
+      activationCommands = options.activationCommands || {};
+      onSureResult = options.onSureResult || function() {};
+      onUnsureResult = options.onUnsureResult || function() {};
+      
+      recognition.onstart = function() {
+        if (debugState) {
+          console.log('onstart');
+        }
+      };
+      
+      recognition.onerror = function() {
+        if (debugState) {
+          console.log('onerror');
+        }
+      };
+      
+      recognition.onend = function() {
+        if (debugState) {
+          console.log('onend');
+        }
+        this.start();
+      };
+      
+      recognition.onresult  = function(event) {
+        if (debugState) {
+          console.log('onresult');
+        }
+        
+        this.sureResults = [];
+        this.unsureResults = [];
+        
+        var results = event.results[event.resultIndex];
+        var commandText;
+        var confidence;
+        var activateCallback;
+        var sureUnique = {};
+        var unsureUnique = {};
+        
+        for (var i = 0; i < results.length; i++) {
+          commandText = results[i].transcript.trim().toLowerCase();
+          confidence = results[i].confidence;
+          if (listening) {
+            if (event.results[event.resultIndex].isFinal) {
+              if (!sureUnique[commandText]) {
+                if (debugState) {
+                  console.log('Adding ' + commandText + ' to list of sure commands');
+                }
+                this.sureResults.push(commandText);
+                sureUnique[commandText] = true;
+              }
+            } else {
+              if (!unsureUnique[commandText]) {
+                if (debugState) {
+                  console.log('Adding ' + commandText + ' to list of unsure commands');
+                }
+                this.unsureResults.push(commandText);
+                unsureUnique[commandText] = true;
+              }
+            }
+            if (debugState) {
+              console.log('Listening: Recognized: ' + commandText + ' with ' + confidence + ' confidence');
+            }
+          } else {
+            if (debugState) {
+              console.log('Hearing: Recognized: ' + commandText + ' with ' + confidence + ' confidence');
+            }
+            activateCallback = activationCommands[commandText.toLowerCase()];
+            if (activateCallback) {
+              listening = true;
+              activateCallback();
+            }
+          }
+        }
+        return false;
+      };
+      
+      if (options.autoStart) {
+        this.start();
+      }
+    },
+    
+    start: function() {
+      recognition.start();
+    },
+
+    abort: function() {
+      recognition.abort();
+    },
+
+    debug: function(newState) {
+      if (arguments.length > 0) {
+        debugState = !!newState;
+      } else {
+        debugState = true;
+      }
+    },
+    
+    getSureResults: function() {
+      return this.sureResults;
+    },
+    
+    getUnsureResults: function() {
+      return this.unsureResults;
+    },
+
+    setLanguage: function(language) {
+      lang = language;
+      if (recognition && recognition.abort) {
+        recognition.lang = language;
+      }
+    },
+    
+    addActivationCommand: function(command, callback) {
+      activationCommands[command.toLowerCase()] = callback;
+    }
+  }
+  
+  return uxSpeechRecognition;
 });
