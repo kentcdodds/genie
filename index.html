@@ -109,7 +109,7 @@
           <div class="sesame-wish-options">
             <div class="sesame-wish-option"
             ng-repeat="sesameWish in sesame.wishes"
-            ng-class="{focused: focusedSesameWish == sesameWish}">{{($index + 1) + '. ' + sesameWish.displayText}}</div>
+            ng-class="{focused: focusedSesameWish == sesameWish}">{{($index + 1) + '. ' + (sesameWish.data.displayText || sesameWish.magicWords[0])}}</div>
           </div>
         </div>
       </div>
