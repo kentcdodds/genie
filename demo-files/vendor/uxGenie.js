@@ -8,24 +8,55 @@
 
 angular.module('uxGenie', []); // Create the module
 
-angular.module('uxGenie').directive('uxLamp', function(genie, $timeout, $document) {
+angular.module('uxGenie').directive('uxLamp', function(genie, uxSpeechRecognition, $timeout, $document) {
   return {
     replace: true,
     template: function(el, attr) {
-      var ngShow = ' ng-show="uxGenieVisible"';
-      if (attr.rubClass) {
-        ngShow = '';
+      var ngShowSesame = ' ng-show="uxOpenSesame"';
+      var ngShowLamp = ' ng-show="uxGenieVisible"';
+      var microphone = '';
+      var sesame = '';
+
+      if (attr.uxOpenSesameClass) {
+        ngShowSesame = '';
       }
-      return ['<div class="genie-container"' + ngShow + '>',
-        '<input type="text" ng-model="genieInput" class="lamp-input input" />',
-        '<div ng-show="matchingWishes.length > 0" class="genie-wishes">',
-          '<div class="genie-wish" ' +
-            'ng-repeat="wish in matchingWishes" ' +
-            'ng-class="{focused: focusedWish == wish}" ' +
-            'ng-click="makeWish(wish)" ' +
-            'ng-mouseenter="focusOnWish(wish, false)">',
-          '{{wish.data.displayText || wish.magicWords[0]}}',
-        '</div></div></div>'].join('');
+      if (attr.rubClass) {
+        ngShowLamp = '';
+      }
+
+      if (attr.micClass && !uxSpeechRecognition.unsupported) {
+        microphone = '<i class="' + attr.micClass + '"></i>';
+        var sesame = ['<div class="ux-sesame"' + ngShowSesame + '>',
+            '<h1>Your wish is my command...</h1>',
+            '<div class="sesame-interface">',
+              '<div class="sesame-mic"><i class="icon-mic"></i></div>',
+              '<div class="genie-controls">',
+                '<div class="speech-text">',
+                  '<span class="sure">{{sesame.words.sure}}</span>',
+                  '<span class="unsure"> {{sesame.words.unsure}}</span>',
+                '</div>',
+                '<div class="sesame-wish-options">',
+                  '<div class="sesame-wish-option"',
+                    'ng-repeat="sesameWish in sesame.wishes"',
+                    'ng-class="{focused: focusedSesameWish == sesameWish}">{{($index + 1) + \'. \' + (sesameWish.data.displayText || sesameWish.magicWords[0])}}',
+                  '</div>',
+                '</div>',
+              '</div>',
+            '</div>',
+          '</div>'].join('');
+      }
+      return ['<div class="genie-container">',
+        '<div class="lamp-container"' + ngShowLamp + '>',
+          '<input type="text" ng-model="genieInput" class="lamp-input input" />',
+          microphone,
+          '<div ng-show="matchingWishes.length > 0" class="genie-wishes">',
+            '<div class="genie-wish" ' +
+              'ng-repeat="wish in matchingWishes" ' +
+              'ng-class="{focused: focusedWish == wish}" ' +
+              'ng-click="makeWish(wish)" ' +
+              'ng-mouseenter="focusOnWish(wish, false)">',
+            '{{wish.data.displayText || wish.magicWords[0]}}',
+        '</div></div></div>', sesame, '</div>'].join('');
     },
     scope: {
       rubClass: '@',
@@ -33,15 +64,24 @@ angular.module('uxGenie').directive('uxLamp', function(genie, $timeout, $documen
       rubModifier: '@',
       rubEventType: '@',
       wishCallback: '&',
-      localStorage: '='
+      localStorage: '=',
+      openSesameClass: '@'
     },
     link: function(scope, el, attr) {
-      var inputEl = angular.element(el.children()[0]);
-      var genieOptionContainer = angular.element(el.children()[1]);
+      var elChildren = el.children();
+      var lampContainer = angular.element(elChildren[0]);
+      var sesameEl = elChildren.length > 1 ? angular.element(elChildren[1]) : null;
+      var inputEl = angular.element(lampContainer.children()[0]);
+      var microphoneEl;
+      var genieOptionContainer = angular.element(lampContainer.children()[1]);
+      if (sesameEl) {
+        microphoneEl = genieOptionContainer;
+        genieOptionContainer = angular.element(lampContainer.children()[2]);
+      }
       var rubShortcut = scope.rubShortcut || '32';
       var rubModifier = scope.rubModifier || 'ctrlKey';
       var saveToLocalStorage = function() {};
-      
+
       rubShortcut = parseInt(rubShortcut, 10);
       if (isNaN(rubShortcut)) {
         rubShortcut = rubShortcut[0].charCodeAt(0);
@@ -95,7 +135,7 @@ angular.module('uxGenie').directive('uxLamp', function(genie, $timeout, $documen
             return;
           }
         }
-        
+
         scope.$apply(function() {
           scope.uxGenieVisible = false;
         });
@@ -160,6 +200,15 @@ angular.module('uxGenie').directive('uxLamp', function(genie, $timeout, $documen
         }
       })());
 
+      if (microphoneEl) {
+        microphoneEl.bind('click', function() {
+          scope.$apply(function() {
+            scope.uxOpenSesame = true;
+            scope.uxGenieVisible = false;
+          });
+        });
+      }
+
       // Making a wish
       scope.makeWish = function(wish) {
         scope.wishCallback(genie.makeWish(wish, scope.genieInput));
@@ -215,105 +264,39 @@ angular.module('uxGenie').directive('uxLamp', function(genie, $timeout, $documen
           enteredMagicWords: JSON.parse(localStorage.getItem('genie'))
         };
         genie.options(options);
-    
-        // Setup update machine's preferences 
+
+        // Setup update machine's preferences
         saveToLocalStorage = function(wish) {
           // This way 'genie' is never set in local storage until a wish is made.
           localStorage.setItem('genie', JSON.stringify(genie.options().enteredMagicWords, null, 2));
         }
       }
-      
+
       scope.$watch('genieInput', function(newVal) {
         updateMatchingWishes(newVal);
       });
-    }
-  }
-});
 
-angular.module('uxGenie').directive('uxSesame', function(genie, uxSpeechRecognition) {
-  return {
-    replace: true,
-    transclude: true,
-    template: function(el, attr) {
-      return ['<div ng-transclude></div>'].join('');
-    },
-    scope: {
-      sesame: '='
-    },
-    link: function(scope, el, attr) {
+
+      /*
+       * Sesame stuff
+       */
       if (uxSpeechRecognition.unsupported) {
-        el.remove();
         return;
       }
-      var listening = false;
-      var requesting = false;
       var numberMap = {
-        one: 1,
-        what: 1,
-
-        two: 2,
-        tube: 2,
-
-        three: 3,
-        tree: 3,
-
-        four: 4,
-        for: 4,
-
-        five: 5,
-        fine: 5,
-
-        six: 6,
-        text: 6,
-
+        one: 1, what: 1,
+        two: 2, tube: 2,
+        three: 3, tree: 3,
+        four: 4, for: 4,
+        five: 5, fine: 5,
+        six: 6, text: 6,
         seven: 7,
-
-        eight: 8,
-        att: 8,
-
+        eight: 8, att: 8,
         nine: 9,
-
         ten: 10
-      }
-      scope.sureResults = '';
-      scope.unsureResults = '';
-      uxSpeechRecognition.initialize({
-        onSureResult: function(results) {
-          handleResult(results, 'sure');
-        },
-        onUnsureResult: function(results) {
-          handleResult(results, 'unsure');
-        },
-        callbacks: {
-          onstart: function() {
-            listening = true;
-            requesting = false;
-          },
-          onend: function() {
-            listening = false;
-          },
-          onerror: function() {
-            listening = false;
-          }
-        }
-      });
-
-      var handleResult = function(results, wordType) {
-        var newText = results.length ? results[0].text : '';
-        var number = numberMap[newText.toLowerCase()] || parseInt(newText);
-        if (number) {
-          if (wordType === 'sure') {
-            makeWish(number - 1);
-          }
-          return;
-        }
-        scope.$apply(function() {
-          scope.sesame.words[wordType] = newText;
-          updateWishes();
-        });
       };
 
-      scope.sesame = {
+      scope.sesame = scope.sesame || {
         wishes: [],
         words: {
           sure: '',
@@ -321,7 +304,66 @@ angular.module('uxGenie').directive('uxSesame', function(genie, uxSpeechRecognit
         }
       };
 
-      var updateWishes = function() {
+      $document.bind('keyup', function(event) {
+        if (event.which === 27) {
+          scope.openSesame = false;
+        }
+      });
+
+      scope.$watch('uxOpenSesame', function(isVisible) {
+        if (isVisible) {
+          uxSpeechRecognition.start();
+          if (scope.openSesameClass) {
+            sesameEl.addClass(scope.openSesameClass);
+          }
+        } else {
+          uxSpeechRecognition.abort();
+          if (scope.openSesameClass) {
+            sesameEl.removeClass(scope.openSesameClass);
+          }
+        }
+      });
+
+      uxSpeechRecognition.initialize({
+        onSureResult: function(results) {
+          scope.sesame.words.unsure = '';
+          handleResult(results, 'sure');
+        },
+        onUnsureResult: function(results) {
+          scope.sesame.words.sure = '';
+          handleResult(results, 'unsure');
+        }
+      });
+
+      var handleResult = function(results, wordType) {
+        if (!results.length) {
+          return;
+        }
+        var newText = results[0].text;
+        var number = numberMap[newText.toLowerCase()] || parseInt(newText);
+        if (number) {
+          scope.sesame.wishes = [scope.sesame.wishes[number - 1]];
+        } else {
+          scope.sesame.words[wordType] = newText;
+          scope.sesame.wishes = getCurrentWishes();
+        }
+        if (scope.sesame.wishes.length === 1 && wordType === 'sure') {
+          makeWish(0);
+        } else if (scope.sesame.wishes.length === 0) {
+          setTimeout(function(){
+            scope.sesame.words.sure = '';
+            scope.sesame.words.unsure = '';
+            safeApply(scope);
+          }, 4000);
+        }
+        safeApply(scope);
+      };
+
+      var safeApply = function(scope, fn) {
+        (scope.$$phase || scope.$root.$$phase) ? fn() : scope.$apply(fn);
+      };
+
+      var getCurrentWishes = function() {
         var wishes = [];
         if (scope.sesame.words.sure) {
           wishes = wishes.concat(genie.getMatchingWishes(scope.sesame.words.sure));
@@ -335,7 +377,7 @@ angular.module('uxGenie').directive('uxSesame', function(genie, uxSpeechRecognit
               wishes.splice(j--, 1);
           }
         }
-        scope.sesame.wishes = wishes;
+        return wishes;
       };
 
       var makeWish = function(index) {
@@ -343,21 +385,10 @@ angular.module('uxGenie').directive('uxSesame', function(genie, uxSpeechRecognit
           return;
         }
         genie.makeWish(scope.sesame.wishes[index], scope.sesame.words.sure);
+        scope.sesame.words.sure = '';
+        scope.sesame.words.unsure = '';
+        scope.sesame.wishes = [];
       };
-
-      // Take this out in implementation
-      var startRecognizing = function() {
-        setTimeout(function() {
-          if (!listening && !requesting) {
-            requesting = true;
-            uxSpeechRecognition.start();
-          }
-          startRecognizing();
-        }, 5000);
-      };
-      uxSpeechRecognition.start();
-      startRecognizing();
-
     }
   }
 });
@@ -369,51 +400,54 @@ angular.module('uxGenie').factory('uxSpeechRecognition', function($window) {
       $window.oSpeechRecognition ||
       $window.SpeechRecognition;
 
-  var recognition, callbacks,
-    onSureResult, onUnsureResult;
+  var recognition, callbacks, hearing, alwaysListen,
+    onSureResult, onUnsureResult, activationCommands;
 
   if (!SpeechRecognition) {
     return {unsupported: true};
   }
-  
+
   var uxSpeechRecognition = {
     initialize: function(options) {
       options = options || {};
       recognition = new SpeechRecognition();
-      
+
       recognition.maxAlternatives = 5;
       recognition.continuous = true;
       recognition.lang = 'en-US';
       recognition.interimResults = true;
 
+      alwaysListen = !!options.activationCommands;
+      hearing = !!options.hearing;
       callbacks = options.callbacks || {};
+      activationCommands = options.activationCommands || {};
       onSureResult = options.onSureResult || function() {};
       onUnsureResult = options.onUnsureResult || function() {};
 
 
       recognition.onstart = function() {
-        console.log('onstart');
         if (callbacks.onstart) {
           callbacks.onstart();
         }
       };
 
       recognition.onerror = function() {
-        console.log('onerror');
         if (callbacks.onerror) {
           callbacks.onerror();
         }
       };
 
       recognition.onend = function() {
-        console.log('onend');
         if (callbacks.onend) {
           callbacks.onend();
+          hearing = false;
+          if (alwaysListen) {
+            uxSpeechRecognition.start();
+          }
         }
       };
 
       recognition.onresult = function(event) {
-        console.log('onresult');
         if (callbacks.onresult) {
           callbacks.onresult(event);
         }
@@ -426,19 +460,29 @@ angular.module('uxGenie').factory('uxSpeechRecognition', function($window) {
         var confidence;
         var sureUnique = {};
         var unsureUnique = {};
-        
+
         for (var i = 0; i < results.length; i++) {
           commandText = results[i].transcript.trim().toLowerCase();
           confidence = results[i].confidence;
-          if (event.results[event.resultIndex].isFinal) {
-            if (!sureUnique[commandText]) {
-              sureResults.push({text: commandText, confidence: confidence});
-              sureUnique[commandText] = true;
+          if (hearing) {
+            if (event.results[event.resultIndex].isFinal) {
+              if (!sureUnique[commandText]) {
+                sureResults.push({text: commandText, confidence: confidence});
+                sureUnique[commandText] = true;
+              }
+            } else {
+              if (!unsureUnique[commandText]) {
+                unsureResults.push({text: commandText, confidence: confidence});
+                unsureUnique[commandText] = true;
+              }
             }
           } else {
-            if (!unsureUnique[commandText]) {
-              unsureResults.push({text: commandText, confidence: confidence});
-              unsureUnique[commandText] = true;
+            for (var regex in activationCommands) {
+              if (new RegExp(regex, 'i').exec(commandText)) {
+                hearing = true;
+                activationCommands[regex]();
+                return;
+              }
             }
           }
         }
@@ -452,8 +496,12 @@ angular.module('uxGenie').factory('uxSpeechRecognition', function($window) {
 
         return false;
       };
+
+      if (alwaysListen) {
+        uxSpeechRecognition.start();
+      }
     },
-    
+
     start: function() {
       recognition.start();
     },
@@ -468,6 +516,6 @@ angular.module('uxGenie').factory('uxSpeechRecognition', function($window) {
       }
     }
   }
-  
+
   return uxSpeechRecognition;
 });

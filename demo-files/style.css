@@ -51,6 +51,15 @@ h3 {
   margin: 0px;
 }
 
+.genie-container > i {
+  position: absolute;
+  right: 56px;
+  top: 28px;
+  font-size: 35px;
+  color: #a4a4a4;
+  cursor: pointer;
+}
+
 .genie-wishes {
   margin-top: 10px;
   cursor: pointer;
@@ -149,25 +158,35 @@ h3 {
 /*
  * uxSesame styles
  */
-#uxSesameContainer {
-    background-color: rgba(30, 30, 30, 0.75);
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    text-align: center;
-    padding-top: 30px;
-    color: white;
+.ux-sesame {
+  background-color: rgba(30, 30, 30, 0.75);
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  text-align: center;
+  padding-top: 30px;
+  color: white;
+  opacity: 0;
 }
 
-#uxSesameContainer .sesame-interface {
+.ux-sesame.open-sesame {
+  opacity: 1;
+  z-index: 1050;
+}
+
+.ux-sesame {
+  transition: all .2s ease-in-out;
+}
+
+.ux-sesame .sesame-interface {
   margin: 0% 10% 0% 10%;
 }
 
-#uxSesameContainer .sesame-mic {
+.ux-sesame .sesame-mic {
   margin-top:40px;
   border-radius: 50%;
   height: 250px; 
@@ -176,7 +195,7 @@ h3 {
   margin-left: auto;
 }
 
-#uxSesameContainer .sesame-mic .icon-mic {
+.ux-sesame .sesame-mic .icon-mic {
   font-size: 150px;
   width: 244px;
   padding-top: 44px;
@@ -186,20 +205,20 @@ h3 {
   border-radius: 50%;
 }
 
-#uxSesameContainer .genie-controls {
+.ux-sesame .genie-controls {
   font-size: 26px;
   margin: 50px;
 }
 
-#uxSesameContainer .genie-controls .speech-text {
+.ux-sesame .genie-controls .speech-text {
   margin-bottom: 30px;
 }
 
-#uxSesameContainer .genie-controls .speech-text .unsure {
+.ux-sesame .genie-controls .speech-text .unsure {
   color: #AAA;
 }
 
-#uxSesameContainer .sesame-wish-options {
+.ux-sesame .sesame-wish-options {
   line-height: 30px;
   text-align: left;
   background-color: rgba(128, 128, 128, 0.5);
@@ -209,22 +228,22 @@ h3 {
   margin-right: auto;
 }
 
-#uxSesameContainer .sesame-wish-option {
+.ux-sesame .sesame-wish-option {
   padding: 10px;
   margin: 5px 0px 5px 0px;
 }
 
-#uxSesameContainer .sesame-wish-option.focused:first-child {
+.ux-sesame .sesame-wish-option.focused:first-child {
   border-top-left-radius: 16px;
   border-top-right-radius: 16px;
 }
 
-#uxSesameContainer .sesame-wish-option.focused:last-child {
+.ux-sesame .sesame-wish-option.focused:last-child {
   border-bottom-left-radius: 16px;
   border-bottom-right-radius: 16px;
 }
 
-#uxSesameContainer .sesame-wish-option.focused {
+.ux-sesame .sesame-wish-option.focused {
   background-color: white;
   color: black;
 }

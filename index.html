@@ -95,26 +95,9 @@
       <textarea id="genie-export-import" ng-model="genieExportImport" placeholder="Output/Input of Export/Import Genie"></textarea>
     </div>
     <div id="uxLampContainer" class="{{genieStyle.color + ' ' + genieStyle.size + ' ' + genieStyle.animationSpeed}}">
-      <div ux-lamp rub-class="visible" wish-callback="wishMade()" local-storage="true"></div>
+      <div ux-lamp rub-class="visible" wish-callback="wishMade()" local-storage="true" mic-class="icon-mic" open-sesame-class="open-sesame"></div>
     </div>
-    <div id="uxSesameContainer" ux-sesame sesame="sesame">
-      <h1>Your wish is my command...</h1>
-      <div class="sesame-interface">
-        <div class="sesame-mic"><i class="icon-mic"></i></div>
-        <div class="genie-controls">
-          <div class="speech-text">
-            <span class="sure">{{sesame.words.sure}}</span>
-            <span class="unsure"> {{sesame.words.unsure}}</span>
-          </div>
-          <div class="sesame-wish-options">
-            <div class="sesame-wish-option"
-            ng-repeat="sesameWish in sesame.wishes"
-            ng-class="{focused: focusedSesameWish == sesameWish}">{{($index + 1) + '. ' + (sesameWish.data.displayText || sesameWish.magicWords[0])}}</div>
-          </div>
-        </div>
-      </div>
-    </div>
-    
+
     <script src="genie.js"></script>
     <script src="./demo-files/vendor/angular.min.js"></script>
     <script src="./demo-files/app.js"></script>

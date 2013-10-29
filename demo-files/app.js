@@ -9,7 +9,8 @@
   app.controller('GenieCtrl', function($scope, genie, ga) {
 
     $scope.genieVisible = false;
-    
+    $scope.openSesame = false;
+
     $scope.genieStyle = {
       color: 'light',
       size: 'large',
@@ -19,8 +20,15 @@
     $scope.wishMade = function(wish) {
       $scope.wishesMade++;
       ga('send', 'event', 'wish', 'made', $scope.wishesMade);
+    };
+
+    $scope.sesameMicClicked = function() {
+      $scope.$apply(function() {
+        $scope.genieVisible = false;
+        $scope.openSesame  = true;
+      });
     }
-    
+
     $scope.exportOrImportGenie = function() {
       if ($scope.genieExportImport) {
         genie.options(JSON.parse($scope.genieExportImport));
