@@ -260,6 +260,8 @@ Contributing
 --
 I'd love to accept [pull requests](https://github.com/kentcdodds/genie/pulls). Please make
 sure that any new functionality is fully tested in /test/index.html and that all tests pass!
+Also, please uglify `genie.js` to `genie.min.js` using [UglifyJS2](https://github.com/mishoo/UglifyJS2)
+and this command: `uglifyjs genie.js -o genie.min.js --comments` thanks!
 
 Issues
 --
