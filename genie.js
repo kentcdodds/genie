@@ -56,6 +56,8 @@
         throw 'Cannot make an object a magic word!\n' + JSON.stringify(magicWords, null, 2);
       }
     }
+    
+    action = _createAction(action);
 
     var wish = {
       id: id,
@@ -66,6 +68,26 @@
     };
     _wishes[id] = wish;
     return _wishes[id];
+  }
+
+  function _createAction(action) {
+    if (typeof action === 'function') { // Custom action
+      return action;
+    }
+
+    if (typeof action === 'string') { // Default nav action
+      action = {
+        destination: action
+      }
+    }
+
+    return function() {
+      if (action.openNewTab) {
+        window.open(action.destination, '_blank');
+      } else {
+        window.location.href = action.destination;
+      }
+    };
   }
 
   function deregisterWish(id) {

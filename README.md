@@ -182,6 +182,18 @@ genie.enabled(boolean | optional);
 genie.returnOnDisabled(boolean | optional);
 ```
 
+Special Wish Actions
+--
+There are some actions that are common use cases, so genie helps with these (currently only one
+special wish action):
+
+Navigation
+---
+You for the action of the wish you can provide either a string (URL) or an object with a destination
+property (URL). If the action is an object this gives you a few options:
+ - openNewTab - If truthy, this will open the URL using '_blank'. Otherwise opens in the current window.
+ - That's all for now... any [other](https://github.com/kentcdodds/genie/pulls) [ideas?](https://github.com/kentcdodds/genie/issues)
+
 About Matching Priority
 --
 The wishes returned from `getMatchingWishes` are ordered with the following priority

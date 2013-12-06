@@ -346,6 +346,25 @@
           }
         }
       }
+    },
+    testNavigationWish: function(t) {
+      prepForTest();
+      var destination = window.location.href + '#success';
+      var wish = genie({
+        magicWords: 'Add success hash',
+        action: destination
+      });
+      genie.makeWish(wish);
+      t.assertEqual(window.location.href, destination);
+      // Cannot really test the new tab action, but if I could, it would look like this:
+      // wish = genie({
+      //   magicWords: 'Open GenieJS repo',
+      //   action: {
+      //     destination: 'http://www.github.com/kentcdodds/genie',
+      //     openNewTab: true
+      //   }
+      // });
+      // genie.makeWish(wish);
     }
   });
 })();

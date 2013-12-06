@@ -85,9 +85,10 @@
     }
     
     function addDestinationWish(magicWord, destination) {
-      addWish('Go to ' + magicWord, function() {
-        window.open(destination, '_blank');
-      });      
+      addWish('Go to ' + magicWord, {
+        destination: destination,
+        openNewTab: true
+      });
     }
 
     addDestinationWish('Genie on GitHub', 'http://www.github.com/kentcdodds/genie');
