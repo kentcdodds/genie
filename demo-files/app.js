@@ -19,7 +19,9 @@
     $scope.wishMade = function(wish) {
       $scope.wishesMade++;
       ga('send', 'event', 'wish', 'made', $scope.wishesMade);
-    }
+    };
+
+    $scope.wishMagicWords = '';
     
     $scope.exportOrImportGenie = function() {
       if ($scope.genieExportImport) {
@@ -28,37 +30,20 @@
         $scope.genieExportImport = JSON.stringify(genie.options(), null, 2);
       }
     };
-    
+
     $scope.addWishFromInput = function() {
-      if ($scope.wish) {
-        ga('send', 'event', 'button', 'click', 'Create Wish');
-        addWish($scope.wish.displayText, $scope.wish.magicWords, $scope.wish.id);
-        $scope.wish.displayText = '';
-        $scope.wish.magicWords = '';
-        $scope.wish.id = '';
+      if ($scope.wishMagicWords) {
+        ga('send', 'event', 'button', 'click', 'Create Wish: ' + $scope.wishMagicWords);
+        addWish($scope.wishMagicWords);
+        $scope.wishMagicWords = '';
       }
     };
 
     function addWish(magicWords, action) {
-      var id = undefined;
-      if (typeof magicWords === 'function') {
-        action = magicWords;
-        magicWords = undefined;
-      }
-      if (magicWords === undefined) {
-        magicWords = [];
-      } else if (typeof magicWords === 'string') {
-        magicWords = [magicWords];
-      }
-      if (magicWords.indexOf('[') == 0) {
-        magicWords = JSON.parse(magicWords);
-      }
-      if (typeof action === 'string') {
-        id = action;
-        action = undefined;
+      if (typeof magicWords === 'string') {
+        magicWords = magicWords.split(',');
       }
       var wish = genie({
-        id: id,
         magicWords: magicWords,
         action: action || function(wish) {
           alert('Your "' + wish.magicWords[0] + '" wish is my command!');

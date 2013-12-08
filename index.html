@@ -4,7 +4,7 @@
     <title>GenieJS</title>
     <meta name="author" content="Kent C. Dodds">
     <meta name="keywords" content="GenieJS, Alfred App, JavaScript, User Experience, UX">
-    <meta name="description" content="GenieJS is a JavaScript library to improve user expereince by allowing users to perform actions with their keyboard. GenieJS also learns the user's preferences over time.">
+    <meta name="description" content="GenieJS is a JavaScript library to improve user experience by allowing users to perform actions with their keyboard. GenieJS also learns the user's preferences over time.">
     <link rel="stylesheet" href="demo-files/vendor/bootstrap.min.css" />
     <link rel="stylesheet" href="demo-files/style.css" />
   </head>
@@ -22,6 +22,11 @@
         see the <a href="https://github.com/kentcdodds/genie" ga>project on GitHub</a>.<br />
         Click <a href="./test" ga>here</a> to see/run the tests...
       </p>
+      <p>
+        <strong>Note:</strong> If you're on a mobile device, you will not be able to use this demo. Instead you can watch this
+        <a href="http://www.youtube.com/watch?v=nJrtn8B4FzM" ga>demo video</a>. Please also visit the
+        <a href="https://github.com/kentcdodds/genie" ga>GitHub project</a>.
+      </p>
     </header>
 
     <hr />
@@ -32,7 +37,7 @@
       </p>
       <ol id="instructions-list">
         <li>Press Ctrl+Space to open the Genie Search Box</li>
-        <li>Optionally type an apostrophe (') to show all wishes (<a href="https://github.com/kentcdodds/ng-genie#view-all-wishes" ga>about this feature</a>)</li>
+        <li>Optionally type an apostrophe (') to show all wishes (<a href="https://github.com/kentcdodds/ux-genie#view-all-wishes" ga>about this feature</a>)</li>
         <li>Type anything to filter the wishes</li>
         <li>Mouse over or arrow down to the wish you wish and click/press return</li>
         <li>Notice how genie organizes the wishes as you make them</li>
@@ -48,10 +53,8 @@
         Create and add wishes here
       </p>
       <form name="wishCreator">
-        <input type="text" ng-model="wish.id" placeholder="ID (optional)" />
-        <input type="text" ng-model="wish.magicWords" placeholder="Magic Words (JSON Array/String)" />
-        <input type="text" ng-model="wish.text" placeholder="Display Text" />
-        <button type="submit" class="btn btn-success" ng-click="addWishFromInput()">Create Wish</button>
+        <input type="text" ng-model="wishMagicWords" placeholder="Comma separated Magic Words" /><br />
+        <button type="submit" class="btn btn-success" ng-click="addWishFromInput(wish.magicWords)">Create Wish</button>
       </form>
     </div>
     
