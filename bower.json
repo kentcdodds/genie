@@ -6,9 +6,9 @@
   "authors": [
     "Kent C. Dodds <kent+github@doddsfamily.us>"
   ],
-  "description": "Simple library to emulate the same kind of behavior seen in apps like Alfred.",
+  "description": "Simple library to improve web app usability and user productivity. Better than cryptic keyboard shortcuts.",
   "license": "MIT",
-  "private": true,
+  "private": false,
   "ignore": [
     "**/.*",
     "demo-files",
