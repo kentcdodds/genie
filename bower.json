@@ -1,0 +1,22 @@
+{
+  "name": "genie",
+  "main": "genie.js",
+  "version": "0.1.0",
+  "homepage": "https://github.com/kentcdodds/genie",
+  "authors": [
+    "Kent C. Dodds <kent+github@doddsfamily.us>"
+  ],
+  "description": "Simple library to emulate the same kind of behavior seen in apps like Alfred.",
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "demo-files",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests",
+    "index.html",
+    "genie-js.png"
+  ]
+}
