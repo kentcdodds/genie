@@ -9,6 +9,11 @@ h3 {
 .btn {
   margin-bottom: 12px;
 }
+
+.follow-social {
+  margin-top: 12px;
+}
+
 #wish-output {
   color: #808080;
 }
