@@ -1,4 +1,6 @@
-[![Build Status](https://travis-ci.org/kentcdodds/genie.png)](https://travis-ci.org/kentcdodds/genie) <img src="other/bower-badge.png" width="130" height="30">
+[![Build Status](https://travis-ci.org/kentcdodds/genie.png)](https://travis-ci.org/kentcdodds/genie)
+
+[![Get With Bower]("other/bower-badge.png")](http://bower.io/)
 
 GenieJS
 =====
