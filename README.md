@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/kentcdodds/genie.png)](https://travis-ci.org/kentcdodds/genie)
 
-[![Get With Bower]("other/bower-badge.png")](http://bower.io/)
+[![Get With Bower](other/bower-badge.png)](http://bower.io/)
 
 GenieJS
 =====
