@@ -1,22 +1,21 @@
 {
   "name": "genie",
   "main": "genie.js",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "homepage": "https://github.com/kentcdodds/genie",
   "authors": [
-    "Kent C. Dodds <kent+github@doddsfamily.us>"
+    "Kent C. Dodds <kent@doddsfamily.us>"
   ],
-  "description": "Simple library to improve web app usability and user productivity. Better than cryptic keyboard shortcuts.",
+  "description": "A JavaScript library committed to improving user experience by allowing users to more easily perform more actions with their keyboard than cryptic keyboard shortcuts",
   "license": "MIT",
   "private": false,
   "ignore": [
     "**/.*",
-    "demo-files",
-    "node_modules",
-    "bower_components",
-    "test",
-    "tests",
+    ".travis.yml",
+    "Gruntfile.js",
     "index.html",
-    "genie-js.png"
+    "LICENSE",
+    "package.json",
+    "README.md"
   ]
 }

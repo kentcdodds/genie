@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/kentcdodds/genie.png)](https://travis-ci.org/kentcdodds/genie) <img src="other/bower-badge.png" width="130" height="30">
+
 GenieJS
 =====
 *Genie* |ˈjēnē| (noun): a spirit of Arabian folklore, as traditionally depicted imprisoned
@@ -270,10 +272,11 @@ GenieJS. Feel free to go to that project [here](https://www.github.com/kentcdodd
 
 Contributing
 --
-I'd love to accept [pull requests](https://github.com/kentcdodds/genie/pulls). Please make
-sure that any new functionality is fully tested in /test/index.html and that all tests pass!
-Also, please uglify `genie.js` to `genie.min.js` using [UglifyJS2](https://github.com/mishoo/UglifyJS2)
-and this command: `uglifyjs genie.js -o genie.min.js --comments` thanks!
+I'd love to accept [pull requests](https://github.com/kentcdodds/genie/pulls). I'm in the middle
+of changing how builds work, so please make sure that test the old tests still runs (test/index.html).
+Also before you push, make sure to do the following:
+ 1. Run `grunt bumpup:patch` (or minor, or major as the case may be)
+ 2. Run `grunt` to build the library (don't push if this fails :))
 
 Issues
 --
@@ -281,12 +284,19 @@ If you have a problem with GenieJS please don't hesitate to use GitHub's
 [issue tracker](https://github.com/kentcdodds/genie/issues) to report it. I'll do my best
 to get it resolved as quickly as I can.
 
-The Future...
+Special Thanks
 --
-... [is as bright as your faith](https://www.lds.org/general-conference/2009/04/be-of-good-cheer?lang=eng).
-*And* I plan on adding the following features in the future
+To the developers that make software development awesome. Thanks to pull requesters and issue reporters.
+And a special thanks to these projects:
 
- - Finished... Ideas? Pull request or add an issue
+ - [NodeJS](http://nodejs.org/)
+ - [NPM](https://npmjs.org/)
+ - [Bower](http://bower.io/)
+ - [GruntJS](http://gruntjs.com/)
+ - [Travis-CI](https://travis-ci.org/)
+ - [Mocha](http://visionmedia.github.io/mocha/)
+ - [Chai](http://chaijs.com/)
+ - And of course [GitHub](http://www.github.com)
 
 License
 --
