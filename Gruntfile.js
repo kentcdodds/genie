@@ -40,5 +40,7 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-bumpup');
 
-  grunt.registerTask('default', ['mocha', 'uglify']);
+  grunt.registerTask('build', ['mocha', 'uglify']);
+  grunt.registerTask('default', ['build']);
+
 };
