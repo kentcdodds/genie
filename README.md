@@ -1,15 +1,22 @@
-[![Build Status](https://travis-ci.org/kentcdodds/genie.png)](https://travis-ci.org/kentcdodds/genie)
-
-[![Get With Bower](other/bower-badge.png)](http://bower.io/)
-
-GenieJS
+Genie.js
 =====
+A JavaScript library committed to improving user experience by empowering users to interact with web apps using the keyboard (better than cryptic shortcuts).
+
 *Genie* |ˈjēnē| (noun): a spirit of Arabian folklore, as traditionally depicted imprisoned
 within a bottle or oil lamp, and capable of granting wishes when summoned.
 
 [Demo](http://kentcdodds.github.io/genie)
 
 [Tests](http://kentcdodds.github.io/genie/test)
+
+[![Build Status](https://travis-ci.org/kentcdodds/genie.png)](https://travis-ci.org/kentcdodds/genie)
+
+[![Built with Grunt](https://cdn.gruntjs.com/builtwith.png)](http://gruntjs.com/)
+
+[![RequireJS Ready](other/requirejs-badge.png)](http://requirejs.org/)
+
+[![Get With Bower](other/bower-badge.png)](http://bower.io/) `bower install genie`
+
 
 Watered Down Explanation
 --
