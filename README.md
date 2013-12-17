@@ -1,5 +1,5 @@
-Genie.js
-=====
+#Genie.js
+
 A JavaScript library committed to improving user experience by empowering users to interact with web apps using the keyboard (better than cryptic shortcuts).
 
 *Genie* |ˈjēnē| (noun): a spirit of Arabian folklore, as traditionally depicted imprisoned
@@ -18,8 +18,8 @@ within a bottle or oil lamp, and capable of granting wishes when summoned.
 [![Get With Bower](other/bower-badge.png)](http://bower.io/) `bower install genie`
 
 
-Watered Down Explanation
---
+##Watered Down Explanation
+
 GenieJS is a simple library to emulate the same kind of behavior seen in apps like
 [Alfred](http://www.alfredapp.com/). Essentially, you register actions associated with
 keywords. Then you can request the genie to perform that action based on the best keyword
@@ -30,8 +30,8 @@ those will be come first when a list of matching actions is requested. If that d
 make sense, don't worry, hopefully the tutorial, tests, and demo will help explain how
 it works.
 
-Vernacular
---
+##Vernacular
+
 *Wish*: An object with an id, action, and magic words.
 
 *Action*: What to call when this wish is to be executed.
@@ -44,8 +44,8 @@ the Hill if chosen again.
 *King of the Hill*: The wish which gets preference for a certain magic word until the
 On Deck wish is chosen again (it then becomes On Deck).
 
-How to use it
---
+##How to use it
+
 If you're using [RequireJS](http://requirejs.org/) then you can simply `require('genie')`.
 Genie also checks for the global `exports` variable, so this is usable as a
 [NodeJS](http://nodejs.org/) module as well.
@@ -96,8 +96,8 @@ magic word, `vacuumWish` was the wish given.
 This behavior simulates apps such as [Alfred](http://www.alfredapp.com/) which is the
 goal of this library!
 
-API
---
+##API
+
 There are a few internal objects you may want to be aware of:
 ```javascript
 var wishObject = {
@@ -197,19 +197,20 @@ genie.enabled(boolean | optional);
 genie.returnOnDisabled(boolean | optional);
 ```
 
-Special Wish Actions
---
+##Special Wish Actions
+
 There are some actions that are common use cases, so genie helps with these (currently only one
 special wish action):
 
 ###Navigation
+
 You for the action of the wish you can provide either a string (URL) or an object with a destination
 property (URL). If the action is an object this gives you a few options:
  - openNewTab - If truthy, this will open the URL using '_blank'. Otherwise opens in the current window.
  - That's all for now... any [other](https://github.com/kentcdodds/genie/pulls) [ideas?](https://github.com/kentcdodds/genie/issues)
 
-About Matching Priority
---
+##About Matching Priority
+
 The wishes returned from `getMatchingWishes` are ordered with the following priority
   1. In order of most recently executed (`makeWish`) with the given magic word
   2. If the given magic word is equal to any magic words of a wish
@@ -223,8 +224,8 @@ Just trust the genie. He knows best. And if you think otherwise,
 [let me know](https://github.com/kentcdodds/genie/issues) or (even better)
 [contribute](https://github.com/kentcdodds/genie/pulls) :)
 
-About Context
---
+##About Context
+
 Genie has a concept of context that allows you to switch between sets of wishes easily.
 Each wish is given the default context which is `universe` unless one is provided when
 it is registered. Wishes will only behave normally in `getMatchingWishes and `makeWish`
@@ -250,8 +251,8 @@ wish4.context = ['grandparent', 'parent', 'child', 'great-grandchild']; // Out o
 wish5.context = ['grandparent', 'child']; // Out of context
 ```
 
-Enabling & Disabiling
---
+##Enabling & Disabiling
+
 To give you a little more control, you can enable and disable genie globally. All genie
 functions go through a check to make sure genie is enabled. If it is enabled, everything
 works as expected. If it is disabled, then genie will return an empty object/array/string
@@ -259,8 +260,8 @@ depending on what the function you're calling is expecting. This behavior is to 
 the need to do null/undefined checking everywhere you use `genie` and can be disabled as
 well via the returnOnDisabled function.
 
-Merging Wishes
---
+##Merging Wishes
+
 To persist the user's experience, you may want to store the result of `genie.options()` in
 `localStorage` or even a database associated with the user. Then after you have registered
 all the wishes for the user you load the options by calling `genie.options({wishes: usersOptions})`.
@@ -276,28 +277,28 @@ To completely overwrite the existing wishes, simply pass in `noWishMerge` along 
 
 Note: Genie provides direct access to the `mergeWishes` function as well.
 
-UX-Genie
---
+##UX-Genie
+
 There is a [AngularJS](https://www.angularjs.org) directive available for GenieJS. Genie is
 awesome, but it's not too useful without a way to interact with it. It is used in the demo for
 GenieJS. Feel free to go to that project [here](https://www.github.com/kentcdodds/ux-genie).
 
-Contributing
---
+##Contributing
+
 I'd love to accept [pull requests](https://github.com/kentcdodds/genie/pulls). I'm in the middle
 of changing how builds work, so please make sure that test the old tests still runs (test/index.html).
 Also before you push, make sure to do the following:
  1. Run `grunt bumpup:patch` (or minor, or major as the case may be)
  2. Run `grunt` to build the library (don't push if this fails :))
 
-Issues
---
+##Issues
+
 If you have a problem with GenieJS please don't hesitate to use GitHub's
 [issue tracker](https://github.com/kentcdodds/genie/issues) to report it. I'll do my best
 to get it resolved as quickly as I can.
 
-Special Thanks
---
+##Special Thanks
+
 To the developers that make software development awesome. Thanks to pull requesters and issue reporters.
 And a special thanks to these projects:
 
@@ -310,8 +311,8 @@ And a special thanks to these projects:
  - [Chai](http://chaijs.com/)
  - And of course [GitHub](http://www.github.com)
 
-License
---
+##License
+
 The MIT License (MIT)
 
 Copyright (c) 2013 Kent C. Dodds
