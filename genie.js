@@ -6,8 +6,17 @@
  * See README.md
  */
 
-;(function(global) {
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    define(factory);
+  } else if (typeof exports === 'object') {
+    module.exports = factory();
+  } else {
+    root.genie = factory();
+  }
+}(this, function() {
 
+  var genie = null; // Library object
   var _wishes = {},
     _previousId = 0,
     _enteredMagicWords = {},
@@ -399,21 +408,24 @@
         return fn.apply(this, arguments);
       } else if (_returnOnDisabled) {
         return emptyRetObject;
+      } else {
+        return null;
       }
     }
   }
 
-  global.genie = _passThrough(registerWish, {});
-  global.genie.getMatchingWishes = _passThrough(getMatchingWishes, []);
-  global.genie.makeWish = _passThrough(makeWish, {});
-  global.genie.options = _passThrough(options, {});
-  global.genie.mergeWishes = _passThrough(mergeWishes, {});
-  global.genie.deregisterWish = _passThrough(deregisterWish, {});
-  global.genie.reset = _passThrough(reset, {});
-  global.genie.context = _passThrough(context, '');
-  global.genie.revertContext = _passThrough(revertContext, '');
-  global.genie.restoreContext = _passThrough(restoreContext, '');
-  global.genie.enabled = _passThrough(enabled, false);
-  global.genie.returnOnDisabled = _passThrough(returnOnDisabled, true);
+  genie = _passThrough(registerWish, {});
+  genie.getMatchingWishes = _passThrough(getMatchingWishes, []);
+  genie.makeWish = _passThrough(makeWish, {});
+  genie.options = _passThrough(options, {});
+  genie.mergeWishes = _passThrough(mergeWishes, {});
+  genie.deregisterWish = _passThrough(deregisterWish, {});
+  genie.reset = _passThrough(reset, {});
+  genie.context = _passThrough(context, '');
+  genie.revertContext = _passThrough(revertContext, '');
+  genie.restoreContext = _passThrough(restoreContext, '');
+  genie.enabled = _passThrough(enabled, false);
+  genie.returnOnDisabled = _passThrough(returnOnDisabled, true);
+  return genie;
 
-})(this);
+}));
