@@ -8,9 +8,7 @@
 
 (function (root, factory) {
   if (typeof define === 'function' && define.amd) {
-    define('genie', factory);
-  } else if (typeof exports === 'object') {
-    module.exports = factory();
+    define(factory);
   } else {
     root.genie = factory();
   }

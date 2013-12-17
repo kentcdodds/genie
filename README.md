@@ -17,8 +17,6 @@ within a bottle or oil lamp, and capable of granting wishes when summoned.
 
 [![RequireJS Ready](other/requirejs-badge.png)](http://requirejs.org/)
 
-[![Browserify Ready](other/browserify-badge.png)](http://browserify.org/)
-
 ##Watered Down Explanation
 
 GenieJS is a simple library to emulate the same kind of behavior seen in apps like
@@ -48,9 +46,6 @@ On Deck wish is chosen again (it then becomes On Deck).
 ##How to use it
 
 If you're using [RequireJS](http://requirejs.org/) then you can simply `require('genie')`.
-Genie also checks for the global `exports` variable, so this is usable as a
-[NodeJS](http://nodejs.org/) module as well.
-
 Or you could simply include the regular script tag:
 
 ```html
