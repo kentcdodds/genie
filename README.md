@@ -11,12 +11,13 @@ within a bottle or oil lamp, and capable of granting wishes when summoned.
 
 [![Build Status](https://travis-ci.org/kentcdodds/genie.png)](https://travis-ci.org/kentcdodds/genie)
 
+[![Bower version](https://badge.fury.io/bo/genie.png)](http://badge.fury.io/bo/genie) `bower install genie`
+
 [![Built with Grunt](https://cdn.gruntjs.com/builtwith.png)](http://gruntjs.com/)
 
 [![RequireJS Ready](other/requirejs-badge.png)](http://requirejs.org/)
 
-[![Get With Bower](other/bower-badge.png)](http://bower.io/) `bower install genie`
-
+[![Browserify Ready](other/browserify-badge.png)](http://browserify.org/)
 
 ##Watered Down Explanation
 
