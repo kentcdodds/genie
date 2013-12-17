@@ -46,15 +46,19 @@ On Deck wish is chosen again (it then becomes On Deck).
 
 How to use it
 --
-Include the regular script tag:
+If you're using [RequireJS](http://requirejs.org/) then you can simply require the project.
+Genie also checks for the global `exports` variable, so this is usable as a
+[NodeJS](http://nodejs.org/) module as well.
+
+Or you could simply include the regular script tag:
 
 ```html
-<script src="./vendor/genie.js"></script>
+<script src="./bower_components/genie.js"></script>
+<!-- This will place `genie` on the global namespace for your delight. -->
 ```
 
-This will place `genie` on the global namespace for your delight. `genie` is a
-function with a few useful functions as properties of `genie`. The flow of
-using GenieJS is simple:
+`genie` is a function with a few useful functions as properties of `genie`.
+The flow of using GenieJS is simple:
 
 ```javascript
 /* Register wishes */
