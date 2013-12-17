@@ -46,7 +46,7 @@ On Deck wish is chosen again (it then becomes On Deck).
 
 How to use it
 --
-If you're using [RequireJS](http://requirejs.org/) then you can simply require the project.
+If you're using [RequireJS](http://requirejs.org/) then you can simply `require('genie')`.
 Genie also checks for the global `exports` variable, so this is usable as a
 [NodeJS](http://nodejs.org/) module as well.
 
