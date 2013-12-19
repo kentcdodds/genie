@@ -5,7 +5,7 @@
     <meta name="author" content="Kent C. Dodds">
     <meta name="keywords" content="GenieJS, Alfred App, JavaScript, User Experience, UX">
     <meta name="description" content="GenieJS is a JavaScript library to improve user experience by allowing users to perform actions with their keyboard. GenieJS also learns the user's preferences over time.">
-    <link rel="stylesheet" href="demo-files/vendor/bootstrap.min.css" />
+    <link rel="stylesheet" href="demo-files/bower_components/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="demo-files/style.css" />
   </head>
   <body>
@@ -14,7 +14,7 @@
       <a href="https://twitter.com/share" class="twitter-share-button" data-url="http://kent.doddsfamily.us/genie" data-via="kentcdodds" data-text="Genie - Better than keyboard shortcuts" data-hashtags="GenieJS" data-lang="en">Tweet</a>
       <div class="g-plusone" data-size="medium" data-annotation="inline" data-width="300" data-href="http://kent.doddsfamily.us/genie"></div>
     </div>
-    <a href="https://github.com/kentcdodds/genie"><img style="position: absolute; top: 0; right: 0; border: 0;" src="./demo-files/vendor/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+    <a href="https://github.com/kentcdodds/genie"><img id="fork-me" src="demo-files/images/forkme.png" alt="Fork me on GitHub"></a>
     <header>
       <h1>GenieJS</h1>
       <h2 id="wish-output">Press Ctrl+Space to <a href="http://www.youtube.com/watch?v=pwsTXpDJSVE" ga>rub the lamp</a></h2>
@@ -58,67 +58,74 @@
         Create and add wishes here
       </p>
       <form name="wishCreator">
-        <input type="text" ng-model="wishMagicWords" placeholder="Comma separated Magic Words" /><br />
+        <input class="form-control" type="text" ng-model="wishMagicWords" placeholder="Comma separated Magic Words" /><br />
         <button type="submit" class="btn btn-success" ng-click="addWishFromInput(wish.magicWords)">Create Wish</button>
       </form>
     </div>
     
     <hr />
-    
-    <div id="styles-control" class="row">
+
+    <div id="styles-control">
       <p>
         Change Lamp Styles
       </p>
-      <div class="span1">
-        <label class="radio">
+      <div class="radio col-md-1">
+        <label>
           <input type="radio" value="light" ng-model="genieStyle.color"> Light
         </label>
-        <label class="radio">
+        <br />
+        <label>
           <input type="radio" value="dark" ng-model="genieStyle.color"> Dark
         </label>
       </div>
-      <div class="span1">
-        <label class="radio">
+      <span></span>
+      <div class="radio col-md-1">
+        <label>
           <input type="radio" value="large" ng-model="genieStyle.size"> Large
         </label>
-        <label class="radio">
+        <br />
+        <label>
           <input type="radio" value="small" ng-model="genieStyle.size"> Small
         </label>
       </div>
-      <div class="span1">
-        <label class="radio">
+      <span></span>
+      <div class="radio col-md-1">
+        <label>
           <input type="radio" value="fast" ng-model="genieStyle.animationSpeed"> Fast
         </label>
-        <label class="radio">
+        <br />
+        <label>
           <input type="radio" value="slow" ng-model="genieStyle.animationSpeed"> Slow
         </label>
       </div>
     </div>
     
-    <hr />
+    <div id="bottom-stuff">
+      <hr />
 
-    <div>
-      <button class="btn btn-info" ng-click="exportOrImportGenie()">Export/Import Genie</button><br />
-      <textarea id="genie-export-import" ng-model="genieExportImport" placeholder="Output/Input of Export/Import Genie"></textarea>
-    </div>
-    <div id="uxLampContainer" class="{{genieStyle.color + ' ' + genieStyle.size + ' ' + genieStyle.animationSpeed}}">
-      <div ux-lamp rub-class="visible" wish-callback="wishMade()" local-storage="true"></div>
-    </div>
+      <div>
+        <button class="btn btn-info" ng-click="exportOrImportGenie()">Export/Import Genie</button><br />
+        <textarea id="genie-export-import" class="form-control" ng-model="genieExportImport" placeholder="Output/Input of Export/Import Genie"></textarea>
+      </div>
+      <div id="uxLampContainer" class="{{genieStyle.color + ' ' + genieStyle.size + ' ' + genieStyle.animationSpeed}}">
+        <div ux-lamp rub-class="visible" wish-callback="wishMade()" local-storage="true"></div>
+      </div>
 
-    <hr />
+      <hr />
 
-    <div>
-      Don't be a stranger :-)
-      <div class="follow-social">
-        <iframe src="http://ghbtns.com/github-btn.html?user=kentcdodds&type=follow&count=true" height="20" width="168" frameborder="0" scrolling="0" style="width:168px; height: 20px;" allowTransparency="true"></iframe> <a href="https://twitter.com/kentcdodds" class="twitter-follow-button" data-show-count="true" data-lang="en">Follow @kentcdodds</a> <div class="g-follow" data-annotation="bubble" data-height="20" data-href="//plus.google.com/114245123507194646768" data-rel="author"></div>
+      <div>
+        Don't be a stranger :-)
+        <div class="follow-social">
+          <iframe src="http://ghbtns.com/github-btn.html?user=kentcdodds&type=follow&count=true" height="20" width="168" frameborder="0" scrolling="0" style="width:168px; height: 20px;" allowTransparency="true"></iframe> <a href="https://twitter.com/kentcdodds" class="twitter-follow-button" data-show-count="true" data-lang="en">Follow @kentcdodds</a> <div class="g-follow" data-annotation="bubble" data-height="20" data-href="//plus.google.com/114245123507194646768" data-rel="author"></div>
+        </div>
       </div>
     </div>
     
     <script src="genie.js"></script>
-    <script src="./demo-files/vendor/angular.min.js"></script>
+    <script src="./demo-files/bower_components/angular/angular.min.js"></script>
     <script src="./demo-files/app.js"></script>
-    <script src="./demo-files/vendor/uxGenie.js"></script>
-    <script src="./demo-files/vendor/ga.js"></script>
+    <script src="./demo-files/bower_components/ux-genie/uxGenie.js"></script>
+    <script src="./demo-files/bower_components/angular-ga/ga.js"></script>
 
     <!-- Twitter -->
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>

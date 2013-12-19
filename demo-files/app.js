@@ -43,7 +43,7 @@
       if (typeof magicWords === 'string') {
         magicWords = magicWords.split(',');
       }
-      var wish = genie({
+      return genie({
         magicWords: magicWords,
         action: action || function(wish) {
           alert('Your "' + wish.magicWords[0] + '" wish is my command!');
@@ -52,25 +52,33 @@
     }
     
     function addStyleWish(style, altStyle, property) {
-      var styleLabel = 'Style Genie: ' + style;
-      var altStyleLabel = 'Style Genie: ' + altStyle;
-      addWish(styleLabel, function(wish) {
-        if (wish.magicWords[0] === styleLabel) {
-          $scope.$apply(function() {
-            wish.magicWords[0] = altStyleLabel;
-            $scope.genieStyle[property] = style.toLowerCase();
-          });
-        } else {
-          $scope.$apply(function() {
-            wish.magicWords[0] = styleLabel;
-            $scope.genieStyle[property] = altStyle.toLowerCase();
-          });
+      var originalWish, altWish;
+      function applyStyleAndSwapWishes(wish) {
+        $scope.genieStyle[property] = wish.data.style.toLowerCase();
+        genie.deregisterWish(wish);
+        genie(wish.data.otherWish);
+      }
+      originalWish = genie({
+        magicWords: 'Style the lamp: ' + style,
+        action: applyStyleAndSwapWishes,
+        data: {
+          style: style
         }
       });
+      altWish = genie({
+        magicWords: 'Style the lamp: ' + altStyle,
+        action: applyStyleAndSwapWishes,
+        data: {
+          style: altStyle,
+          otherWish: originalWish
+        }
+      });
+      originalWish.data.otherWish = altWish;
+      genie.deregisterWish(altWish);
     }
     
     function addDestinationWish(magicWord, destination) {
-      addWish('Go to ' + magicWord, {
+      addWish('Navigate: ' + magicWord, {
         destination: destination,
         openNewTab: true
       });

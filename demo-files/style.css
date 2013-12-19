@@ -6,12 +6,23 @@ h3 {
   color: #999
 }
 
+#fork-me {
+  position: absolute;
+  top: 0;
+  right: 0;
+  border: 0;
+}
+
 .btn {
   margin-bottom: 12px;
 }
 
 .follow-social {
   margin-top: 12px;
+}
+
+#bottom-stuff {
+  clear: both;
 }
 
 #wish-output {
@@ -54,9 +65,11 @@ h3 {
   -mos-border-radius: 8px;
   border-radius: 8px;
   margin: 0px;
+  width: 100%;
 }
 
 .genie-wishes {
+  width: 100%;
   margin-top: 10px;
   cursor: pointer;
   overflow-y: auto;
@@ -101,13 +114,12 @@ h3 {
 
 /* ng-genie large styles */
 #uxLampContainer.large .genie-container {
-  width: 384px;
-  margin-left: -208px;
+  width: 600px;
+  margin-left: -300px;
   padding: 16px;
 }
 
 #uxLampContainer.large .genie-container > input {
-  width: 358px;
   line-height: 60px;
   padding: 0px 12px 0px 12px;
   font-size: 40px;
@@ -115,7 +127,6 @@ h3 {
 }
 
 #uxLampContainer.large .genie-wishes {
-  width: 384px;
   max-height: 300px;
   font-size: 30px;
 }
@@ -133,7 +144,6 @@ h3 {
 }
 
 #uxLampContainer.small .genie-container > input {
-  width: 274px;
   line-height: 50px;
   padding: 0px 12px 0px 12px;
   font-size: 34px;
@@ -141,7 +151,6 @@ h3 {
 }
 
 #uxLampContainer.small .genie-wishes {
-  width: 297px;
   max-height: 216px;
   font-size: 24px;
 }

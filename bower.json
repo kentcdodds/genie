@@ -1,7 +1,7 @@
 {
   "name": "genie",
   "main": "genie.js",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "homepage": "https://github.com/kentcdodds/genie",
   "authors": [
     "Kent C. Dodds <kent@doddsfamily.us>"
@@ -10,17 +10,7 @@
   "license": "MIT",
   "private": false,
   "ignore": [
-    "**/.*",
-    "demo-files/",
-    "node-modules/",
-    "other/",
-    "test/",
-    ".travis.yml",
-    "bower.json",
-    "Gruntfile.js",
-    "index.html",
-    "LICENSE",
-    "package.json",
-    "README.md"
+    "*",
+    "!genie.js"
   ]
 }
