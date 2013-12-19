@@ -1,9 +1,13 @@
 // tests.js
 
-function getBlankWish(magicWords) {
+function fillInWish(defaults) {
+  defaults = defaults || {};
   return {
-    magicWords: magicWords,
-    action: function() {}
+    id: defaults.id,
+    context: defaults.context,
+    data: defaults.data,
+    magicWords: defaults.magicWords || 'magicWords',
+    action: defaults.action || function() {}
   };
 }
 if (typeof require !== 'undefined') {
@@ -136,30 +140,28 @@ describe('genie', function(){
 
   });
 
-  describe('#context', function() {
-    var defaultContextWish, newContextWish1, newContextWish2, multiContextWish;
+  describe('#context #addContext #removeContext', function() {
+    var defaultContextWish;
+    var allWishCount = 5;
     beforeEach(function(done) {
-      defaultContextWish = genie(getBlankWish('wish0'));
-      newContextWish1 = genie({
-        magicWords: 'wish1',
-        context: 'new-context1',
-        action: function(){}
-      });
-      newContextWish2 = genie({
-        magicWords: 'wish2',
-        context: 'new-context2',
-        action: function(){}
-      });
-      multiContextWish = genie({
-        magicWords: 'wish2',
-        context: ['new-context1', 'new-context2', 'unique-context'],
-        action: function(){}
-      });
+      defaultContextWish = genie(fillInWish());
+      newContextWish1 = genie(fillInWish({
+        context: 'context1'
+      }));
+      newContextWish2 = genie(fillInWish({
+        context: 'context2'
+      }));
+      newContextWish3 = genie(fillInWish({
+        context: ['context3'],
+      }));
+      multiContextWish = genie(fillInWish({
+        context: ['context1', 'context2', 'context3'],
+      }));
       done();
     });
     it('should have all wishes when genie.context is default', function() {
       var allWishes = genie.getMatchingWishes();
-      expect(allWishes).to.have.length(4);
+      expect(allWishes).to.have.length(allWishCount);
     });
 
     it('should have only wishes with default context when genie.context is not default', function() {
@@ -170,15 +172,49 @@ describe('genie', function(){
     });
 
     it('should have only in context wishes (including default context wishes) when genie.context is not default', function() {
-      genie.context('new-context1');
+      genie.context('context1');
       var allWishes = genie.getMatchingWishes();
       expect(allWishes).to.have.length(3);
     });
 
     it('should be able to have multiple contexts', function() {
-      genie.context(['new-context1', 'new-context2']);
+      genie.context(['context1', 'context2']);
       var allWishes = genie.getMatchingWishes();
       expect(allWishes).to.have.length(4);
+    });
+
+    it('should be able to add a string context', function() {
+      genie.context('context1');
+      genie.addContext('context2');
+      var allWishes = genie.getMatchingWishes();
+      expect(allWishes).to.have.length(4);
+    });
+
+    it('should be able to add an array of contexts', function() {
+      genie.context('context1');
+      genie.addContext(['context2', 'context3']);
+      var allWishes = genie.getMatchingWishes();
+      expect(allWishes).to.have.length(allWishCount);
+    });
+
+    it('should be able to remove string context', function() {
+      genie.context(['context1', 'context2']);
+      var allWishes = genie.getMatchingWishes();
+      expect(allWishes).to.have.length(4);
+
+      genie.removeContext('context1');
+      var allWishes = genie.getMatchingWishes();
+      expect(allWishes).to.have.length(3);
+    });
+
+    it('should be able to remove an array of contexts', function() {
+      genie.context(['context1', 'context2', 'context3']);
+      var allWishes = genie.getMatchingWishes();
+      expect(allWishes).to.have.length(allWishCount);
+
+      genie.removeContext(['context1', 'context2']);
+      var allWishes = genie.getMatchingWishes();
+      expect(allWishes).to.have.length(3);
     });
   });
 });

@@ -18,7 +18,7 @@
   var _wishes = {},
     _previousId = 0,
     _enteredMagicWords = {},
-    _defaultContext = 'universe',
+    _defaultContext = ['universe'],
     _context = _defaultContext,
     _previousContext = _defaultContext,
     _enabled = true,
@@ -119,7 +119,7 @@
       noWishMerge: true,
       previousId: 0,
       enteredMagicWords: [],
-      contexts: _defaultContext,
+      context: _defaultContext,
       previousContext: _defaultContext,
       enabled: true
     });
@@ -306,33 +306,28 @@
   }
 
   function _wishInContext(wish) {
-    var currentContextIsDefault = _context.indexOf(_defaultContext) > -1;
+    var currentContextIsDefault = _context === _defaultContext;
     var wishContextIsDefault = wish.context === _defaultContext;
     var wishContextIsCurrentContext = wish.context === _context;
+    if (currentContextIsDefault || wishContextIsDefault || wishContextIsCurrentContext) {
+      return true;
+    }
 
     var wishContextInContext = false;
     var contextInWishContext = false;
 
-    var contextIsArray = _context instanceof Array;
-    var wishContextIsArray = wish.context instanceof Array;
-    var contextIsString = typeof _context === 'string';
-    var wishContextIsString = typeof wish.context === 'string';
-
-    if (wishContextIsString && contextIsArray) {
+    if (typeof wish.context === 'string') {
       wishContextInContext = _context.indexOf(wish.context) > -1;
-    } else if (contextIsString && wishContextIsArray) {
-      contextInWishContext = wish.context.indexOf(_context) > -1;
-    } else if (contextIsArray && wishContextIsArray) {
+    } else if (wish.context instanceof Array) {
       for (var i = 0; i < _context.length; i++) {
-        if (wish.context.indexOf(_context[i])) {
+        if (wish.context.indexOf(_context[i]) > -1) {
           wishContextInContext = true;
           break;
         }
       }
     }
 
-    return currentContextIsDefault || wishContextIsDefault || wishContextIsCurrentContext ||
-      wishContextInContext || contextInWishContext;
+    return wishContextInContext || contextInWishContext;
   }
 
   // Begin API functions. //
@@ -357,7 +352,7 @@
       wishes: _wishes,
       previousId: _previousId,
       enteredMagicWords: _enteredMagicWords,
-      contexts: _context,
+      context: _context,
       previousContext: _previousContext,
       enabled: _enabled
     };
@@ -382,9 +377,41 @@
   function context(newContext) {
     if (newContext !== undefined) {
       _previousContext = _context;
+      if (typeof newContext === 'string') {
+        newContext = [newContext];
+      }
       _context = newContext;
     }
     return _context;
+  }
+
+  function addContext(newContext) {
+    _previousContext = _context;
+    if (newContext instanceof Array) {
+      _context = _context.concat(newContext);
+    } else {
+      _context.push(newContext);
+    }
+  }
+
+  function removeContext(contextToRemove) {
+    _previousContext = _context;
+    var isArray = contextToRemove instanceof Array;
+    var i = 0;
+    var ctx;
+
+    while(i < _context.length) {
+      ctx = _context[i];
+      if ((isArray && contextToRemove.indexOf(ctx) > -1) || ctx === contextToRemove) {
+        _context.splice(i, 1);
+      } else {
+        i++;
+      }
+    }
+
+    if (!_context.length) {
+      _context = _defaultContext;
+    }
   }
 
   function revertContext() {
@@ -429,6 +456,8 @@
   genie.deregisterWish = _passThrough(deregisterWish, {});
   genie.reset = _passThrough(reset, {});
   genie.context = _passThrough(context, '');
+  genie.addContext = _passThrough(addContext, '');
+  genie.removeContext = _passThrough(removeContext, '');
   genie.revertContext = _passThrough(revertContext, '');
   genie.restoreContext = _passThrough(restoreContext, '');
   genie.enabled = _passThrough(enabled, false);

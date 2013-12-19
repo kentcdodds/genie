@@ -180,10 +180,17 @@ genie.mergeWishes(wishes);
 // Also sets an internal variable: _previousContext for the revertContext function
 genie.context(newContext [string || array | optional]);
 
-// Sets and returns the current context to the default context (universe)
+// Adds the context(s) to genie's current context
+genie.addContext(newContext [string || array | optional]);
+
+// Removes the context(s) to genie's current context
+genie.removeContext(newContext [string || array | optional]);
+
+// Sets and returns the current context to the default context: ['universe']
 genie.restoreContext();
 
 // Sets and returns the current context to the previous context
+//   The previous context is updated when context, addContext, removeContext, restoreContext, and revertContext are called.
 genie.revertContext();
 
 // Sets and returns the enabled state
