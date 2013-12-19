@@ -224,27 +224,41 @@ Just trust the genie. He knows best. And if you think otherwise,
 
 Genie has a concept of context that allows you to switch between sets of wishes easily.
 Each wish is given the default context which is `universe` unless one is provided when
-it is registered. Wishes will only behave normally in `getMatchingWishes and `makeWish`
+it is registered. Wishes will only behave normally in `getMatchingWishes` and `makeWish`
 when they are in context.
 
 There are a few ways for a wish to be in context:
   1. Genie's current context is the default context
   2. The wish's context is the default context
-  3. The current context and the wish's context are equal
-  4. The current context is a decendent of the wish's context
+  3. The wish's context is equal to the current context
+  4. The wish's context is contained in the current context (when the current context is an array of strings)
+  5. The current context is contained in the wishe's context (when the current context is an array of strings)
 
-There's something to be said about the last one. Context can be an array as well as a
-string. If it is an array, Genie will iterate through the wish's context array and compare
-it with genie's context to determine whether each item in genie's context is equal to
-the corresponding item in the wish's array. For example:
+Checkout [the tests](test/tests.js) for #context to see more how this works. Here's a simple demonstration:
 
 ```javascript
-genie.context = ['grandparent', 'parent', 'child'];
-wish1.context = ['grandparent']; // In context
-wish2.context = ['grandparent', 'parent']; // In context
-wish3.context = ['grandparent', 'parent', 'child']; // In context
-wish4.context = ['grandparent', 'parent', 'child', 'great-grandchild']; // Out of context
-wish5.context = ['grandparent', 'child']; // Out of context
+// Before setting context, genie.context is default
+wish0.context // returns the default context
+wish1.context = 'context1';
+wish2.context = ['context1', 'context2'];
+wish3.context = 'context3';
+
+genie.getMatchingWishes(); // returns [wish0, wish1, wish2, wish3]
+
+genie.context('context1');
+genie.getMatchingWishes(); // returns [wish0, wish1, wish2]
+
+genie.context('context2');
+genie.getMatchingWishes(); // returns [wish0, wish2]
+
+genie.context('context3');
+genie.getMatchingWishes(); // returns [wish0, wish3]
+
+genie.context(['context1', 'context2']);
+genie.getMatchingWishes(); // returns [wish0, wish1, wish2]
+
+genie.context(['context1', 'context3']);
+genie.getMatchingWishes(); // returns [wish0, wish1, wish2, wish3]
 ```
 
 ##Enabling & Disabiling

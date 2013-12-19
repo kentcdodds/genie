@@ -5,18 +5,24 @@
     <link rel="stylesheet" href="../node_modules/mocha/mocha.css" />
   </head>
   <body>
-    <div id="mocha"></div>
+    <div id="mocha">
+      <h1>Genie Tests</h1>
+      <div style="font-size:11px;margin-left:10px;">
+        <div>Click <a href="../">here</a> to go back to the demo.</div>
+        <div>Click <a href="http://www.github.com/kentcdodds/genie">here</a> to go to the repository.</div>
+      </div>
+    </div>
     <script src="../node_modules/mocha/mocha.js"></script>
     <script src="../node_modules/chai/chai.js"></script>
 
     <script>
-      mocha.setup('bdd')
+      mocha.setup('bdd');
       mocha.reporter('html');
     </script>
 
     <!-- Tests -->
     <script src="../genie.js"></script>
-    <script src="tests-new.js"></script>
+    <script src="tests.js"></script>
 
     <script>
       // Only tests run in real browser, injected script run if options.run == true

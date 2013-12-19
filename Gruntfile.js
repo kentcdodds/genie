@@ -9,7 +9,7 @@ module.exports = function (grunt) {
     // Mocha
     mocha: {
       all: {
-        src: ['test/testrunner.html'],
+        src: ['test/testrunner.html']
       },
       options: {
         run: true
@@ -32,13 +32,18 @@ module.exports = function (grunt) {
         }
       }
     },
-    bumpup: 'bower.json'
+    bumpup: 'bower.json',
+    watch: {
+      files: ['genie.js', 'test/*.js'],
+      tasks: ['mocha']
+    }
   });
 
   // Load grunt mocha task
   grunt.loadNpmTasks('grunt-mocha');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-bumpup');
+  grunt.loadNpmTasks('grunt-contrib-watch');
 
   grunt.registerTask('build', ['mocha', 'uglify']);
   grunt.registerTask('default', ['build']);

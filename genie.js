@@ -306,24 +306,33 @@
   }
 
   function _wishInContext(wish) {
-    var currentContextIsDefault = _context === _defaultContext;
+    var currentContextIsDefault = _context.indexOf(_defaultContext) > -1;
     var wishContextIsDefault = wish.context === _defaultContext;
     var wishContextIsCurrentContext = wish.context === _context;
-    var wishContextIsDecendentContext = false;
 
-    var wishContext = Array.isArray(wish.context) ? wish.context : [wish.context];
-    var currentContext = Array.isArray(_context) ? _context : [_context];
+    var wishContextInContext = false;
+    var contextInWishContext = false;
 
-    if (currentContext.length >= wishContext.length) {
-      for (var i = 0; i < wishContext.length; i++) {
-        wishContextIsDecendentContext = wishContext[i] === currentContext[i];
-        if (!wishContextIsDecendentContext) {
+    var contextIsArray = _context instanceof Array;
+    var wishContextIsArray = wish.context instanceof Array;
+    var contextIsString = typeof _context === 'string';
+    var wishContextIsString = typeof wish.context === 'string';
+
+    if (wishContextIsString && contextIsArray) {
+      wishContextInContext = _context.indexOf(wish.context) > -1;
+    } else if (contextIsString && wishContextIsArray) {
+      contextInWishContext = wish.context.indexOf(_context) > -1;
+    } else if (contextIsArray && wishContextIsArray) {
+      for (var i = 0; i < _context.length; i++) {
+        if (wish.context.indexOf(_context[i])) {
+          wishContextInContext = true;
           break;
         }
       }
     }
-    
-    return currentContextIsDefault || wishContextIsDefault || wishContextIsCurrentContext || wishContextIsDecendentContext;
+
+    return currentContextIsDefault || wishContextIsDefault || wishContextIsCurrentContext ||
+      wishContextInContext || contextInWishContext;
   }
 
   // Begin API functions. //
