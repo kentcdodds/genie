@@ -91,8 +91,25 @@
     addStyleWish('Dark', 'Light', 'color');
     addStyleWish('Small', 'Large', 'size');
     addStyleWish('Slow', 'Fast', 'animationSpeed');
-    
-    addWish('Alert!!!');
+
+    var genieTagline = encodeURIComponent('Genie: Better than keyboard shortcuts');
+    var genieHome = encodeURIComponent('http://kent.doddsfamily.us/genie');
+
+    function addNavigateWishWithoutPrefix(magicWord, shareUrl) {
+      addWish(magicWord, {
+        destination: shareUrl,
+        openNewTab: true
+      });
+    }
+
+    addNavigateWishWithoutPrefix('Tweet #GenieJS', 'https://twitter.com/intent/tweet?hashtags=GenieJS&original_referer=' + genieHome + '&text=' + genieTagline + '&tw_p=tweetbutton&url=' + genieHome + '&via=kentcdodds');
+    addNavigateWishWithoutPrefix('Share #GenieJS on Google+', 'http://plus.google.com/share?&url=' + genieHome);
+    addNavigateWishWithoutPrefix('Email about GenieJS', 'mailto:?&subject=' + encodeURIComponent('Cool JavaScript Library: Genie') + '&body=' + genieTagline + encodeURIComponent('\nCheck it out here: ') + genieHome);
+
+    addNavigateWishWithoutPrefix('Code with @kentcdodds', 'http://www.github.com/kentcdodds');
+    addNavigateWishWithoutPrefix('Follow @kentcdodds', 'https://twitter.com/intent/follow?original_referer=' + genieHome + '&region=follow_link&screen_name=kentcdodds&tw_p=followbutton&variant=2.0');
+    addNavigateWishWithoutPrefix('Circle +KentCDodds', 'http://plus.google.com/+KentCDodds');
+    addNavigateWishWithoutPrefix('Visit Kent\'s website', 'http://kent.doddsfamily.us');
 
   });
 
