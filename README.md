@@ -129,6 +129,9 @@ genie({
 // Returns the deregisteredWish
 genie.deregisterWish(id [string || wishObject | required]);
 
+// Removes all wishes which have any of the given context(s).
+genie.deregisterWishesWithContext(context [string || array | required]);
+
 // calls options() with default options and returns the old options
 genie.reset();
 

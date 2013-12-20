@@ -289,64 +289,6 @@
       genie.makeWish(registeredWishes[0]);
       genie.makeWish(registeredWishes[1]);
     },
-    testHierarchicalContext: function(t) {
-      prepForTest();
-      var wishes = {};
-      var grandParents = 2;
-      var parents = 3;
-      var children = 4;
-      var i, j, k;
-      
-      function registerWish(context) {
-        var wish = genie({
-          context: context,
-          magicWords: context.join(''),
-          action: function(wish) {
-            wish.executions++;
-          }
-        });
-        wish.executions = 0;
-        wishes[context.join('')] = wish;
-      }
-
-      function makeAllWishes(context) {
-        genie.context(context);
-        var wishes = genie.getMatchingWishes('');
-        for (var l = 0; l < wishes.length; l++) {
-          genie.makeWish(wishes[l], '');
-        }
-      }
-
-      for (i = 0; i < grandParents; i++) {
-        registerWish(['grandparent' + i]);
-        for (j = 0; j < parents; j++) {
-          registerWish(['grandparent' + i, 'parent' + j]);
-          for (k = 0; k < children; k++) {
-            registerWish(['grandparent' + i, 'parent' + j, 'child' + k]);
-          }
-        }
-      }
-
-      for (i = 0; i < grandParents; i++) {
-        makeAllWishes(['grandparent' + i]); // make wishes in (grandparent + i) context
-        for (j = 0; j < parents; j++) {
-          makeAllWishes(['grandparent' + i, 'parent' + j]); // make wishes in (grandparent + i) and (grandparent + i, parent + i) context
-          for (k = 0; k < children; k++) {
-            makeAllWishes(['grandparent' + i, 'parent' + j, 'child' + k]); // make wishes in (grandparent + i), (grandparent + i, parent + i), and (grandparent + i, parent + i, child + i) context
-          }
-        }
-      }
-
-      for (i = 0; i < grandParents; i++) {
-        t.assertEqual(parents * children + 1 + parents, wishes[['grandparent' + i].join('')].executions);
-        for (j = 0; j < parents; j++) {
-          t.assertEqual(children + 1, wishes[['grandparent' + i, 'parent' + j].join('')].executions);
-          for (k = 0; k < children; k++) {
-            t.assertEqual(1, wishes[['grandparent' + i, 'parent' + j, 'child' + k].join('')].executions);
-          }
-        }
-      }
-    },
     testNavigationWish: function(t) {
       prepForTest();
       var destination = window.location.href + '#success';

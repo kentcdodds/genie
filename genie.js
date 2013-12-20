@@ -111,6 +111,16 @@
     }
     return wish;
   }
+  
+  function deregisterWishesWithContext(context) {
+    var deregisteredWishes = [];
+    for (var id in _wishes) {
+      if (_wishInThisContext(_wishes[id], context)) {
+        deregisteredWishes.push(deregisterWish(_wishes[id]));
+      }
+    }
+    return deregisteredWishes;
+  }
 
   function reset() {
     var oldOptions = options();
@@ -312,15 +322,19 @@
     if (currentContextIsDefault || wishContextIsDefault || wishContextIsCurrentContext) {
       return true;
     }
-
+    return _wishInThisContext(wish, _context);
+  }
+  
+  function _wishInThisContext(wish, theContext) {
+    theContext = arrayize(theContext);
     var wishContextInContext = false;
     var contextInWishContext = false;
 
     if (typeof wish.context === 'string') {
-      wishContextInContext = _context.indexOf(wish.context) > -1;
+      wishContextInContext = theContext.indexOf(wish.context) > -1;
     } else if (wish.context instanceof Array) {
-      for (var i = 0; i < _context.length; i++) {
-        if (wish.context.indexOf(_context[i]) > -1) {
+      for (var i = 0; i < theContext.length; i++) {
+        if (wish.context.indexOf(theContext[i]) > -1) {
           wishContextInContext = true;
           break;
         }
@@ -328,7 +342,20 @@
     }
 
     return wishContextInContext || contextInWishContext;
+    
   }
+  
+  // Helpers //
+  function arrayize(obj) {
+    if (!obj) {
+      return [];
+    } else if (obj instanceof Array) {
+      return obj;
+    } else {
+      return [obj];
+    }
+  }
+  
 
   // Begin API functions. //
 
@@ -387,10 +414,11 @@
 
   function addContext(newContext) {
     _previousContext = _context;
-    if (newContext instanceof Array) {
-      _context = _context.concat(newContext);
-    } else {
-      _context.push(newContext);
+    newContext = arrayize(newContext);
+    for (var i = 0; i < newContext.length; i++) {
+      if (_context.indexOf(newContext[i]) < 0) {
+        _context.push(newContext[i]);
+      }
     }
   }
 
@@ -454,6 +482,7 @@
   genie.options = _passThrough(options, {});
   genie.mergeWishes = _passThrough(mergeWishes, {});
   genie.deregisterWish = _passThrough(deregisterWish, {});
+  genie.deregisterWishesWithContext = _passThrough(deregisterWishesWithContext, []);
   genie.reset = _passThrough(reset, {});
   genie.context = _passThrough(context, '');
   genie.addContext = _passThrough(addContext, '');
