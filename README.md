@@ -196,6 +196,19 @@ genie.restoreContext();
 //   The previous context is updated when context, addContext, removeContext, restoreContext, and revertContext are called.
 genie.revertContext();
 
+// See more about how this works below in the context section
+//   This will update the current context with the given path
+//   noDeregister is used to prevent this from deregistering
+//     wishes which are not in the path's context.
+genie.updatePathContext(path, noDeregister);
+
+// Adds a path context (or array of them) to genie's _pathContext array
+genie.addPathContext(pathContext);
+
+// Removes a path context (or array of them) from genie's _pathContext array
+genie.removePathContext(pathContext);
+
+
 // Sets and returns the enabled state
 genie.enabled(boolean | optional);
 
@@ -270,6 +283,46 @@ genie.getMatchingWishes(); // returns [wish0, wish1, wish2]
 genie.context(['context1', 'context3']);
 genie.getMatchingWishes(); // returns [wish0, wish1, wish2, wish3]
 ```
+
+###Path Context
+
+A big use case for context is to have a url path (or route) represent the context for genie. For example,
+if you have an email app, you can have the `/index` and the `/message/:id` routes which would have
+different contexts. Instead of managing this yourself, genie can help you a little. Genie will not watch
+the URL for you, so you have to do that yourself. This is by design. At any time, you can call
+`genie.updatePathContext(window.location.pathname)` and genie will update the context based on an internal
+variable called `_pathContexts`. You have control over what's in this array using the `genie.addPathContext(pathContext)`
+and the `genie.removePathContext(pathContext)` methods. A `pathContext` object looks like this:
+
+```javascript
+{
+  paths: string || array of strings | optional (either this or regexes), 
+  regexes: regex || array of regexes | optional (either this or paths),
+  contexts: string || array of strings | required
+}
+```
+
+The `contexts` variable is special and is assiciated with the regexes variable. The easiest way to describe this
+is via an example:
+
+If I have a pathContext object like this:
+
+```javascript
+{
+  regexes: [
+    /\/pizza\/(-\d+|\d+)/gi,
+    /\/pizza\/(pepperoni)/gi
+  ],
+  contexts: 'a-page-{{1}}'
+}
+```
+
+Then, when I call `genie.updatePathContext('/pizza/1234')` it will match this pathContext and genie will
+automatically change `a-page-{{1}}` to `a-page-1234`.
+
+The `1` in `a-page-{{1}}` represents the group that is matched on the path in the regex. It will replace the
+digit in `{{\d}}` with the group that's matched (Note: in true JavaScript form, group 0 represents the entire
+match string, hence, 1 is the first group in parentheses).
 
 ##Enabling & Disabiling
 
