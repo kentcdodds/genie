@@ -21,7 +21,7 @@
     return {
       replace: true,
       template: function(el, attr) {
-        var ngShow = ' ng-show="uxGenieVisible"';
+        var ngShow = ' ng-show="lampVisible"';
         if (attr.rubClass) {
           ngShow = '';
         }
@@ -37,6 +37,7 @@
           '</div></div></div>'].join('');
       },
       scope: {
+        lampVisible: '=',
         rubClass: '@',
         rubShortcut: '@',
         rubModifier: '@',
@@ -56,11 +57,11 @@
           rubShortcut = rubShortcut[0].charCodeAt(0);
         }
 
-        scope.uxGenieVisible = false;
+        scope.lampVisible = false;
 
         function toggleVisibility() {
           scope.$apply(function() {
-            scope.uxGenieVisible = !scope.uxGenieVisible;
+            scope.lampVisible = !scope.lampVisible;
           });
         }
 
@@ -93,7 +94,7 @@
 
         // Document events
         $document.bind('click', function(event) {
-          // If it's not part of the lamp, then make the lamp invisible.
+          // If it's not part of the lamp, then make the lamp inlampVisible.
           var clickedElement = event.srcElement || event.target;
           if (clickedElement === el[0]) {
             return;
@@ -106,7 +107,7 @@
           }
 
           scope.$apply(function() {
-            scope.uxGenieVisible = false;
+            scope.lampVisible = false;
           });
         });
 
@@ -125,10 +126,10 @@
         });
 
         $document.bind('keydown', function(event) {
-          if (event.keyCode === 27 && scope.uxGenieVisible) {
+          if (event.keyCode === 27 && scope.lampVisible) {
             event.preventDefault();
             scope.$apply(function() {
-              scope.uxGenieVisible = false;
+              scope.lampVisible = false;
             });
           }
         });
@@ -175,7 +176,7 @@
           saveToLocalStorage(wish);
           scope.$apply(function() {
             updateMatchingWishes(scope.genieInput);
-            scope.uxGenieVisible = false;
+            scope.lampVisible = false;
           });
         }
 
@@ -204,10 +205,10 @@
         }
 
         if (scope.rubClass) {
-          scope.$watch('uxGenieVisible', function(newVal) {
+          scope.$watch('lampVisible', function(newVal) {
             if (newVal) {
               el.addClass(scope.rubClass);
-              // Needs to be visible before it can be selected
+              // Needs to be lampVisible before it can be selected
               $timeout(function() {
                 inputEl[0].select();
               }, 25);

@@ -17,7 +17,11 @@
     <a href="https://github.com/kentcdodds/genie"><img id="fork-me" src="demo-files/images/forkme.png" alt="Fork me on GitHub"></a>
     <header>
       <h1>GenieJS</h1>
-      <h2 id="wish-output">Press Ctrl+Space to <a href="http://www.youtube.com/watch?v=pwsTXpDJSVE" ga>rub the lamp</a></h2>
+      <h2 id="wish-output">Press Ctrl+Space (or click
+
+        <span class="rub-the-lamp" ng-click="genieVisible=!genieVisible; $event.stopPropagation();" ga>here</span>)
+
+        to <a href="http://www.youtube.com/watch?v=pwsTXpDJSVE" ga>rub the lamp</a></h2>
       <h3>Then type an apostrophe ( ' ) to see all the wishes</h3>
       <h4>Wishes made: {{wishesMade}}</h4>
       <p>
@@ -109,7 +113,7 @@
         <textarea id="genie-export-import" class="form-control" ng-model="genieExportImport" placeholder="Output/Input of Export/Import Genie"></textarea>
       </div>
       <div id="uxLampContainer" class="{{genieStyle.color + ' ' + genieStyle.size + ' ' + genieStyle.animationSpeed}}">
-        <div ux-lamp rub-class="visible" wish-callback="wishMade()" local-storage="true"></div>
+        <div ux-lamp lamp-visible="genieVisible" rub-class="visible" wish-callback="wishMade()" local-storage="true"></div>
       </div>
 
       <hr />
