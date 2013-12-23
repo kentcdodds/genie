@@ -20,9 +20,19 @@
     _enteredMagicWords = {},
     _defaultContext = ['universe'],
     _context = _defaultContext,
+    
+    /*
+     * array of objects with props:
+     *  - paths string(s)
+     *  - regexes: regex(es)
+     *  - contexts: string(s)
+     */
+    _pathContexts = [],
     _previousContext = _defaultContext,
     _enabled = true,
     _returnOnDisabled = true,
+    
+    _contextRegex = /\{\{(\d+)\}\}/,
     _matchRankMap = {
       equals: 6,
       startsWith: 5,
@@ -110,6 +120,16 @@
       }
     }
     return wish;
+  }
+  
+  function deregisterWishesWithContext(context) {
+    var deregisteredWishes = [];
+    for (var id in _wishes) {
+      if (_wishInThisContext(_wishes[id], context)) {
+        deregisteredWishes.push(deregisterWish(_wishes[id]));
+      }
+    }
+    return deregisteredWishes;
   }
 
   function reset() {
@@ -312,15 +332,19 @@
     if (currentContextIsDefault || wishContextIsDefault || wishContextIsCurrentContext) {
       return true;
     }
-
+    return _wishInThisContext(wish, _context);
+  }
+  
+  function _wishInThisContext(wish, theContext) {
+    theContext = _arrayize(theContext);
     var wishContextInContext = false;
     var contextInWishContext = false;
 
     if (typeof wish.context === 'string') {
-      wishContextInContext = _context.indexOf(wish.context) > -1;
-    } else if (wish.context instanceof Array) {
-      for (var i = 0; i < _context.length; i++) {
-        if (wish.context.indexOf(_context[i]) > -1) {
+      wishContextInContext = theContext.indexOf(wish.context) > -1;
+    } else if (_isArray(wish.context)) {
+      for (var i = 0; i < theContext.length; i++) {
+        if (wish.context.indexOf(theContext[i]) > -1) {
           wishContextInContext = true;
           break;
         }
@@ -328,7 +352,149 @@
     }
 
     return wishContextInContext || contextInWishContext;
+    
   }
+  
+  function _getContextsFromPath(path) {
+    var allContexts = {
+      add: [],
+      remove: []
+    };
+    _each(_pathContexts, function(pathContext) {
+      var contextAdded = false;
+      var contexts = _arrayize(pathContext.contexts);
+      var regexes = _arrayize(pathContext.regexes);
+      var paths = _arrayize(pathContext.paths);
+
+      _each(regexes, function(regex) {
+        regex.lastIndex = 0;
+        var matches = regex.exec(path);
+        if (matches && matches.length > 0) {
+          var contextsToAdd = [];
+          _.each(contexts, function(context) {
+            var replacedContext = context.replace(_contextRegex, function(match, group) {
+              return matches[group];
+            });
+            contextsToAdd.push(replacedContext);
+          });
+          allContexts.add = allContexts.add.concat(contextsToAdd);
+          contextAdded = true;
+        }
+        return !contextAdded;
+      });
+
+      if (!contextAdded) {
+        _each(paths, function(pathToTry) {
+          if (path === pathToTry) {
+            allContexts.add = allContexts.add.concat(contexts);
+            contextAdded = true;
+          }
+          return !contextAdded;
+        });
+        if (!contextAdded) {
+          allContexts.remove = allContexts.remove.concat(contexts)
+        }
+      }
+    });
+    return allContexts;
+  }
+
+  /*
+   * This gets all contexts that came from a regex.
+   *   Kind of dangerous, but I'm not sure if there's a better way.
+   */
+  function _getContextsToRemove() {
+    var contextsToRemove = [];
+    _each(_pathContexts, function(pathContext) {
+      var contexts = pathContext.contexts;
+
+      _each(contexts, function(context) {
+
+        if (_contextRegex.test(context)) { // context string is a regex context
+          var replaceContextRegex = context.replace(_contextRegex, '.+?');
+
+          _each(_context, function(currentContext) {
+            if (new RegExp(replaceContextRegex).test(currentContext)) {
+              contextsToRemove.push(currentContext);
+            }
+
+          });
+        }
+      });
+    });
+    return contextsToRemove;
+  }
+  
+  // Helpers //
+  function _arrayize(obj) {
+    if (!obj) {
+      return [];
+    } else if (_isArray(obj)) {
+      return obj;
+    } else {
+      return [obj];
+    }
+  }
+  
+  function _addUniqueItems(arry, obj) {
+    obj = _arrayize(obj);
+    for (var i = 0; i < obj.length; i++) {
+      if (arry.indexOf(obj[i]) < 0) {
+        arry.push(obj[i]);
+      }
+    }
+  }
+  
+  function _removeItems(array, obj) {
+    obj = _arrayize(obj);
+    var i = 0;
+
+    while(i < array.length) {
+      if (obj.indexOf(array[i]) > -1) {
+        array.splice(i, 1);
+      } else {
+        i++;
+      }
+    }
+  }
+  
+  function _each(obj, fn) {
+    if (_isPrimitive(obj)) {
+      obj = _arrayize(obj);
+    }
+    if (_isArray(obj)) {
+      for (var i = 0; i < obj.length; i++) {
+        var ret = fn(obj[i], i, obj);
+        if (typeof ret === 'boolean' && !ret) {
+          break;
+        }
+      }
+    } else {
+      for (var prop in obj) {
+        var ret = fn(obj[prop], prop, obj);
+        if (typeof ret === 'boolean' && !ret) {
+          break;
+        }
+      }
+    }
+  }
+  
+  function _isArray(obj) {
+    return obj instanceof Array;
+  }
+    
+  function _isPrimitive(obj) {
+    switch (typeof obj) {
+      case 'string':
+      case 'number':
+      case 'boolean':
+      case 'undefined':
+        return true;
+      default:
+        return false;
+    }
+  }
+  
 
   // Begin API functions. //
 
@@ -384,34 +550,17 @@
     }
     return _context;
   }
-
+  
   function addContext(newContext) {
     _previousContext = _context;
-    if (newContext instanceof Array) {
-      _context = _context.concat(newContext);
-    } else {
-      _context.push(newContext);
-    }
+    _addUniqueItems(_context, newContext);
+    return _context;
   }
 
   function removeContext(contextToRemove) {
     _previousContext = _context;
-    var isArray = contextToRemove instanceof Array;
-    var i = 0;
-    var ctx;
-
-    while(i < _context.length) {
-      ctx = _context[i];
-      if ((isArray && contextToRemove.indexOf(ctx) > -1) || ctx === contextToRemove) {
-        _context.splice(i, 1);
-      } else {
-        i++;
-      }
-    }
-
-    if (!_context.length) {
-      _context = _defaultContext;
-    }
+    _removeItems(_context, contextToRemove);
+    return _context;
   }
 
   function revertContext() {
@@ -420,6 +569,36 @@
 
   function restoreContext() {
     return context(_defaultContext);
+  }
+
+  function updatePathContext(path, noDeregister) {
+    if (path) {
+      var allContexts = _getContextsFromPath(path);
+      var contextsToAdd = allContexts.add;
+      var contextsToRemove = _getContextsToRemove();
+      contextsToRemove = contextsToRemove.concat(allContexts.remove);
+
+      removeContext(contextsToRemove);
+
+      if (!noDeregister) {
+        // There's no way to prevent users of genie from adding wishes that already exist in genie
+        //   so we're completely removing them here
+        deregisterWishesWithContext(contextsToRemove);
+      }
+
+      addContext(contextsToAdd);
+    }
+    return _context;
+  }
+
+  function addPathContext(pathContext) {
+    _addUniqueItems(_pathContexts, pathContext);
+    return _pathContexts;
+  }
+
+  function removePathContext(pathContext) {
+    _removeItems(_pathContexts, pathContext);
+    return _pathContexts;
   }
 
   function enabled(newState) {
@@ -454,12 +633,16 @@
   genie.options = _passThrough(options, {});
   genie.mergeWishes = _passThrough(mergeWishes, {});
   genie.deregisterWish = _passThrough(deregisterWish, {});
+  genie.deregisterWishesWithContext = _passThrough(deregisterWishesWithContext, []);
   genie.reset = _passThrough(reset, {});
-  genie.context = _passThrough(context, '');
-  genie.addContext = _passThrough(addContext, '');
-  genie.removeContext = _passThrough(removeContext, '');
-  genie.revertContext = _passThrough(revertContext, '');
-  genie.restoreContext = _passThrough(restoreContext, '');
+  genie.context = _passThrough(context, []);
+  genie.addContext = _passThrough(addContext, []);
+  genie.removeContext = _passThrough(removeContext, []);
+  genie.revertContext = _passThrough(revertContext, []);
+  genie.restoreContext = _passThrough(restoreContext, []);
+  genie.updatePathContext = _passThrough(updatePathContext, []);
+  genie.addPathContext = _passThrough(addPathContext, []);
+  genie.removePathContext = _passThrough(removePathContext, []);
   genie.enabled = _passThrough(enabled, false);
   genie.returnOnDisabled = _passThrough(returnOnDisabled, true);
   return genie;

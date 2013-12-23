@@ -136,9 +136,49 @@ describe('genie', function(){
   });
   // End registration
 
+  describe('#deregisterWish #deregisterWishesWithContex', function() {
+    var allWishCount = 5;
+    var wish1;
+    beforeEach(function(done) {
+      wish1 = genie(fillInWish());
+      genie(fillInWish({
+        context: 'context1'
+      }));
+      genie(fillInWish({
+        context: 'context1'
+      }));
+      genie(fillInWish({
+        context: 'context2'
+      }));
+      genie(fillInWish({
+        context: 'context2'
+      }));
+      done();
+    });
+    it('should have one less wish when a wish is deregistered', function() {
+      var allWishes = genie.getMatchingWishes();
+      expect(allWishes).to.have.length(allWishCount);
+      genie.deregisterWish(wish1);
+
+      var allWishes = genie.getMatchingWishes();
+      expect(allWishes).to.have.length(allWishCount - 1);
+    });
+    
+    it('should remove only wishes in a given context when deregisterWishesWithContex is called', function() {
+      var allWishes = genie.getMatchingWishes();
+      expect(allWishes).to.have.length(allWishCount);
+      genie.deregisterWishesWithContext('context1');
+
+      var allWishes = genie.getMatchingWishes();
+      expect(allWishes).to.have.length(allWishCount - 2);
+    });
+  });
+  // End #getMatchingWishes
+
   describe('#getMatchingWishes', function() {
 
   });
+  // End #getMatchingWishes
 
   describe('#context #addContext #removeContext', function() {
     var defaultContextWish;
