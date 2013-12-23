@@ -118,6 +118,9 @@
       if (_enteredMagicWords[word].indexOf(id) != -1) {
         _enteredMagicWords[word].splice(_enteredMagicWords[word].indexOf(id), 1);
       }
+      if (!_enteredMagicWords[word].length) {
+        delete _enteredMagicWords[word];
+      }
     }
     return wish;
   }
