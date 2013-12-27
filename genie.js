@@ -338,24 +338,25 @@
     return _wishInThisContext(wish, _context);
   }
   
-  function _wishInThisContext(wish, theContext) {
-    theContext = _arrayize(theContext);
+  function _wishInThisContext(wish, theContexts) {
+    var wishContextConstraintsMet = false;
     var wishContextInContext = false;
-    var contextInWishContext = false;
 
-    if (typeof wish.context === 'string') {
-      wishContextInContext = theContext.indexOf(wish.context) > -1;
-    } else if (_isArray(wish.context)) {
-      for (var i = 0; i < theContext.length; i++) {
-        if (wish.context.indexOf(theContext[i]) > -1) {
-          wishContextInContext = true;
-          break;
-        }
-      }
+    if (wish.context.all || wish.context.none || wish.context.any) {
+      var all = wish.context.all || [];
+      var none = wish.context.none || [];
+      var any = wish.context.any || [];
+      
+      var containsAny = _isEmpty(any) || _arrayContainsAny(theContexts, any); // Succeeds if true
+      var containsAll = theContexts.length >= all.length && _arrayContainsAll(theContexts, all); // Succeeds if true
+      var wishNoneContextNotContainedInContext = _arrayContainsNone(theContexts, none); // Succeeds if false
+      
+      wishContextConstraintsMet = containsAny && containsAll && wishNoneContextNotContainedInContext;
+    } else {
+      wishContextInContext = _arrayContainsAny(theContexts, wish.context);
     }
 
-    return wishContextInContext || contextInWishContext;
-    
+    return wishContextInContext || wishContextConstraintsMet;
   }
   
   function _getContextsFromPath(path) {
@@ -448,16 +449,65 @@
     }
   }
   
-  function _removeItems(array, obj) {
+  function _removeItems(arry, obj) {
     obj = _arrayize(obj);
     var i = 0;
 
-    while(i < array.length) {
-      if (obj.indexOf(array[i]) > -1) {
-        array.splice(i, 1);
+    while(i < arry.length) {
+      if (_contains(obj, arry[i])) {
+        arry.splice(i, 1);
       } else {
         i++;
       }
+    }
+  }
+  
+  function _arrayContainsAny(arry1, arry2) {
+    arry1 = _arrayize(arry1);
+    arry2 = _arrayize(arry2);
+    for (var i = 0; i < arry2.length; i++) {
+      if (_contains(arry1, arry2[i])) {
+        return true;
+      }
+    }
+    return false;
+  }
+  
+  function _arrayContainsNone(arry1, arry2) {
+    arry1 = _arrayize(arry1);
+    arry2 = _arrayize(arry2);
+    for (var i = 0; i < arry2.length; i++) {
+      if (_contains(arry1, arry2[i])) {
+        return false;
+      }
+    }
+    return true;
+  }
+  
+  function _arrayContainsAll(arry1, arry2) {
+    arry1 = _arrayize(arry1);
+    arry2 = _arrayize(arry2);
+    for (var i = 0; i < arry2.length; i++) {
+      if (!_contains(arry1, arry2[i])) {
+        return false;
+      }
+    }
+    return true;
+  }
+  
+  function _contains(arry, obj) {
+    return arry.indexOf(obj) > -1;
+  }
+  
+  function _isEmpty(obj) {
+    if (_isNullOrUndefined(obj)) {
+      return true;
+    } else if (_isArray(obj)) {
+      return obj.length === 0;
+    } else if (_isPrimitive(obj)) {
+      return false;
+    } else {
+      return false;
     }
   }
   
@@ -497,7 +547,18 @@
         return false;
     }
   }
+
+  function _isUndefined(obj) {
+    return typeof obj === 'undefined';
+  }
+
+  function _isNull(obj) {
+    return obj === null;
+  }
   
+  function _isNullOrUndefined(obj) {
+    return _isNull(obj) || _isUndefined(obj);
+  }
 
   // Begin API functions. //
 

@@ -45,7 +45,7 @@ On Deck wish is chosen again (it then becomes On Deck).
 
 ##How to use it
 
-If you're using [RequireJS](http://requirejs.org/) then you can simply `require('genie')`.
+If you're using [RequireJS](http://requirejs.org/) then you can simply `require('path/to/genie')`.
 Or you could simply include the regular script tag:
 
 ```html
@@ -99,7 +99,11 @@ There are a few internal objects you may want to be aware of:
 var wishObject = {
   id: 'string',
   data: object,
-  context: 'string',
+  context: 'string' || ['string'] || {
+    all: ['string'],
+    any: ['string'],
+    none: ['string']
+  },
   keywords: ['string'],
   action: function() { }
 };
@@ -120,7 +124,11 @@ genie(magicWords [string || array | required], action [function | required], dat
 genie({
   id: string | optional,
   data: object | optional,
-  context: string | optional,
+  context: string || [string] || {
+    all: [string],
+    any: [string],
+    none: [string]
+  } | optional,
   action: function | required,
   magicWords: string || [string] | required
 });
@@ -246,20 +254,48 @@ Just trust the genie. He knows best. And if you think otherwise,
 ##About Context
 
 Genie has a concept of context that allows you to switch between sets of wishes easily.
-Each wish is given the default context which is `universe` unless one is provided when
-it is registered. Wishes will only behave normally in `getMatchingWishes` and `makeWish`
-when they are in context.
+It's a toss up between context and the matching algorithm on which is more complex but
+hopefully I can explain it well enough for you! Each wish is given the default context
+which is `universe` unless one is provided when it is registered. Wishes will only
+behave normally in `getMatchingWishes` and `makeWish` when they are in context.
 
-There are a few ways for a wish to be in context:
-  1. Genie's current context is the default context
-  2. The wish's context is the default context
-  3. The wish's context is equal to the current context
-  4. The wish's context is contained in the current context (when the current context is an array of strings)
-  5. The current context is contained in the wishe's context (when the current context is an array of strings)
+The easiest way to think of a wish context is that it is structured like so:
+
+```javascript
+{
+  all: ['context1', 'context2'],
+  any: ['context3', 'context4'],
+  none: ['context5', 'context6']
+}
+```
+
+If you set a wish's context to a string or array of strings, it behaves like so:
+
+```javascript
+// what you set:
+wish.context = ['context1', 'context2'];
+
+// how genie treats it:
+wish.context = {
+  any: ['context', 'context2']
+};
+```
+
+There are a few ways for a wish to **definitely** be in context:
+ 1. Genie's current context is the default context
+ 2. The wish's context is the default context (does not apply if it simply contains the default context)
+ 3. The wish's context is equal to the current context
+
+If none of these are true, then these things must be true for the wish to be in context:
+ 1. Genie's context does **not** contain any of the wish's `context.none` contexts if it exists.
+ 2. Genie's context contains **at least one** of the wish's `context.any` contexts if it exists.
+ 3. Genie's context contains **all** of the wish's `context.all` contexts if it exists. 
 
 Checkout [the tests](test/tests.js) for #context to see more how this works. Here's a simple demonstration:
 
 ```javascript
+// Simple stuff
+
 // Before setting context, genie.context is default
 wish0.context // returns the default context
 wish1.context = 'context1';
@@ -282,6 +318,34 @@ genie.getMatchingWishes(); // returns [wish0, wish1, wish2]
 
 genie.context(['context1', 'context3']);
 genie.getMatchingWishes(); // returns [wish0, wish1, wish2, wish3]
+```
+
+```javascript
+// Complex stuff
+
+genie.context = ['context1', 'context2', 'context3', 'context4'];
+
+wish0.context // returns the default context
+wish1.context = {
+  any: ['context2', 'context5']
+};
+wish2.context = {
+  none: ['context3', 'context5']
+};
+wish3.context = {
+  all: ['context1', 'context5']
+};
+
+genie.getMatchingWishes(); // returns [wish0, wish1]
+
+genie.context(['context5', 'context1']);
+genie.getMatchingWishes(); // returns [wish0, wish1, wish3]
+
+genie.context(['context2']);
+genie.getMatchingWishes(); // returns [wish0, wish1, wish2]
+
+genie.restoreContext(); // resets genie's context to default
+genie.getMatchingWishes(); // returns [wish0, wish2]
 ```
 
 ###Path Context
@@ -409,4 +473,3 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/kentcdodds/genie/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
-
