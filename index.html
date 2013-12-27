@@ -6,6 +6,7 @@
     <meta name="keywords" content="GenieJS, Alfred App, JavaScript, User Experience, UX">
     <meta name="description" content="GenieJS is a JavaScript library to improve user experience by allowing users to perform actions with their keyboard. GenieJS also learns the user's preferences over time.">
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
     <link rel="stylesheet" href="./demo-files/style.css" />
   </head>
   <body>
@@ -18,24 +19,28 @@
     <header>
       <h1>GenieJS</h1>
       <h2 id="wish-output">Press Ctrl+Space (or click
-
-        <span class="rub-the-lamp" ng-click="genieVisible=!genieVisible; $event.stopPropagation();" ga>here</span>)
-
-        to <a href="http://www.youtube.com/watch?v=pwsTXpDJSVE" ga>rub the lamp</a></h2>
+        <span class="rub-the-lamp" ng-click="genieVisible=!genieVisible; $event.stopPropagation();" ga>here</span>) to rub the lamp</h2>
       <h3>Then type an apostrophe ( ' ) to see all the wishes</h3>
       <h4>Wishes made: {{wishesMade}}</h4>
       <p>
-        GenieJS was built to simulate the behavior in apps like <a href="http://www.alfredapp.com/" ga>Alfred</a>.<br />
+        GenieJS was built to simulate the behavior in apps like
+        <a href="http://www.alfredapp.com/" genie-wish="What is Alfred?" wish-context="{{demoContext}}" wish-i-icon="{{iconPrefix.b}}question-sign" target="_blank" ga>Alfred</a>.<br />
+
         Essentially, you register actions with keywords and then you can find those actions via a keyword search.<br />
-        For info on the <a href="https://github.com/kentcdodds/genie#vernacular" ga>vernacular</a> of wishes and magic words,
-        see the <a href="https://github.com/kentcdodds/genie" ga>project on GitHub</a>.<br />
-        I'm in the process of moving tests to Mocha. Go <a href="./test/testrunner.html" ga>here</a> to run the Mocha tests,
-        click <a href="./test/old-tests" ga>here</a> to run the old tests...
+        
+        For info on the <a href="https://github.com/kentcdodds/genie#vernacular" genie-wish="What's a wish?" wish-context="{{demoContext}}" wish-i-icon="{{iconPrefix.b}}question-sign" target="_blank" ga>vernacular</a> of wishes and magic words,
+        see the <a href="https://github.com/kentcdodds/genie" genie-wish="See Genie on GitHub" wish-context="{{demoContext}}" wish-i-icon="{{iconPrefix.f}}github" target="_blank" ga>project on GitHub</a>.<br />
+        
+        There's also an <a href="http://www.angularjs.org/" target="_blank" genie-wish="What's AngularJS?" wish-context="{{demoContext}}" wish-i-icon="{{iconPrefix.b}}question-sign" ga>AngularJS</a>
+        module with a few useful directives called <a href="http://www.github.com/kentcdodds/ux-genie" target="_blank" genie-wish="See uxGenie on GitHub" wish-context="{{demoContext}}" wish-i-icon="{{iconPrefix.f}}github" ga>uxGenie on GitHub</a>.<br />
+
+        I'm in the process of moving tests to Mocha. Go <a href="./test/testrunner.html" genie-wish="Run Tests" wish-context="{{demoContext}}" wish-img-icon="./demo-files/images/mocha.png" target="_blank" ga>here</a> to run the Mocha tests,
+        click <a href="./test/old-tests" target="_blank" ga>here</a> to run the old tests...
       </p>
       <p>
         <strong>Note:</strong> If you're on a mobile device, you will not be able to use this demo. Instead you can watch this
-        <a href="http://www.youtube.com/watch?v=nJrtn8B4FzM" ga>demo video</a>. Please also visit the
-        <a href="https://github.com/kentcdodds/genie" ga>GitHub project</a>.
+        <a href="http://www.youtube.com/watch?v=nJrtn8B4FzM" genie-wish="Watch Demo Video" wish-context="{{demoContext}}" wish-i-icon="{{iconPrefix.f}}youtube-play" target="_blank" ga>demo video</a>. Please also visit the
+        <a href="https://github.com/kentcdodds/genie" target="_blank" ga>GitHub project</a>.
       </p>
     </header>
 
@@ -47,7 +52,14 @@
       </p>
       <ol id="instructions-list">
         <li>Press Ctrl+Space to open the Genie Search Box</li>
-        <li>Optionally type an apostrophe (') to show all wishes (<a href="https://github.com/kentcdodds/ux-genie#view-all-wishes" ga>about this feature</a>)</li>
+        <li>Optionally type an apostrophe (') to show all wishes
+          (<a href="https://github.com/kentcdodds/ux-genie#view-all-wishes"
+              target="_blank"
+              genie-wish="Read about the ' feature"
+              wish-i-icon="{{iconPrefix.f}}github"
+              wish-context="{{demoContext}}"
+              ga>about this feature</a>)
+        </li>
         <li>Type anything to filter the wishes</li>
         <li>Mouse over or arrow down to the wish you wish and click/press return</li>
         <li>Notice how genie organizes the wishes as you make them</li>

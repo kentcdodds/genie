@@ -28,12 +28,14 @@
         return ['<div class="genie-container"' + ngShow + '>',
           '<input type="text" ng-model="genieInput" class="lamp-input input form-control" />',
           '<div ng-show="matchingWishes.length > 0" class="genie-wishes">',
-            '<div class="genie-wish" ' +
-              'ng-repeat="wish in matchingWishes" ' +
-              'ng-class="{focused: focusedWish == wish}" ' +
-              'ng-click="makeWish(wish)" ' +
-              'ng-mouseenter="focusOnWish(wish, false)">',
-            '{{wish.data.displayText || wish.magicWords[0]}}',
+          '<div class="genie-wish" ' +
+            'ng-repeat="wish in matchingWishes" ' +
+            'ng-class="{focused: focusedWish == wish}" ' +
+            'ng-click="makeWish(wish)" ' +
+            'ng-mouseenter="focusOnWish(wish, false)">',
+          '<img ng-if="wish.data.uxGenie.imgIcon" ng-src="{{wish.data.uxGenie.imgIcon}}">',
+          '<i ng-if="wish.data.uxGenie.iIcon" class="{{wish.data.uxGenie.iIcon}}"></i>',
+          '{{wish.data.uxGenie.displayText || wish.magicWords[0]}}',
           '</div></div></div>'].join('');
       },
       scope: {
@@ -175,7 +177,6 @@
           scope.wishCallback(genie.makeWish(wish, scope.genieInput));
           saveToLocalStorage(wish);
           scope.$apply(function() {
-            updateMatchingWishes(scope.genieInput);
             scope.lampVisible = false;
           });
         }
@@ -207,6 +208,7 @@
         if (scope.rubClass) {
           scope.$watch('lampVisible', function(newVal) {
             if (newVal) {
+              updateMatchingWishes(scope.genieInput);
               el.addClass(scope.rubClass);
               // Needs to be lampVisible before it can be selected
               $timeout(function() {
@@ -235,6 +237,67 @@
 
         scope.$watch('genieInput', function(newVal) {
           updateMatchingWishes(newVal);
+        });
+      }
+    }
+  }]);
+
+  uxGenie.directive('genieWish', ['genie', function(genie) {
+    return {
+      scope: {
+        wishData: '=?',
+        wishAction: '&?'
+      },
+      link: function(scope, el, attrs) {
+        var id = attrs.wishId;
+        var context = attrs.wishContext ? attrs.wishContext.split(',') : null;
+        var data = scope.wishData || {};
+        var uxGenieData = data.uxGenie = data.uxGenie || {};
+
+        uxGenieData.element = el[0];
+        uxGenieData.event = attrs.wishEvent || uxGenieData.event || 'click';
+        uxGenieData.iIcon = attrs.wishIIcon;
+        uxGenieData.imgIcon = attrs.wishImgIcon;
+
+        var action = function(wish) {
+          var modifiers = [];
+          if (attrs.eventModifiers) {
+            modifiers = attrs.eventModifiers.split(',');
+          }
+          var event = new MouseEvent(wish.data.uxGenie.event, {
+            view: window,
+            bubbles: true,
+            cancelable: true,
+            ctrlKey: modifiers.indexOf('ctrlKey') > -1,
+            altKey: modifiers.indexOf('altKey') > -1,
+            shiftKey: modifiers.indexOf('shiftKey') > -1,
+            metaKey: modifiers.indexOf('metaKey') > -1
+          });
+          wish.data.uxGenie.element.dispatchEvent(event);
+
+          if (attrs.wishAction) {
+            scope.wishAction({wish: wish});
+          }
+        };
+
+        // get magic words
+        var magicWords = null;
+        ['genieWish', 'name', 'id'].every(function(attrName) {
+          magicWords = attrs[attrName];
+          return !magicWords;
+        });
+        if (magicWords) {
+          magicWords = magicWords.split(',');
+        } else {
+          throw new Error('Thrown by the genie-wish directive: All genie-wish elements must have a magic-words, id, or name attribute.');
+        }
+
+        genie({
+          id: id,
+          magicWords: magicWords,
+          context: context,
+          action: action,
+          data: data
         });
       }
     }

@@ -91,6 +91,10 @@ h3 {
 .genie-wish {
 }
 
+.genie-wish > img, .genie-wish > i {
+  vertical-align: text-top;
+}
+
 .genie-wish.focused {
   -mos-border-radius: 8px;
   border-radius: 8px;
@@ -149,6 +153,11 @@ h3 {
   line-height: 50px;
 }
 
+#uxLampContainer.large .genie-wish > img, #uxLampContainer.large .genie-wish > i {
+  height: 35px;
+  margin-right: 10px;
+}
+
 /* ng-genie small styles */
 #uxLampContainer.small .genie-container {
   width: 300px;
@@ -165,10 +174,15 @@ h3 {
 
 #uxLampContainer.small .genie-wishes {
   max-height: 216px;
-  font-size: 24px;
+  font-size: 18px;
 }
 
 #uxLampContainer.small .genie-wish {
   padding: 0px 12px 0px 12px;
   line-height: 36px;
+}
+
+#uxLampContainer.small .genie-wish > img, #uxLampContainer.small .genie-wish > i {
+  height: 20px;
+  margin-right: 5px;
 }
