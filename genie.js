@@ -88,23 +88,20 @@
   }
 
   function _createAction(action) {
-    if (typeof action === 'function') { // Custom action
-      return action;
-    }
-
     if (typeof action === 'string') { // Default nav action
       action = {
         destination: action
       }
+      return function() {
+        if (action.openNewTab) {
+          window.open(action.destination, '_blank');
+        } else {
+          window.location.href = action.destination;
+        }
+      };
     }
-
-    return function() {
-      if (action.openNewTab) {
-        window.open(action.destination, '_blank');
-      } else {
-        window.location.href = action.destination;
-      }
-    };
+    
+    return action;
   }
 
   function deregisterWish(id) {
@@ -302,7 +299,7 @@
       return null;
     }
 
-    wish.action(wish);
+    wish.action && wish.action(wish, magicWord);
 
     if (magicWord !== undefined) {
       // Reset entered magicWords order.
