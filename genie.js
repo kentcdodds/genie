@@ -98,6 +98,14 @@
     return action;
   }
 
+  /**
+   * Deregisters the given wish. Removes it from the registry
+   *   and from the _enteredMagicWords map.
+   * This will delete an _enteredMagicWords listing if this
+   *   is the only wish in the list. 
+   * @param id or wish
+   * @returns {*}
+   */
   function deregisterWish(id) {
     // Check if it may be a wish object
     if (_isObject(id) && id.id) {
@@ -115,9 +123,17 @@
     });
     return wish;
   }
-  
-  function deregisterWishesWithContext(context) {
-    var deregisteredWishes = getWishes(context);
+
+  /**
+   * Convenience method which calls getWishesWithContext and passes the arguments
+   *   which are passed to this function. Then deregisters each of these.
+   * @param context
+   * @param type
+   * @param wishContextType
+   * @returns {Array} the deregistered wishes.
+   */
+  function deregisterWishesWithContext(context, type, wishContextType) {
+    var deregisteredWishes = getWishesWithContext(context, type, wishContextType);
     _each(deregisteredWishes, function(wish, i) {
       deregisteredWishes[i] = deregisterWish(wish);
     });
@@ -127,20 +143,84 @@
   /**
    * Get wishes in a specific context. If no context
    *   is provided, all wishes are returned.
+   *   Think of this as, if genie were in the given
+   *   context, what would be returned if I called
+   *   genie.getMatchingWishes()?
    * @param context
    * @returns {Array}
    */
-  function getWishes(context) {
+  function getWishesInContext(context) {
     context = context || _defaultContext;
     var wishesInContext = [];
     _each(_wishes, function(wish) {
-      if (_wishInThisContext(wish, context)) {
+      if (_contextIsDefault(context) ||
+        _contextIsDefault(wish.context) ||
+        _wishInThisContext(wish, context)) {
         wishesInContext.push(wish);
       }
     });
     return wishesInContext;
   }
 
+  /**
+   * Get wishes which have {type} of {context} in their context.{wishContextType}
+   * @param context
+   * @param type
+   * @param wishContextTypes
+   * @returns {Array}
+   */
+  function getWishesWithContext(context, type, wishContextTypes) {
+    var wishesWithContext = [];
+    type = type || 'any';
+    _each(_wishes, function(wish) {
+      var wishContext = [];
+      if (wishContextTypes) {
+        wishContextTypes = _arrayize(wishContextTypes);
+        if (!_contains(wishContextTypes, 'any') && (_isString(wish.context) || _isArray(wish.context))) {
+          // A wish with a non-object context is treated like an 'any' context
+          //   wish, so if it is not an object and we're not looking for
+          //   an 'any' wishContextType, then we can safely skip the rest of this.
+          return;
+        }
+        _each(wishContextTypes, function(wishContextType) {
+          if (wish.context[wishContextType]) {
+            wishContext = wishContext.concat(wish.context[wishContextType]);
+          }
+        });
+      } else {
+        if (_isObject(wish.context)) {
+          wishContext = [];
+          if (wish.context.all) {
+            wishContext = wishContext.concat(_arrayize(wish.context.all));
+          }
+          if (wish.context.any) {
+            wishContext = wishContext.concat(_arrayize(wish.context.any));
+          }
+          if (wish.context.none) {
+            wishContext = wishContext.concat(_arrayize(wish.context.none));
+          }
+        }
+      }
+      
+      if (_isEmpty(wishContext)) {
+        if (_isString(wish.context)) {
+          wishContext = [wish.context];
+        } else if (_isArray(wish.context)) {
+          wishContext = wish.context;
+        }
+      }
+      
+      if (!_isEmpty(wishContext)) {
+        if ((type === 'all' && _arrayContainsAll(wishContext, context)) ||
+          (type === 'none' && _arrayContainsNone(wishContext, context)) ||
+          (type === 'any' && _arrayContainsAny(wishContext, context))) {
+          wishesWithContext.push(wish);
+        }
+      }
+    });
+    return wishesWithContext;
+  }
+  
   /**
    * Get a specific wish by an id.
    * If the id is an array, returns an array
@@ -343,6 +423,21 @@
   }
 
   /**
+   * Returns true if the given context is the default context.
+   * @param context
+   * @returns {boolean}
+   * @private
+   */
+  function _contextIsDefault(context) {
+    context = _arrayize(context);
+    if (context.length === 1) {
+      return context[0] === _defaultContext[0];
+    } else {
+      return false;
+    }
+  }
+
+  /**
    * There are a few ways for a wish to be in context:
    *  1. Genie's context is equal to the default context
    *  2. The wish's context is equal to the default context
@@ -353,14 +448,8 @@
    * @private
    */
   function _wishInContext(wish) {
-    function contextIsDefault(context) {
-      context = _arrayize(context);
-      if (context.length === 1) {
-        return context[0] === _defaultContext[0];
-      }
-    }
-    return contextIsDefault(_context) ||
-      contextIsDefault(wish.context) ||
+    return _contextIsDefault(_context) ||
+      _contextIsDefault(wish.context) ||
       wish.context === _context ||
       _wishInThisContext(wish, _context);
   }
@@ -956,7 +1045,8 @@
   }
 
   genie = _passThrough(registerWish, {});
-  genie.getWishes = _passThrough(getWishes, []);
+  genie.getWishesInContext = _passThrough(getWishesInContext, []);
+  genie.getWishesWithContext = _passThrough(getWishesWithContext, []);
   genie.getWish = _passThrough(getWish, {});
   genie.getMatchingWishes = _passThrough(getMatchingWishes, []);
   genie.makeWish = _passThrough(makeWish, {});

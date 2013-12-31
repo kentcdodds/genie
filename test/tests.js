@@ -152,7 +152,7 @@ describe('genie', function(){
       expect(allWishes).to.have.length(allWishCount - 1);
     });
     
-    it('should remove only wishes in a given context (excluding the default context) when deregisterWishesWithContex is called', function() {
+    it('should remove only wishes in a given context (excluding the default context) when deregisterWishesWithContext is called', function() {
       var allWishes = genie.getMatchingWishes();
       expect(allWishes).to.have.length(allWishCount);
       genie.deregisterWishesWithContext('context1');

@@ -7,7 +7,8 @@
  - Genie now adds a `data` property to all wishes with a
  `timesMade` property indicating how many times that wish had
  been made (how many times the action was called).
- - Added getWishes(context)
+ - Added getWishesWithContext(context, type, wishContextTypes)
+ - Added getWishesInContext(context)
  - Added getWish(id)
  - Seriously documented some functions.
  - Adding jshint to the build. Some errors corrected.

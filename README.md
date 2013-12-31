@@ -171,11 +171,38 @@ genie.getMatchingWishes(magicWord [string | required]);
 genie.makeWish(id [string || wishObject | required], magicWord [string | optional]);
 
 /*
- * Returns wishes in the given context.
+ * Returns wishes in the given context. This is what would be returned in the
+ *   case genie's context were the given context and you called
+ *   genie.getMatchingWishes(); (no args).
  * If no context is provided, all wishes are returned.
  * Returns wishes as an array
  */
-genie.getWishes(context [string || array | optional]);
+genie.getWishesInContext(context [string || array | optional]);
+
+
+/*
+ * Get wishes which have {type} of {context} in their context.{wishContextType}
+ * type can be: 'any', 'all', or 'none' and refers to the context given
+ * wishContextType can be a string or array with: 'any', 'all', or 'none'
+ *   and refers to the which of the wish's contexts to search. If not provided
+ *   genie combines all three. If a wish doesn't have a context object, but an
+ *   array or string instead, it treats that as if it were 'any' (as expected).
+ *
+ * This is a pretty complicated api, so here are a few examples
+ * ex. getWishesWithContext('animal', 'none', 'all')
+ *   This would find all wishes which have no don't have the context 'animal' in their 'all'
+ *   context property
+ * ex. getWishesWithContext('fred')
+ *   This would find all wishes which have the context 'fred' in any of their contexts
+ *   (including none).
+ * ex. getWishesWithContext('tom', 'any', ['all', 'none'])
+ *   This would find all wishes which have the context 'tom' in their 'all' or 'none' contexts.
+ * ex. getWishesWithContext(['tom', 'fred'], 'all')
+ *   This would find all wishes which have both the context 'tom' and 'fred' in any of their contexts.
+ * ex. getWishesWithContext(['orange', 'apple'], 'none', 'any')
+ *   This would find all wishes which do not have 'orange' or 'apple' in their 'any' context.
+ */
+genie.getWishesWithContext(context [string || array | required], type [string | optional | 'any'], wishContextTypes) {
 
 /*
  * Get a specific wish by an id.
