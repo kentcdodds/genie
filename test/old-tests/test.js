@@ -6,55 +6,39 @@
     genie.returnOnDisabled(true);
   }
 
-  function registerBlankWish(magicWords) {
-    return genie(magicWords,function (){});
+  function registerWishWithDefaults(defaults) {
+    if (typeof defaults === 'string' || defaults instanceof Array) {
+      defaults = {
+        magicWords: defaults
+      };
+    }
+    defaults = defaults || {};
+    return genie({
+      id: defaults.id,
+      context: defaults.context,
+      data: defaults.data || {
+        called: 0
+      },
+      magicWords: defaults.magicWords || 'magicWords',
+      action: defaults.action || function(wish) {
+        wish.called++;
+      }
+    });
   }
 
   Evidence.TestCase.extend('GenieTest', {
-    testWishRegistration: function(t) {
-      prepForTest();
-      var wishCalled = 0;
-      var wish = genie('wish', function() {
-        wishCalled++;
-      });
-      t.assertEqual(wishCalled, 0);
-      
-      genie.makeWish(wish);
-      t.assertEqual(wishCalled, 1);
-      
-      genie.deregisterWish(wish);
-      genie.makeWish(wish);
-      t.assertEqual(wishCalled, 1);
-      
-      // Test registration with object.
-      var wish2 = genie({
-        id: 'wish2',
-        data: {
-          display: 'Zerahemla',
-          image: 'file/somewhere/image.png'
-        },
-        magicWords: ['Zerahemla', 'Nephite City'],
-        action: function(wish2Object) {
-          t.assertIdentical(wish2Object, wish2);
-        }
-      });
-      genie.makeWish(wish2);
-    },
     testResettingGenie: function(t) {
       prepForTest();
-      var wishCalled = 0;
-      var wish = genie('wish', function() {
-        wishCalled++;
-      });
+      var wish = registerWishWithDefaults();
       genie.reset();
       genie.makeWish(wish);
-      t.assertEqual(wishCalled, 0);
+      t.assertEqual(wish.data.called, 0);
     },
     testMagicWords: function(t) {
       prepForTest();
-      registerBlankWish('Lord of the Flies');
-      registerBlankWish('Pirates of the Carribean');
-      registerBlankWish('Lord of the Rings');
+      registerWishWithDefaults('Lord of the Flies');
+      registerWishWithDefaults('Pirates of the Carribean');
+      registerWishWithDefaults('Lord of the Rings');
       
       var ofTheWishes = genie.getMatchingWishes('of the');
       t.assertEqual(ofTheWishes.length, 3);
@@ -67,8 +51,8 @@
     },
     testMultipleMagicWords: function(t) {
       prepForTest();
-      registerBlankWish(['Book', 'Music', 'Movie']);
-      registerBlankWish(['Cat', 'Dog', 'Goat']);
+      registerWishWithDefaults(['Book', 'Music', 'Movie']);
+      registerWishWithDefaults(['Cat', 'Dog', 'Goat']);
       
       var bookWish = genie.getMatchingWishes('b');
       var mWish = genie.getMatchingWishes('m');
@@ -95,19 +79,10 @@
     },
     testSimpleEnteredMagicWords: function(t) {
       prepForTest();
-      var fredCall = 0;
-      var ethelCall = 0;
-      var lucyCall = 0;
-      
-      var fred = genie('Fred Mertz', function() {
-        fredCall++;
-      });
-      var ethel = genie('Ethel Mertz', function() {
-        ethelCall++;
-      });
-      var lucy = genie('Lucy Mertz', function() {
-        lucyCall++;
-      });
+
+      var fred = registerWishWithDefaults('Fred Mertz');
+      var ethel = registerWishWithDefaults('Ethel Mertz');
+      var lucy = registerWishWithDefaults('Lucy Mertz');
       
       // In order of their registration
       var mertzMatch = genie.getMatchingWishes('mertz');
@@ -161,10 +136,10 @@
     },
     testComplexMagicWords: function(t) {
       prepForTest();
-      var matchWish = registerBlankWish('The Tail of Forty Cities'); // match
-      var acronym = registerBlankWish('The Tail of Two Cities'); // acronym
-      var contains = registerBlankWish('The ttotc container'); // contains
-      var equal = registerBlankWish('tTOtc'); // equal ignoring case
+      var matchWish = registerWishWithDefaults('The Tail of Forty Cities'); // match
+      var acronym = registerWishWithDefaults('The Tail of Two Cities'); // acronym
+      var contains = registerWishWithDefaults('The ttotc container'); // contains
+      var equal = registerWishWithDefaults('tTOtc'); // equal ignoring case
       var ttotcAcronym = 'ttotc';
       
       // Even though they were registered in reverse order, the matching should follow this pattern
@@ -177,7 +152,7 @@
       
       // enteredMagicWords trumps acronym and equal
       genie.makeWish(matchWish, ttotcAcronym);
-      var match = genie.getMatchingWishes(ttotcAcronym);
+      match = genie.getMatchingWishes(ttotcAcronym);
       t.assertEqual(match.length, 4);
       t.assertIdentical(match[0], matchWish);
       t.assertIdentical(match[1], equal);
@@ -187,10 +162,10 @@
     testStartsWithMagicWord: function(t) {
       prepForTest();
       var magicWord = 'f';
-      var noMatch = registerBlankWish('Hello World');
-      var contains = registerBlankWish('I like life');
-      var notFirstButStartsWith = registerBlankWish('I like fish');
-      var veryFirstStartsWith = registerBlankWish('Fish like me');
+      var noMatch = registerWishWithDefaults('Hello World');
+      var contains = registerWishWithDefaults('I like life');
+      var notFirstButStartsWith = registerWishWithDefaults('I like fish');
+      var veryFirstStartsWith = registerWishWithDefaults('Fish like me');
 
       var match = genie.getMatchingWishes(magicWord);
       t.assertEqual(match.length, 3);
@@ -200,45 +175,10 @@
     },
     testNonStringMagicWords: function(t) {
       prepForTest();
-      var num = registerBlankWish([1,2,'hey3']);
+      var num = registerWishWithDefaults([1,2,'hey3']);
       var numMatch = genie.getMatchingWishes(1);
       t.assertEqual(numMatch.length, 1);
       t.assertIdentical(numMatch[0], num);
-    },
-    testContext: function(t) {
-      prepForTest();
-      var def = 'universe';
-      var hiCall = 0;
-      t.assertEqual(genie.context(), def);
-
-      var hi = genie({
-        action: function() {
-          hiCall++
-        },
-        magicWords: 'Hello'
-      });
-
-      genie.context('newContext');
-      var match = genie.getMatchingWishes('Hello');
-      t.assertEqual(match.length, 1);
-      genie.makeWish(hi);
-      t.assertEqual(hiCall, 1);
-
-      genie.revertContext();
-      genie.makeWish(hi);
-      t.assertEqual(hiCall, 2);
-      match = genie.getMatchingWishes('Hello');
-      t.assertEqual(match.length, 1);
-
-      hi.context = 'differentContext';
-
-      genie.context('otherContext');
-
-      genie.makeWish(hi);
-      t.assertEqual(hiCall, 2);
-      match = genie.getMatchingWishes('Hello');
-      t.assertEqual(match.length, 0);
-
     },
     testEnabled: function(t) {
       prepForTest();

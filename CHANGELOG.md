@@ -1,3 +1,19 @@
+#0.3.0
+
+ - Breaking changes: Changed how wishes are registered. Now you
+ can only register with objects and arrays of objects. You can't
+ register by parameters. There were just too many parameters,
+ and everyone using this was using objects/arrays anyway.
+ - Genie now adds a `data` property to all wishes with a
+ `timesMade` property indicating how many times that wish had
+ been made (how many times the action was called).
+ - Added getWishes(context)
+ - Added getWish(id)
+ - Seriously documented some functions.
+ - Adding jshint to the build. Some errors corrected.
+ - Old tests fixed/removed
+ - Updated README accordingly
+
 #0.2.5
 
  - Big improvement to context. Added complex context functionality

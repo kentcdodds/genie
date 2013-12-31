@@ -25,16 +25,6 @@ describe('genie', function(){
   });
 
   describe('#', function() {
-    it('should register with arguments', function() {
-      var allArgs = genie('wish', function(){}, 'context', {}, 'id-1');
-      var allArgsAndWishArray = genie(['magic', 'word'], function(){}, 'context', {}, 'id-2');
-
-      var allWishes = genie.getMatchingWishes();
-      expect(allWishes).to.have.length(2);
-      expect(allArgs).to.have.property('magicWords').with.length(1);
-      expect(allArgsAndWishArray).to.have.property('magicWords').with.length(2);
-    });
-
     it('should register with an object', function() {
       var minimalObject = genie({
         magicWords: 'magicWord',
@@ -79,8 +69,12 @@ describe('genie', function(){
     });
 
     it('should overwrite wish with duplicateId', function() {
-      var wishOne = genie('magic', function(){}, 'context', {}, 'id');
-      var wishTwo = genie('word', function(){}, 'context', {}, 'id');
+      var wishOne = genie(fillInWish({
+        id: 'id'
+      }));
+      var wishTwo = genie(fillInWish({
+        id: 'id'
+      }));
       var allWishes = genie.getMatchingWishes();
       expect(allWishes).to.have.length(1);
       expect(wishTwo).to.equal(allWishes[0]);
@@ -93,7 +87,7 @@ describe('genie', function(){
     });
 
     it('should have one wish registered upon registration and zero upon deregistration', function() {
-      var wish = genie('wish', function() {});
+      var wish = genie(fillInWish());
       var allWishes = genie.getMatchingWishes();
       expect(allWishes).to.have.length(1);
       genie.deregisterWish(wish);
@@ -102,24 +96,18 @@ describe('genie', function(){
     });
 
     it('should make the first wish registered without giving magic words', function() {
-      var shouldBeOne = 0;
-      var shouldBeZero = 0;
-      var wishToBeMade = genie('wish1', function() {
-        shouldBeOne++;
-      });
-      genie('wish0', function() {
-        shouldBeZero++;
-      });
+      var wishToBeMade = genie(fillInWish());
+      genie(fillInWish());
       var allWishes = genie.getMatchingWishes();
       expect(allWishes).to.have.length(2);
       var madeWish = genie.makeWish();
-      expect(shouldBeOne).to.equal(1);
+      expect(wishToBeMade.data.timesMade).to.equal(1);
       expect(madeWish).to.equal(wishToBeMade);
     });
 
     it('should return empty object and not register a wish when genie is disabled', function() {
       genie.enabled(false);
-      var emptyObject = genie('not registered', function(){});
+      var emptyObject = genie(fillInWish());
       expect(emptyObject).to.be.empty;
       var allWishes = genie.getMatchingWishes();
       expect(allWishes).to.have.length(0);
@@ -127,7 +115,7 @@ describe('genie', function(){
       genie.enabled(true);
       genie.returnOnDisabled(false);
       genie.enabled(false);
-      var nullObject = genie('null returned', function(){});
+      var nullObject = genie(fillInWish());
 
       //expect(nullObject).to.be.null;
       var allWishes = genie.getMatchingWishes();

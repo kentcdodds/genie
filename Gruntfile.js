@@ -6,7 +6,6 @@ module.exports = function (grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
 
-    // Mocha
     mocha: {
       all: {
         src: ['test/testrunner.html']
@@ -15,6 +14,7 @@ module.exports = function (grunt) {
         run: true
       }
     },
+    
     uglify: {
       options: {
         banner: [
@@ -32,10 +32,42 @@ module.exports = function (grunt) {
         }
       }
     },
+    
     bumpup: 'bower.json',
+    
     watch: {
-      files: ['genie.js', 'test/*.js'],
-      tasks: ['mocha']
+      files: ['genie.js', 'test/*.js', 'Gruntfile.js'],
+      tasks: ['mocha', 'jshint']
+    },
+    
+    jshint: {
+      options: {
+        unused: true,
+        undef: true,
+        curly: true,
+        forin: true,
+        eqeqeq: true,
+        immed: true,
+        freeze: true,
+        latedef: true,
+        newcap: true,
+        noarg: true,
+        noempty: true,
+        nonew: true,
+        
+        strict: true,
+        indent: 2,
+        maxdepth: 3,
+        quotmark: 'single',
+        trailing: true,
+        globals: {
+          define: false,
+          window: false
+        }
+      },
+      files: {
+        src: ['genie.js']
+      }
     }
   });
 
@@ -44,8 +76,9 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-bumpup');
   grunt.loadNpmTasks('grunt-contrib-watch');
+  grunt.loadNpmTasks('grunt-contrib-jshint');
 
-  grunt.registerTask('build', ['mocha', 'uglify']);
+  grunt.registerTask('build', ['jshint', 'mocha', 'uglify']);
   grunt.registerTask('default', ['build']);
 
 };

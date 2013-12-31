@@ -117,10 +117,15 @@ var enteredMagicWords = {
 You have the following api to use at your discretion:
 
 ```javascript
-// If no id is provided, one will be auto-generated via the previousId + 1
-// Returns the wish object
-genie(magicWords [string || array | required], action [function | required], data [object | optional], id [string | optional]);
-// You may also register wishes with an object for convenience, like so:
+/*
+ * If no id is provided, one will be auto-generated via the previousId + 1
+ * Genie adds a "timesMade" property to the "data" property
+ *   This is incremented every time the wish is made
+ *   (when the action is called)
+ * You can also provide genie with an array of these objects
+ *   to register all of them at once.
+ * Returns the wish object.
+ */
 genie({
   id: string | optional,
   data: object | optional,
@@ -133,14 +138,20 @@ genie({
   magicWords: string || [string] | required
 });
 
-// Removes the wish from the registered wishes and the enteredMagicWords
-// Returns the deregisteredWish
+/*
+ * Removes the wish from the registered wishes and the enteredMagicWords
+ * Returns the deregisteredWish
+ */
 genie.deregisterWish(id [string || wishObject | required]);
 
-// Removes all wishes which have any of the given context(s).
+/*
+ * Removes all wishes which have any of the given context(s).
+ */
 genie.deregisterWishesWithContext(context [string || array | required]);
 
-// calls options() with default options and returns the old options
+/*
+ * calls options() with default options and returns the old options
+ */
 genie.reset();
 
 /* 
@@ -159,6 +170,23 @@ genie.getMatchingWishes(magicWord [string | required]);
  */
 genie.makeWish(id [string || wishObject | required], magicWord [string | optional]);
 
+/*
+ * Returns wishes in the given context.
+ * If no context is provided, all wishes are returned.
+ * Returns wishes as an array
+ */
+genie.getWishes(context [string || array | optional]);
+
+/*
+ * Get a specific wish by an id.
+ * If the id is an array, returns an array
+ *   of wishes with the same order as the
+ *   given array.
+ * Note: If the id does not correspond to
+ *   a registered wish, it will be undefined
+ */
+genie.getWish(id [string || array | required]);
+ 
 /*
  * Allows you to set the attributes of genie and returns the current genie options.
  *  1. wishes: All wishes (wishObject described above) currently registered
@@ -184,43 +212,63 @@ genie.options({
   returnOnDisabled: boolean | optional
 });
 
-// Merges the given wishes with existing wishes. (See Merging Wishes below)
+/*
+ * Merges the given wishes with existing wishes. (See Merging Wishes below)
+ */
 genie.mergeWishes(wishes);
 
-// Sets and returns the current context to newContext if provided
-// Also sets an internal variable: _previousContext for the revertContext function
+/* 
+ * Sets and returns the current context to newContext if provided
+ * Also sets an internal variable: _previousContext for the revertContext function
+ */
 genie.context(newContext [string || array | optional]);
 
-// Adds the context(s) to genie's current context
+/*
+ * Adds the context(s) to genie's current context
+ */
 genie.addContext(newContext [string || array | optional]);
 
-// Removes the context(s) to genie's current context
+/* 
+ * Removes the context(s) to genie's current context
+ */
 genie.removeContext(newContext [string || array | optional]);
 
-// Sets and returns the current context to the default context: ['universe']
+/* 
+ * Sets and returns the current context to the default context: ['universe']
+ */
 genie.restoreContext();
 
-// Sets and returns the current context to the previous context
-//   The previous context is updated when context, addContext, removeContext, restoreContext, and revertContext are called.
+/* Sets and returns the current context to the previous context
+ * The previous context is updated when context, addContext,
+ *   removeContext, restoreContext, and revertContext are called.
+ */
 genie.revertContext();
 
-// See more about how this works below in the context section
-//   This will update the current context with the given path
-//   noDeregister is used to prevent this from deregistering
-//     wishes which are not in the path's context.
+/* See more about how this works below in the context section
+ *   This will update the current context with the given path
+ *   noDeregister is used to prevent this from deregistering
+ *     wishes which are not in the path's context.
+ */
 genie.updatePathContext(path, noDeregister);
 
-// Adds a path context (or array of them) to genie's _pathContext array
+/*
+ * Adds a path context (or array of them) to genie's _pathContext array
+ */
 genie.addPathContext(pathContext);
 
-// Removes a path context (or array of them) from genie's _pathContext array
+/*
+ * Removes a path context (or array of them) from genie's _pathContext array
+ */
 genie.removePathContext(pathContext);
 
-
-// Sets and returns the enabled state
+/*
+ * Sets and returns the enabled state
+ */
 genie.enabled(boolean | optional);
 
-// Sets and returns the returnOnDisabled state
+/*
+ * Sets and returns the returnOnDisabled state
+ */
 genie.returnOnDisabled(boolean | optional);
 ```
 
@@ -423,7 +471,7 @@ GenieJS. Feel free to go to that project [here](https://www.github.com/kentcdodd
 ##Contributing
 
 I'd love to accept [pull requests](https://github.com/kentcdodds/genie/pulls). I'm in the middle
-of changing how builds work, so please make sure that test the old tests still runs (test/index.html).
+of moving all tests to mocha, so please make sure that test the old tests still runs (test/index.html).
 Also before you push, make sure to do the following:
  1. Run `grunt bumpup:patch` (or minor, or major as the case may be)
  2. Run `grunt` to build the library (don't push if this fails :))
