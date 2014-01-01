@@ -4,9 +4,13 @@
  can only register with objects and arrays of objects. You can't
  register by parameters. There were just too many parameters,
  and everyone using this was using objects/arrays anyway.
+ Also changing context a tad internally. Now all context will
+ be created as an object. Though a string or array can still
+ be provided, it will be assigned to the `context.any` property.
  - Genie now adds a `data` property to all wishes with a
- `timesMade` property indicating how many times that wish had
- been made (how many times the action was called).
+ `timesMade` object indicating how many times that wish had
+ been made (how many times the action was called) total as well
+ as with specific magic words.
  - Added getWishesWithContext(context, type, wishContextTypes)
  - Added getWishesInContext(context)
  - Added getWish(id)

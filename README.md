@@ -98,19 +98,32 @@ There are a few internal objects you may want to be aware of:
 ```javascript
 var wishObject = {
   id: 'string',
-  data: object,
-  context: 'string' || ['string'] || {
+  data: {
+    timesMade: {
+      total: 0,
+      magicWords: {
+        "Magic Word": 1
+      }
+    }
+  },
+  context: {
     all: ['string'],
     any: ['string'],
     none: ['string']
   },
   keywords: ['string'],
-  action: function() { }
+  action: function(wish, magicWord) { }
 };
 
 var enteredMagicWords = {
   'Any Magic Word': ['wishId1', 'wishId2', 'wishId3'],
   'Another magic word': ['wishId1', 'wishId2', 'wishId3']
+};
+
+var pathContext = {
+  paths: ['string'],
+  regexes: [/regex/gi],
+  contexts: 'The context to apply'
 };
 ```
 
@@ -348,12 +361,11 @@ If you set a wish's context to a string or array of strings, it behaves like so:
 
 ```javascript
 // what you set:
-wish.context = ['context1', 'context2'];
+var wish = genie({
+  context: ['context1', 'context2']
+});
 
-// how genie treats it:
-wish.context = {
-  any: ['context', 'context2']
-};
+console.log(wish.context); // logs {any: ['context', 'context2']}
 ```
 
 There are a few ways for a wish to **definitely** be in context:
@@ -441,7 +453,7 @@ and the `genie.removePathContext(pathContext)` methods. A `pathContext` object l
 }
 ```
 
-The `contexts` variable is special and is assiciated with the regexes variable. The easiest way to describe this
+The `contexts` variable is special and is associated with the regexes variable. The easiest way to describe this
 is via an example:
 
 If I have a pathContext object like this:
@@ -502,6 +514,9 @@ of moving all tests to mocha, so please make sure that test the old tests still 
 Also before you push, make sure to do the following:
  1. Run `grunt bumpup:patch` (or minor, or major as the case may be)
  2. Run `grunt` to build the library (don't push if this fails :))
+
+**Note:** genie has a jshint grunt task which enforces some of the styling we want to be consistent
+in the project. Take a look at the configuration for this task to know what those requirements are.
 
 ##Issues
 

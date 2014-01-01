@@ -54,7 +54,7 @@ module.exports = function (grunt) {
         noarg: true,
         noempty: true,
         nonew: true,
-        
+        maxcomplexity: 4,
         strict: true,
         indent: 2,
         maxdepth: 3,

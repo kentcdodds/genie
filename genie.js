@@ -44,11 +44,12 @@
    *  id: Unique identifier for the wish. This should be a string
    *  context: The context of the wish. Can be a string, array,
    *    or an object optional properties (strings/arrays) of 'all',
-   *    'none', and 'any'. If a string or array is given, it's
-   *    treated as if it were assigned to the 'any' property.
+   *    'none', and 'any'. If a string or array is given, the context
+   *    is assigned an 'any' property an array of it's value.
    *  data: Any data you wish to associate with the wish.
-   *    Genie adds a "timesMade" property on this object
-   *    and increments it each time this wish is made.
+   *    Genie adds a 'timesMade' property with total and magicWords
+   *    properties to keep track of how often a wish is made with a
+   *    given magicWord.
    *  magicWords: Used to match this wish on genie.getMatchingWishes
    *  action: The action to be performed when genie.makeWish is
    *    called with this wish.
@@ -67,16 +68,43 @@
       var id = wish.id || 'g-' + _previousId++;
       var newWish = {
         id: id,
-        context: wish.context || _defaultContext,
+        context: _createContext(wish.context),
         data: wish.data || {},
         magicWords: _arrayize(wish.magicWords),
         action: _createAction(wish.action)
       };
-      newWish.data.timesMade = 0;
+      newWish.data.timesMade = {
+        total: 0,
+        magicWords: {}
+      };
       _wishes[id] = newWish;
       
       return _wishes[id];
     }
+  }
+
+  function _createContext(context) {
+    var newContext = context || _defaultContext;
+    if (_isString(newContext) || _isArray(newContext)) {
+      newContext = {
+        any: _arrayize(newContext)
+      };
+    } else {
+      newContext = _arrayizeContext(context);
+    }
+    return newContext;
+  }
+
+  function _arrayizeContext(context) {
+    function checkAndAdd(type) {
+      if (context[type]) {
+        context[type] = _arrayize(context[type]);
+      }
+    }
+    checkAndAdd('all');
+    checkAndAdd('any');
+    checkAndAdd('none');
+    return context;
   }
 
   function _createAction(action) {
@@ -173,52 +201,37 @@
     var wishesWithContext = [];
     type = type || 'any';
     _each(_wishes, function(wish) {
-      var wishContext = [];
-      if (wishContextTypes) {
-        wishContextTypes = _arrayize(wishContextTypes);
-        if (!_contains(wishContextTypes, 'any') && (_isString(wish.context) || _isArray(wish.context))) {
-          // A wish with a non-object context is treated like an 'any' context
-          //   wish, so if it is not an object and we're not looking for
-          //   an 'any' wishContextType, then we can safely skip the rest of this.
-          return;
-        }
-        _each(wishContextTypes, function(wishContextType) {
-          if (wish.context[wishContextType]) {
-            wishContext = wishContext.concat(wish.context[wishContextType]);
-          }
-        });
-      } else {
-        if (_isObject(wish.context)) {
-          wishContext = [];
-          if (wish.context.all) {
-            wishContext = wishContext.concat(_arrayize(wish.context.all));
-          }
-          if (wish.context.any) {
-            wishContext = wishContext.concat(_arrayize(wish.context.any));
-          }
-          if (wish.context.none) {
-            wishContext = wishContext.concat(_arrayize(wish.context.none));
-          }
-        }
-      }
-      
-      if (_isEmpty(wishContext)) {
-        if (_isString(wish.context)) {
-          wishContext = [wish.context];
-        } else if (_isArray(wish.context)) {
-          wishContext = wish.context;
-        }
-      }
-      
-      if (!_isEmpty(wishContext)) {
-        if ((type === 'all' && _arrayContainsAll(wishContext, context)) ||
-          (type === 'none' && _arrayContainsNone(wishContext, context)) ||
-          (type === 'any' && _arrayContainsAny(wishContext, context))) {
-          wishesWithContext.push(wish);
-        }
+      var wishContext = _getWishContext(wish, wishContextTypes);
+
+      if (!_isEmpty(wishContext) &&
+        ((type === 'all' && _arrayContainsAll(wishContext, context)) ||
+        (type === 'none' && _arrayContainsNone(wishContext, context)) ||
+        (type === 'any' && _arrayContainsAny(wishContext, context)))) {
+        wishesWithContext.push(wish);
       }
     });
     return wishesWithContext;
+  }
+
+  /**
+   * Gets the wish context based on the wishContextTypes.
+   * @param wish
+   * @param wishContextTypes
+   * @returns {Array}
+   * @private
+   */
+  function _getWishContext(wish, wishContextTypes) {
+    var wishContext = [];
+    wishContextTypes = wishContextTypes || ['all', 'any', 'none'];
+
+    wishContextTypes = _arrayize(wishContextTypes);
+    _each(wishContextTypes, function(wishContextType) {
+      if (wish.context[wishContextType]) {
+        wishContext = wishContext.concat(wish.context[wishContextType]);
+      }
+    });
+
+    return wishContext;
   }
   
   /**
@@ -289,7 +302,7 @@
     var matchIdArrays = [];
     var returnedIds = [];
     _each(_wishes, function(wish, wishId) {
-      if (!_contains(currentMatchingWishIds, wishId)) {
+      if (!_contains(currentMatchingWishIds, wishId) && _wishInContext(wish)) {
         var matchType = _bestMagicWordsMatch(wish.magicWords, givenMagicWord);
         if (matchType !== _matchRankMap.noMatch) {
           matchIdArrays[matchType] = matchIdArrays[matchType]  || [];
@@ -319,6 +332,7 @@
   }
 
   function _stringsMatch(magicWord, givenMagicWord) {
+    /* jshint maxcomplexity:8 */
     magicWord = ('' + magicWord).toLowerCase();
     givenMagicWord = ('' + givenMagicWord).toLowerCase();
 
@@ -359,7 +373,7 @@
 
     return _stringsByCharOrder(magicWord, givenMagicWord);
   }
-  
+
   function _getAcronym(string) {
     var acronym = '';
     var wordsInString = string.split(' ');
@@ -374,17 +388,23 @@
 
   function _stringsByCharOrder(magicWord, givenMagicWord) {
     var charNumber = 0;
-    for (var i = 0; i < givenMagicWord.length; i++) {
-      var matchChar = givenMagicWord[i];
+
+    function _findMatchingCharacter(matchChar, string) {
       var found = false;
-      for (var j = charNumber; j < magicWord.length; j++) {
-        var stringChar = magicWord[j];
+      for (var j = charNumber; j < string.length; j++) {
+        var stringChar = string[j];
         if (stringChar === matchChar) {
           found = true;
           charNumber = j + 1;
           break;
         }
       }
+      return found;
+    }
+
+    for (var i = 0; i < givenMagicWord.length; i++) {
+      var matchChar = givenMagicWord[i];
+      var found = _findMatchingCharacter(matchChar, magicWord);
       if (!found) {
         return _matchRankMap.noMatch;
       }
@@ -392,34 +412,78 @@
     return _matchRankMap.matches;
   }
 
+  /**
+   * Take the given wish/wish id and call it's action
+   *   method if it is in context.
+   * @param wish
+   * @param magicWord
+   * @returns {*}
+   */
   function makeWish(wish, magicWord) {
-    // Check if it may be a wish object
-    if (!_isObject(wish)) {
-      wish = _wishes[wish];
-    }
-    if (_isNullOrUndefined(wish)) {
-      var matchingWishes = getMatchingWishes(magicWord);
-      if (matchingWishes.length > 0) {
-        wish = matchingWishes[0];
-      }
-    }
+    wish = _getWishObject(wish, magicWord);
 
-    /* Don't execute the wish and return null if it:
-     *   - doesn't exist
-     *   - isn't in the registry
-     *   - doesn't have an action
-     *   - wish is not in context
-     */
-    if (!wish || !_wishes[wish.id] || !wish.action || !(_wishInContext(wish))) {
+    if (!_wishCanBeMade(wish)) {
       return null;
     }
 
-    wish.action(wish, magicWord);
-    wish.data.timesMade++;
+    _executeWish(wish, magicWord);
+
     if (!_isNullOrUndefined(magicWord)) {
       _updateEnteredMagicWords(wish, magicWord);
     }
     return wish;
+  }
+
+  /**
+   * Convert the given wish argument to a valid wish object.
+   *   It could be an ID, or null. If it's null, use the
+   *   magic word and assign it to be the first result from
+   *   the magic word.
+   * @param wish
+   * @param magicWord
+   * @returns {*}
+   * @private
+   */
+  function _getWishObject(wish, magicWord) {
+    var wishObject = wish;
+    // Check if it may be a wish object
+    if (!_isObject(wishObject)) {
+      wishObject = _wishes[wishObject];
+    }
+    if (_isNullOrUndefined(wishObject)) {
+      var matchingWishes = getMatchingWishes(magicWord);
+      if (matchingWishes.length > 0) {
+        wishObject = matchingWishes[0];
+      }
+    }
+    return wishObject;
+  }
+
+  /** A wish is non-executable if it
+   *   - doesn't exist
+   *   - isn't in the registry
+   *   - doesn't have an action
+   *   - wish is not in context
+   */
+  function _wishCanBeMade(wish) {
+    return !_isUndefined([wish, _wishes[wish.id]]) && !_isNullOrUndefined(wish.action) && _wishInContext(wish);
+  }
+
+  /**
+   * Calls the wish's action with the wish and
+   *   magic word as the parameters and iterates
+   *   the timesMade properties.
+   *
+   * @param wish
+   * @param magicWord
+   * @private
+   */
+  function _executeWish(wish, magicWord) {
+    wish.action(wish, magicWord);
+    var timesMade = wish.data.timesMade;
+    timesMade.total++;
+    timesMade.magicWords[magicWord] = timesMade.magicWords[magicWord] || 0;
+    timesMade.magicWords[magicWord]++;
   }
 
   /**
@@ -429,9 +493,13 @@
    * @private
    */
   function _contextIsDefault(context) {
-    context = _arrayize(context);
-    if (context.length === 1) {
+    if (!_isObject(context)) {
+      context = _arrayize(context);
+    }
+    if (_isArray(context) && context.length === 1) {
       return context[0] === _defaultContext[0];
+    } else if (context.any && context.any.length === 1) {
+      return context.any[0] === _defaultContext[0];
     } else {
       return false;
     }
@@ -456,11 +524,10 @@
 
   /**
    * This will get the any, all, and none constraints for the
-   *   wish's context. If the wish's context is an array or string
-   *   it will consider it to be the wish's any constraint.
-   *   If a constraint is not present, it is considered to pass.
-   *   The exception being if the wish has no context (each context
-   *   property is not present). In this case, it is not in context.
+   *   wish's context. If a constraint is not present, it is
+   *   considered passing. The exception being if the wish has
+   *   no context (each context property is not present). In
+   *   this case, it is not in context.
    * These things must be true for the wish to be in the given context:
    *  1. any: genie's context contains any of these.
    *  2. all: genie's context contains all of these.
@@ -472,25 +539,18 @@
    * @private
    */
   function _wishInThisContext(wish, theContexts) {
-    var wishContextConstraintsMet = false;
+    /* jshint maxcomplexity:5 */
+    var wishContextConstraintsMet;
     
     var any = wish.context.any || [];
     var all = wish.context.all || [];
     var none = wish.context.none || [];
     
-    if (_isString(wish.context)) {
-      any = [wish.context];
-    } else if (_isArray(wish.context)) {
-      any = wish.context;
-    }
+    var containsAny = _isEmpty(any) || _arrayContainsAny(theContexts, any);
+    var containsAll = theContexts.length >= all.length && _arrayContainsAll(theContexts, all);
+    var wishNoneContextNotContainedInContext = _arrayContainsNone(theContexts, none);
 
-    if (all || none || any) {
-      var containsAny = _isEmpty(any) || _arrayContainsAny(theContexts, any);
-      var containsAll = theContexts.length >= all.length && _arrayContainsAll(theContexts, all);
-      var wishNoneContextNotContainedInContext = _arrayContainsNone(theContexts, none);
-      
-      wishContextConstraintsMet = containsAny && containsAll && wishNoneContextNotContainedInContext;
-    }
+    wishContextConstraintsMet = containsAny && containsAll && wishNoneContextNotContainedInContext;
 
     return wishContextConstraintsMet;
   }
@@ -515,18 +575,22 @@
     var arry = _enteredMagicWords[magicWord];
     var existingIndex = arry.indexOf(id);
     if (existingIndex !== 0) {
-      if (existingIndex !== -1) {
-        // If it already exists, remove it before re-adding it in the correct spot
-        arry.splice(existingIndex, 1);
-      }
-      if (existingIndex !== 1 && arry.length > 0) {
-        // If it's not "on deck" then put it in the first slot and set the King of the Hill to be the id to go first.
-        var first = arry[0];
-        arry[0] = id;
-        id = first;
-      }
-      arry.unshift(id);
+      _repositionWishIdInEnteredMagicWordsArray(id, arry, existingIndex);
     }
+  }
+
+  function _repositionWishIdInEnteredMagicWordsArray(id, arry, existingIndex) {
+    if (existingIndex !== -1) {
+      // If it already exists, remove it before re-adding it in the correct spot
+      arry.splice(existingIndex, 1);
+    }
+    if (existingIndex !== 1 && arry.length > 0) {
+      // If it's not "on deck" then put it in the first slot and set the King of the Hill to be the id to go first.
+      var first = arry[0];
+      arry[0] = id;
+      id = first;
+    }
+    arry.unshift(id);
   }
 
   /**
@@ -544,9 +608,9 @@
     };
     _each(_pathContexts, function(pathContext) {
       var contextAdded = false;
-      var contexts = _arrayize(pathContext.contexts);
-      var regexes = _arrayize(pathContext.regexes);
-      var paths = _arrayize(pathContext.paths);
+      var contexts = pathContext.contexts;
+      var regexes = pathContext.regexes;
+      var paths = pathContext.paths;
 
       _each(regexes, function(regex) {
         regex.lastIndex = 0;
@@ -741,28 +805,38 @@
    * @private
    */
   function _each(obj, fn) {
-    var ret;
     if (_isPrimitive(obj)) {
       obj = _arrayize(obj);
     }
     if (_isArray(obj)) {
-      for (var i = 0; i < obj.length; i++) {
-        ret = fn(obj[i], i, obj);
+      _eachArray(obj, fn);
+    } else {
+      _eachProperty(obj, fn);
+    }
+  }
+
+  function _eachArray(arry, fn) {
+    var ret;
+    for (var i = 0; i < arry.length; i++) {
+      ret = fn(arry[i], i, arry);
+      if (typeof ret === 'boolean' && !ret) {
+        break;
+      }
+    }
+    return ret;
+  }
+
+  function _eachProperty(obj, fn) {
+    var ret;
+    for (var prop in obj) {
+      if (obj.hasOwnProperty(prop)) {
+        ret = fn(obj[prop], prop, obj);
         if (typeof ret === 'boolean' && !ret) {
           break;
         }
       }
-    } else {
-      /*jshint maxdepth:4*/
-      for (var prop in obj) {
-        if (obj.hasOwnProperty(prop)) {
-          ret = fn(obj[prop], prop, obj);
-          if (typeof ret === 'boolean' && !ret) {
-            break;
-          }
-        }
-      }
     }
+    return ret;
   }
 
   function _isArray(obj) {
@@ -778,6 +852,7 @@
   }
 
   function _isPrimitive(obj) {
+    /* jshint maxcomplexity:5 */
     switch (typeof obj) {
       case 'string':
       case 'number':
@@ -790,11 +865,23 @@
   }
 
   function _isUndefined(obj) {
-    return typeof obj === 'undefined';
+    if (_isArray(obj)) {
+      return _each(obj, function(o) {
+        return !_isUndefined(o);
+      });
+    } else {
+      return typeof obj === 'undefined';
+    }
   }
 
   function _isNull(obj) {
-    return obj === null;
+    if (_isArray(obj)) {
+      return _each(obj, function(o) {
+        return !_isNull(o);
+      });
+    } else {
+      return obj === null;
+    }
   }
   
   function _isNullOrUndefined(obj) {
@@ -842,14 +929,9 @@
    * }
    */
   function options(opts) {
+    /* jshint maxcomplexity:8 */
     if (opts) {
-      if (opts.wishes) {
-        if (opts.noWishMerge) {
-          _wishes = opts.wishes;
-        } else {
-          mergeWishes(opts.wishes);
-        }
-      }
+      _updateWishesWithOptions(opts);
       _previousId = opts.previousId || _previousId;
       _enteredMagicWords = opts.enteredMagicWords || _enteredMagicWords;
       _context = opts.context || _context;
@@ -865,6 +947,21 @@
       previousContext: _previousContext,
       enabled: _enabled
     };
+  }
+
+  /**
+   * If wishes are present, will update them based on options given.
+   * @param opts
+   * @private
+   */
+  function _updateWishesWithOptions(opts) {
+    if (opts.wishes) {
+      if (opts.noWishMerge) {
+        _wishes = opts.wishes;
+      } else {
+        mergeWishes(opts.wishes);
+      }
+    }
   }
 
   /**
@@ -992,11 +1089,24 @@
    *     - regexes: regex objects or array of
    *       regex objects
    *     - contexts: string or array of strings
-   * @param pathContext
+   * @param pathContexts
    * @returns {Array} - The new path contexts
    */
-  function addPathContext(pathContext) {
-    _addUniqueItems(_pathContexts, pathContext);
+  function addPathContext(pathContexts) {
+    _each(pathContexts, function(pathContext) {
+      if (pathContext.paths) {
+        pathContext.paths = _arrayize(pathContext.paths);
+      }
+
+      if (pathContext.regexes) {
+        pathContext.regexes = _arrayize(pathContext.regexes);
+      }
+
+      if (pathContext.contexts) {
+        pathContext.contexts = _arrayize(pathContext.contexts);
+      }
+    });
+    _addUniqueItems(_pathContexts, pathContexts);
     return _pathContexts;
   }
 

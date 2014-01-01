@@ -43,7 +43,7 @@ describe('genie', function(){
       var allWishes = genie.getMatchingWishes();
       expect(allWishes).to.have.length(2);
       expect(maximalObject).to.have.property('id').to.equal('coolId');
-      expect(maximalObject).to.have.property('context').with.length(3);
+      expect(maximalObject).to.have.property('context').to.have.property('any').with.length(3);
       expect(maximalObject).to.have.property('data').to.equal(wishData);
       expect(maximalObject).to.have.property('magicWords').with.length(2);
     });
@@ -101,7 +101,7 @@ describe('genie', function(){
       var allWishes = genie.getMatchingWishes();
       expect(allWishes).to.have.length(2);
       var madeWish = genie.makeWish();
-      expect(wishToBeMade.data.timesMade).to.equal(1);
+      expect(wishToBeMade.data.timesMade.total).to.equal(1);
       expect(madeWish).to.equal(wishToBeMade);
     });
 
