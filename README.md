@@ -92,11 +92,13 @@ magic word, `vacuumWish` was the wish given.
 This behavior simulates apps such as [Alfred](http://www.alfredapp.com/) which is the
 goal of this library!
 
-##Objects
 
 ##API
 
+###Objects
+
 There are a few internal objects you may want to be aware of:
+
 ```javascript
 var wishObject = {
   id: 'string',
