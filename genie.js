@@ -1,4 +1,4 @@
-/** 
+/**
  * genie.js @license
  * (c) 2013 Kent C. Dodds
  * genie.js may be freely distributed under the MIT license.
@@ -8,7 +8,7 @@
 
 (function (root, factory) {
   'use strict';
-  
+
   if (typeof define === 'function' && define.amd) {
     define(factory);
   } else {
@@ -18,7 +18,7 @@
   'use strict';
 
   var genie = null; // Library object
-  var _wishes = {},
+  var _wishes = [],
     _previousId = 0,
     _enteredMagicWords = {},
     _defaultContext = ['universe'],
@@ -27,7 +27,7 @@
     _previousContext = _defaultContext,
     _enabled = true,
     _returnOnDisabled = true,
-    
+
     _contextRegex = /\{\{(\d+)\}\}/,
     _matchRankMap = {
       equals: 6,
@@ -38,7 +38,7 @@
       matches: 1,
       noMatch: 0
     };
-  
+
   /**
    * A wish object has the following parameters:
    *  id: Unique identifier for the wish. This should be a string
@@ -53,7 +53,7 @@
    *  magicWords: Used to match this wish on genie.getMatchingWishes
    *  action: The action to be performed when genie.makeWish is
    *    called with this wish.
-   * 
+   *
    * @param wish
    * @returns {*} The registered wish or array of wishes.
    */
@@ -77,9 +77,14 @@
         total: 0,
         magicWords: {}
       };
-      _wishes[id] = newWish;
-      
-      return _wishes[id];
+      var existingWishIndex = _getWishIndexById(newWish.id);
+      if (existingWishIndex < 0) {
+        _wishes.push(newWish);
+      } else {
+        _wishes[existingWishIndex] = newWish;
+      }
+
+      return newWish;
     }
   }
 
@@ -122,7 +127,7 @@
         }
       };
     }
-    
+
     return action;
   }
 
@@ -130,20 +135,28 @@
    * Deregisters the given wish. Removes it from the registry
    *   and from the _enteredMagicWords map.
    * This will delete an _enteredMagicWords listing if this
-   *   is the only wish in the list. 
-   * @param id or wish
+   *   is the only wish in the list.
+   * @param wish
    * @returns {*}
    */
-  function deregisterWish(id) {
-    // Check if it may be a wish object
-    if (_isObject(id) && id.id) {
-      id = id.id;
+  function deregisterWish(wish) {
+    var indexOfWish = _wishes.indexOf(wish);
+    if (!indexOfWish) {
+      _each(_wishes, function(aWish, index) {
+        // the given parameter could be an id.
+        if (wish === aWish.id || wish.id === aWish.id) {
+          indexOfWish = index;
+          wish = aWish;
+          return false;
+        }
+      });
     }
-    var wish = _wishes[id];
-    delete _wishes[id];
+
+    _wishes.splice(indexOfWish, 1);
     _each(_enteredMagicWords, function(wishIds, word) {
-      if (wishIds.indexOf(id) !== -1) {
-        _enteredMagicWords[word].splice(wishIds.indexOf(id), 1);
+      var indexOfId = wishIds.indexOf(wish.id);
+      if (indexOfId !== -1) {
+        _enteredMagicWords[word].splice(indexOfId, 1);
       }
       if (!_enteredMagicWords[word].length) {
         delete _enteredMagicWords[word];
@@ -205,8 +218,8 @@
 
       if (!_isEmpty(wishContext) &&
         ((type === 'all' && _arrayContainsAll(wishContext, context)) ||
-        (type === 'none' && _arrayContainsNone(wishContext, context)) ||
-        (type === 'any' && _arrayContainsAny(wishContext, context)))) {
+          (type === 'none' && _arrayContainsNone(wishContext, context)) ||
+          (type === 'any' && _arrayContainsAny(wishContext, context)))) {
         wishesWithContext.push(wish);
       }
     });
@@ -233,7 +246,7 @@
 
     return wishContext;
   }
-  
+
   /**
    * Get a specific wish by an id.
    * If the id is an array, returns an array
@@ -247,12 +260,36 @@
   function getWish(id) {
     if (_isArray(id)) {
       var wishes = [];
-      _each(id, function(wishId) {
-        wishes.push(_wishes[wishId]);
+      _each(_getWishIndexById(id), function(index) {
+        wishes.push(_wishes[index]);
       });
       return wishes;
     } else {
-      return _wishes[id];
+      var index = _getWishIndexById(id);
+      if (index > -1) {
+        return _wishes[index];
+      } else {
+        return null;
+      }
+    }
+  }
+
+  function _getWishIndexById(id) {
+    var wishIndex = -1;
+    if (_isArray(id)) {
+      var wishIndexes = [];
+      _each(id, function(wishId) {
+        wishIndexes.push(_getWishIndexById(wishId));
+      });
+      return wishIndexes;
+    } else {
+      _each(_wishes, function(aWish, index) {
+        if (aWish.id === id) {
+          wishIndex = index;
+          return false;
+        }
+      });
+      return wishIndex;
     }
   }
 
@@ -270,7 +307,7 @@
   function reset() {
     var oldOptions = options();
     options({
-      wishes: {},
+      wishes: [],
       noWishMerge: true,
       previousId: 0,
       enteredMagicWords: {},
@@ -283,14 +320,14 @@
 
   function getMatchingWishes(magicWord) {
     magicWord = magicWord || '';
-    var allWishIds = _enteredMagicWords[magicWord] || [];
+    var allWishIds = _getWishIdsInEnteredMagicWords(magicWord);
 
     var otherMatchingWishId = _getOtherMatchingMagicWords(allWishIds, magicWord);
     allWishIds = allWishIds.concat(otherMatchingWishId);
 
     var matchingWishes = [];
-    _each(allWishIds, function(id) {
-      var wish = _wishes[id];
+    var allWishes = getWish(allWishIds);
+    _each(allWishes, function(wish) {
       if (wish && _wishInContext(wish)) {
         matchingWishes.push(wish);
       }
@@ -299,23 +336,19 @@
   }
 
   function _getOtherMatchingMagicWords(currentMatchingWishIds, givenMagicWord) {
-    var matchIdArrays = [];
+    var matchIdArrays = [[],[],[],[],[],[], []]; // seven priorities
     var returnedIds = [];
-    _each(_wishes, function(wish, wishId) {
-      if (!_contains(currentMatchingWishIds, wishId) && _wishInContext(wish)) {
-        var matchType = _bestMagicWordsMatch(wish.magicWords, givenMagicWord);
-        if (matchType !== _matchRankMap.noMatch) {
-          matchIdArrays[matchType] = matchIdArrays[matchType]  || [];
-          matchIdArrays[matchType].push(wishId);
+    _each(_wishes, function(wish) {
+      if (!_contains(currentMatchingWishIds, wish.id) && _wishInContext(wish)) {
+        var matchPriority = _bestMagicWordsMatch(wish.magicWords, givenMagicWord);
+        if (matchPriority !== _matchRankMap.noMatch) {
+          matchIdArrays[matchPriority].push(wish.id);
         }
       }
-    });
-    for (var i = matchIdArrays.length; i > 0; i--) {
-      var arry = matchIdArrays[i - 1];
-      if (arry) {
-        returnedIds = returnedIds.concat(arry);
-      }
-    }
+    }, true);
+    _each(matchIdArrays, function(idArray) {
+      returnedIds = returnedIds.concat(idArray);
+    }, true);
     return returnedIds;
   }
 
@@ -420,7 +453,7 @@
    * @returns {*}
    */
   function makeWish(wish, magicWord) {
-    wish = _getWishObject(wish, magicWord);
+    wish = _convertToWishObjectFromNullOrId(wish, magicWord);
 
     if (!_wishCanBeMade(wish)) {
       return null;
@@ -444,11 +477,11 @@
    * @returns {*}
    * @private
    */
-  function _getWishObject(wish, magicWord) {
+  function _convertToWishObjectFromNullOrId(wish, magicWord) {
     var wishObject = wish;
     // Check if it may be a wish object
     if (!_isObject(wishObject)) {
-      wishObject = _wishes[wishObject];
+      wishObject = getWish(wish);
     }
     if (_isNullOrUndefined(wishObject)) {
       var matchingWishes = getMatchingWishes(magicWord);
@@ -461,12 +494,11 @@
 
   /** A wish is non-executable if it
    *   - doesn't exist
-   *   - isn't in the registry
    *   - doesn't have an action
    *   - wish is not in context
    */
   function _wishCanBeMade(wish) {
-    return !_isUndefined([wish, _wishes[wish.id]]) && !_isNullOrUndefined(wish.action) && _wishInContext(wish);
+    return wish && !_isNullOrUndefined(wish.action) && _wishInContext(wish);
   }
 
   /**
@@ -532,7 +564,7 @@
    *  1. any: genie's context contains any of these.
    *  2. all: genie's context contains all of these.
    *  3. none: genie's context contains none of these.
-   *   
+   *
    * @param wish
    * @param theContexts
    * @returns {boolean}
@@ -541,11 +573,11 @@
   function _wishInThisContext(wish, theContexts) {
     /* jshint maxcomplexity:5 */
     var wishContextConstraintsMet;
-    
+
     var any = wish.context.any || [];
     var all = wish.context.all || [];
     var none = wish.context.none || [];
-    
+
     var containsAny = _isEmpty(any) || _arrayContainsAny(theContexts, any);
     var containsAll = theContexts.length >= all.length && _arrayContainsAll(theContexts, all);
     var wishNoneContextNotContainedInContext = _arrayContainsNone(theContexts, none);
@@ -570,12 +602,22 @@
    */
   function _updateEnteredMagicWords(wish, magicWord) {
     // Reset entered magicWords order.
-    _enteredMagicWords[magicWord] = _enteredMagicWords[magicWord] || [];
-    var id = wish.id;
-    var arry = _enteredMagicWords[magicWord];
-    var existingIndex = arry.indexOf(id);
+    function createSpotInEnteredMagicWords(spot, chars) {
+      var firstChar = chars.substring(0, 1);
+      var remainingChars = chars.substring(1);
+      var nextSpot = spot[firstChar] = spot[firstChar] || {};
+      if (remainingChars) {
+        return createSpotInEnteredMagicWords(nextSpot, remainingChars);
+      } else {
+        return nextSpot;
+      }
+    }
+
+    var spotForWishes = createSpotInEnteredMagicWords(_enteredMagicWords, magicWord);
+    spotForWishes.wishes = spotForWishes.wishes || [];
+    var existingIndex = spotForWishes.wishes.indexOf(wish.id);
     if (existingIndex !== 0) {
-      _repositionWishIdInEnteredMagicWordsArray(id, arry, existingIndex);
+      _repositionWishIdInEnteredMagicWordsArray(wish.id, spotForWishes.wishes, existingIndex);
     }
   }
 
@@ -591,6 +633,25 @@
       id = first;
     }
     arry.unshift(id);
+  }
+
+  function _getWishIdsInEnteredMagicWords(word) {
+    var wishIds = [];
+    function loadWishIds(wishesObj, chars) {
+      var firstChar = chars.substring(0, 1);
+      var remainingChars = chars.substring(1);
+      var nextWishObj = wishesObj[firstChar];
+      if (nextWishObj) {
+        if (nextWishObj.wishes) {
+          wishIds = wishesObj[firstChar].wishes.concat(wishIds);
+        }
+        if (remainingChars) {
+          loadWishIds(nextWishObj, remainingChars);
+        }
+      }
+    }
+    loadWishIds(_enteredMagicWords, word);
+    return wishIds;
   }
 
   /**
@@ -672,7 +733,7 @@
     });
     return regexContexts;
   }
-  
+
   // Helpers //
   /**
    * returns the obj in array form if it is not one already
@@ -699,11 +760,11 @@
    */
   function _addUniqueItems(arry, obj) {
     obj = _arrayize(obj);
-    for (var i = 0; i < obj.length; i++) {
-      if (arry.indexOf(obj[i]) < 0) {
-        arry.push(obj[i]);
+    _each(obj, function(o) {
+      if (arry.indexOf(o) < 0) {
+        arry.push(o);
       }
-    }
+    });
   }
 
   /**
@@ -804,34 +865,44 @@
    * @param fn
    * @private
    */
-  function _each(obj, fn) {
+  function _each(obj, fn, reverse) {
     if (_isPrimitive(obj)) {
       obj = _arrayize(obj);
     }
     if (_isArray(obj)) {
-      _eachArray(obj, fn);
+      return _eachArray(obj, fn, reverse);
     } else {
-      _eachProperty(obj, fn);
+      return _eachProperty(obj, fn);
     }
   }
 
-  function _eachArray(arry, fn) {
-    var ret;
-    for (var i = 0; i < arry.length; i++) {
-      ret = fn(arry[i], i, arry);
-      if (typeof ret === 'boolean' && !ret) {
-        break;
+  function _eachArray(arry, fn, reverse) {
+    var ret = true;
+    var i;
+    if (reverse == true) {
+      for (i = arry.length - 1; i >= 0; i--) {
+        ret = fn(arry[i], i, arry);
+        if (ret == false) {
+          break;
+        }
+      }
+    } else {
+      for (i = 0; i < arry.length; i++) {
+        ret = fn(arry[i], i, arry);
+        if (ret == false) {
+          break;
+        }
       }
     }
     return ret;
   }
 
   function _eachProperty(obj, fn) {
-    var ret;
+    var ret = true;
     for (var prop in obj) {
       if (obj.hasOwnProperty(prop)) {
         ret = fn(obj[prop], prop, obj);
-        if (typeof ret === 'boolean' && !ret) {
+        if (ret == false) {
           break;
         }
       }
@@ -866,7 +937,7 @@
 
   function _isUndefined(obj) {
     if (_isArray(obj)) {
-      return _each(obj, function(o) {
+      return !_each(obj, function(o) {
         return !_isUndefined(o);
       });
     } else {
@@ -876,14 +947,14 @@
 
   function _isNull(obj) {
     if (_isArray(obj)) {
-      return _each(obj, function(o) {
+      return !_each(obj, function(o) {
         return !_isNull(o);
       });
     } else {
       return obj === null;
     }
   }
-  
+
   function _isNullOrUndefined(obj) {
     return _isNull(obj) || _isUndefined(obj);
   }
@@ -915,11 +986,11 @@
    *    However, if you want to turn this off, set this to
    *    false and you will get null back for everything when
    *    genie is disabled.
-   *    
+   *
    * @param opts
    * @returns {
    *  {
-   *    wishes: {wish},
+   *    wishes: [wish],
    *    previousId: number,
    *    enteredMagicWords: {Map of words and wishes},
    *    context: Array,
@@ -972,20 +1043,25 @@
    *   the new wish's action property.
    *   Next, if the new wish has an action, it is registered
    *   with genie based on its wishId
-   * @param wishes - Mapping of wishIds to wish objects.
-   *   Note: The wish's wish id need not be set. It will be
-   *   set/overridden by this function based on the property
-   *   name.
-   * @returns {{}}
+   * @param wishes - Array of wish objects
+   * @returns {[wish]}
    */
   function mergeWishes(wishes) {
-    _each(wishes, function(newWish, wishId) {
-      newWish.id = wishId;
-      if (!newWish.action && _wishes[wishId]) {
-        newWish.action = _wishes[wishId].action;
+    _each(wishes, function(newWish) {
+      var wishIndex = -1;
+      var existingWish = null;
+      _each(_wishes, function(aWish, aWishIndex) {
+        if (aWish.id === newWish.id) {
+          existingWish = aWish;
+          wishIndex = aWishIndex;
+          return false;
+        }
+      });
+      if (!newWish.action && existingWish) {
+        newWish.action = existingWish.action;
       }
       if (newWish.action) {
-        _wishes[wishId] = newWish;
+        _wishes[wishIndex] = newWish;
       }
     });
     return _wishes;

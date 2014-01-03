@@ -84,18 +84,18 @@
       var ethel = registerWishWithDefaults('Ethel Mertz');
       var lucy = registerWishWithDefaults('Lucy Mertz');
       
-      // In order of their registration
+      // In opposite order of their registration
       var mertzMatch = genie.getMatchingWishes('mertz');
-      t.assertIdentical(mertzMatch[0], fred);
+      t.assertIdentical(mertzMatch[0], lucy);
       t.assertIdentical(mertzMatch[1], ethel);
-      t.assertIdentical(mertzMatch[2], lucy);
+      t.assertIdentical(mertzMatch[2], fred);
       
-      // In order of called then registration
+      // In order of called then opposite registration
       genie.makeWish(ethel, 'mertz');
       mertzMatch = genie.getMatchingWishes('mertz');
       t.assertIdentical(mertzMatch[0], ethel);
-      t.assertIdentical(mertzMatch[1], fred);
-      t.assertIdentical(mertzMatch[2], lucy);
+      t.assertIdentical(mertzMatch[1], lucy);
+      t.assertIdentical(mertzMatch[2], fred);
 
       /*
        * More complicated here. A specific wish must be called
@@ -136,10 +136,10 @@
     },
     testComplexMagicWords: function(t) {
       prepForTest();
-      var matchWish = registerWishWithDefaults('The Tail of Forty Cities'); // match
-      var acronym = registerWishWithDefaults('The Tail of Two Cities'); // acronym
-      var contains = registerWishWithDefaults('The ttotc container'); // contains
       var equal = registerWishWithDefaults('tTOtc'); // equal ignoring case
+      var contains = registerWishWithDefaults('The ttotc container'); // contains
+      var acronym = registerWishWithDefaults('The Tail of Two Cities'); // acronym
+      var matchWish = registerWishWithDefaults('The Tail of Forty Cities'); // match
       var ttotcAcronym = 'ttotc';
       
       // Even though they were registered in reverse order, the matching should follow this pattern

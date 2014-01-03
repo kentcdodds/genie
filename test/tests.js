@@ -95,9 +95,9 @@ describe('genie', function(){
       expect(allWishes).to.have.length(0);
     });
 
-    it('should make the first wish registered without giving magic words', function() {
-      var wishToBeMade = genie(fillInWish());
+    it('should make the last wish registered without giving magic words', function() {
       genie(fillInWish());
+      var wishToBeMade = genie(fillInWish());
       var allWishes = genie.getMatchingWishes();
       expect(allWishes).to.have.length(2);
       var madeWish = genie.makeWish();
@@ -170,6 +170,7 @@ describe('genie', function(){
 
   describe('#context #addContext #removeContext', function() {
     var defaultContextWish;
+    var complexContextNone;
     beforeEach(function(done) {
       defaultContextWish = genie(fillInWish());
       var newContextWish1 = genie(fillInWish({
@@ -194,7 +195,7 @@ describe('genie', function(){
           any: ['context1', 'context3', 'context5']
         }
       }));
-      var complexContextNone = genie(fillInWish({
+      complexContextNone = genie(fillInWish({
         context: {
           none: ['context1', 'context2']
         }
@@ -217,7 +218,8 @@ describe('genie', function(){
       genie.context('different-context');
       var allWishes = genie.getMatchingWishes();
       expect(allWishes).to.have.length(2);
-      expect(allWishes[0]).to.equal(defaultContextWish);
+      expect(allWishes[0]).to.equal(complexContextNone);
+      expect(allWishes[1]).to.equal(defaultContextWish);
     });
 
     it('should have only in context wishes (including default context wishes) when genie.context is not default', function() {
