@@ -396,15 +396,16 @@
   function _getPropFromPosterity(objToStartWith, prop, unique) {
     var values = [];
     function loadValues(obj) {
+      if (obj[prop]) {
+        var propsToAdd = _arrayify(obj[prop]);
+        _each(propsToAdd, function(propToAdd) {
+          if (!unique || !_contains(values, propToAdd)) {
+            values.push(propToAdd);
+          }
+        });
+      }
       _each(obj, function(oProp, oPropName) {
-        if (oPropName === prop) {
-          var propsToAdd = _arrayify(oProp);
-          _each(propsToAdd, function(propToAdd) {
-            if (!unique || !_contains(values, propToAdd)) {
-              values.push(propToAdd);
-            }
-          });
-        } else {
+        if (oPropName !== prop) {
           values = values.concat(loadValues(oProp));
         }
       });

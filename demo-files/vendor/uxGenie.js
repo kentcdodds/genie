@@ -167,6 +167,12 @@
           return function keydownHandler(event) {
             var change = 0;
             switch(event.keyCode) {
+              case 9:
+                event.preventDefault();
+                if (_isSubContextWish(scope.focusedWish)) {
+                  _setSubContextState(scope.focusedWish);
+                }
+                break;
               case 38:
                 change = -1;
                 break;
@@ -334,7 +340,7 @@
         }
 
         function _isSubContextWish(wish) {
-          return !!wish.data && !!wish.data.uxGenie && !!wish.data.uxGenie.subContext;
+          return !!wish && !!wish.data && !!wish.data.uxGenie && !!wish.data.uxGenie.subContext;
         }
 
         function _evaluateMath(expression) {
@@ -367,14 +373,11 @@
 
   uxGenie.directive('genieWish', ['genie', function(genie) {
     return {
-      scope: {
-        wishData: '=?',
-        wishAction: '&?'
-      },
+      scope: true,
       link: function(scope, el, attrs) {
         var id = attrs.wishId;
         var context = attrs.wishContext ? attrs.wishContext.split(',') : null;
-        var data = scope.wishData || {};
+        var data = attrs.wishData || {};
         var uxGenieData = data.uxGenie = data.uxGenie || {};
 
         uxGenieData.element = el[0];
@@ -397,10 +400,6 @@
             metaKey: modifiers.indexOf('metaKey') > -1
           });
           wish.data.uxGenie.element.dispatchEvent(event);
-
-          if (attrs.wishAction) {
-            scope.wishAction({wish: wish});
-          }
         };
 
         // get magic words
