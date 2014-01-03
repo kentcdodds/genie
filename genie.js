@@ -22,6 +22,7 @@
     _previousId = 0,
     _enteredMagicWords = {},
     _defaultContext = ['universe'],
+    _originalMatchingAlgorithm = function() {},
     _context = _defaultContext,
     _pathContexts = [],
     _previousContext = _defaultContext,
@@ -30,13 +31,13 @@
 
     _contextRegex = /\{\{(\d+)\}\}/,
     _matchRankMap = {
-      equals: 6,
-      startsWith: 5,
-      wordStartsWith: 4,
-      contains: 3,
-      acronym: 2,
-      matches: 1,
-      noMatch: 0
+      equals: 5,
+      startsWith: 4,
+      wordStartsWith: 3,
+      contains: 2,
+      acronym: 1,
+      matches: 0,
+      noMatch: -1
     };
 
   /**
@@ -65,18 +66,7 @@
       });
       return wishesRegistered;
     } else {
-      var id = wish.id || 'g-' + _previousId++;
-      var newWish = {
-        id: id,
-        context: _createContext(wish.context),
-        data: wish.data || {},
-        magicWords: _arrayize(wish.magicWords),
-        action: _createAction(wish.action)
-      };
-      newWish.data.timesMade = {
-        total: 0,
-        magicWords: {}
-      };
+      var newWish = _createWish(wish);
       var existingWishIndex = _getWishIndexById(newWish.id);
       if (existingWishIndex < 0) {
         _wishes.push(newWish);
@@ -88,11 +78,33 @@
     }
   }
 
+  /**
+   * Creates a new wish object.
+   * @param wish
+   * @returns {*} - New wish object
+   * @private
+   */
+  function _createWish(wish) {
+    var id = wish.id || 'g-' + _previousId++;
+    var newWish = {
+      id: id,
+      context: _createContext(wish.context),
+      data: wish.data || {},
+      magicWords: _arrayify(wish.magicWords),
+      action: _createAction(wish.action)
+    };
+    newWish.data.timesMade = {
+      total: 0,
+      magicWords: {}
+    };
+    return newWish;
+  }
+
   function _createContext(context) {
     var newContext = context || _defaultContext;
     if (_isString(newContext) || _isArray(newContext)) {
       newContext = {
-        any: _arrayize(newContext)
+        any: _arrayify(newContext)
       };
     } else {
       newContext = _arrayizeContext(context);
@@ -103,7 +115,7 @@
   function _arrayizeContext(context) {
     function checkAndAdd(type) {
       if (context[type]) {
-        context[type] = _arrayize(context[type]);
+        context[type] = _arrayify(context[type]);
       }
     }
     checkAndAdd('all');
@@ -153,16 +165,31 @@
     }
 
     _wishes.splice(indexOfWish, 1);
-    _each(_enteredMagicWords, function(wishIds, word) {
-      var indexOfId = wishIds.indexOf(wish.id);
-      if (indexOfId !== -1) {
-        _enteredMagicWords[word].splice(indexOfId, 1);
-      }
-      if (!_enteredMagicWords[word].length) {
-        delete _enteredMagicWords[word];
-      }
-    });
+    _removeWishIdFromEnteredMagicWords(wish.id);
     return wish;
+  }
+
+  function _removeWishIdFromEnteredMagicWords(id) {
+    function removeIdFromWishes(charObj, parent, charObjName) {
+      _each(charObj, function(childProp, propName) {
+        if (propName === 'wishes') {
+          var index = childProp.indexOf(id);
+          if (index !== -1) {
+            childProp.splice(index, 1);
+          }
+          if (!childProp.length) {
+            delete charObj[propName];
+          }
+        } else {
+          removeIdFromWishes(childProp, charObj, propName);
+        }
+      });
+      var keepCharObj = _getPropFromPosterity(charObj, 'wishes').length > 0;
+      if (!keepCharObj && parent && charObjName) {
+        delete parent[charObjName];
+      }
+    }
+    removeIdFromWishes(_enteredMagicWords);
   }
 
   /**
@@ -237,7 +264,7 @@
     var wishContext = [];
     wishContextTypes = wishContextTypes || ['all', 'any', 'none'];
 
-    wishContextTypes = _arrayize(wishContextTypes);
+    wishContextTypes = _arrayify(wishContextTypes);
     _each(wishContextTypes, function(wishContextType) {
       if (wish.context[wishContextType]) {
         wishContext = wishContext.concat(wish.context[wishContextType]);
@@ -319,47 +346,108 @@
   }
 
   function getMatchingWishes(magicWord) {
-    magicWord = magicWord || '';
+    magicWord = (_isNullOrUndefined(magicWord) ? '' : '' + magicWord).toLowerCase();
     var allWishIds = _getWishIdsInEnteredMagicWords(magicWord);
-
-    var otherMatchingWishId = _getOtherMatchingMagicWords(allWishIds, magicWord);
-    allWishIds = allWishIds.concat(otherMatchingWishId);
-
-    var matchingWishes = [];
     var allWishes = getWish(allWishIds);
-    _each(allWishes, function(wish) {
-      if (wish && _wishInContext(wish)) {
-        matchingWishes.push(wish);
-      }
-    });
-    return matchingWishes;
+    var matchingWishes = _filterInContextWishes(allWishes);
+
+    var otherMatchingWishIds = _sortWishesByMatchingPriority(_wishes, allWishIds, magicWord);
+    var otherWishes = getWish(otherMatchingWishIds);
+    return matchingWishes.concat(otherWishes);
   }
 
-  function _getOtherMatchingMagicWords(currentMatchingWishIds, givenMagicWord) {
-    var matchIdArrays = [[],[],[],[],[],[], []]; // seven priorities
-    var returnedIds = [];
-    _each(_wishes, function(wish) {
-      if (!_contains(currentMatchingWishIds, wish.id) && _wishInContext(wish)) {
-        var matchPriority = _bestMagicWordsMatch(wish.magicWords, givenMagicWord);
-        if (matchPriority !== _matchRankMap.noMatch) {
-          matchIdArrays[matchPriority].push(wish.id);
+  function _getWishIdsInEnteredMagicWords(word) {
+    var startingCharWishesObj = _climbDownChain(_enteredMagicWords, word.split(''));
+    if (startingCharWishesObj) {
+      return _getPropFromPosterity(startingCharWishesObj, 'wishes', true);
+    } else {
+      return [];
+    }
+  }
+
+  function _filterInContextWishes(wishes) {
+    var inContextWishes = [];
+    _each(wishes, function(wish) {
+      if (wish && _wishInContext(wish)) {
+        inContextWishes.push(wish);
+      }
+    });
+    return inContextWishes;
+  }
+
+  function _climbDownChain(obj, props) {
+    var finalObj = obj;
+    props = _arrayify(props);
+    var madeItAllTheWay = _each(props, function(prop) {
+      if (finalObj.hasOwnProperty(prop)) {
+        finalObj = finalObj[prop];
+        return true;
+      } else {
+        return false;
+      }
+    });
+    if (madeItAllTheWay) {
+      return finalObj;
+    } else {
+      return null;
+    }
+  }
+
+  function _getPropFromPosterity(objToStartWith, prop, unique) {
+    var values = [];
+    function loadValues(obj) {
+      _each(obj, function(oProp, oPropName) {
+        if (oPropName === prop) {
+          var propsToAdd = _arrayify(oProp);
+          _each(propsToAdd, function(propToAdd) {
+            if (!unique || !_contains(values, propToAdd)) {
+              values.push(propToAdd);
+            }
+          });
+        } else {
+          values = values.concat(loadValues(oProp));
         }
+      });
+    }
+    loadValues(objToStartWith);
+    return values;
+  }
+
+  function _sortWishesByMatchingPriority(wishes, currentMatchingWishIds, givenMagicWord) {
+    var matchPriorityArrays = [];
+    var returnedIds = [];
+    
+    _each(wishes, function(wish) {
+      if (_wishInContext(wish)) {
+        var matchPriority = _bestMagicWordsMatch(wish.magicWords, givenMagicWord);
+        _maybeAddWishToMatchPriorityArray(wish, matchPriority, matchPriorityArrays, currentMatchingWishIds);
       }
     }, true);
-    _each(matchIdArrays, function(idArray) {
-      returnedIds = returnedIds.concat(idArray);
+    
+    _each(matchPriorityArrays, function(matchTypeArray) {
+      if (matchTypeArray) {
+        _each(matchTypeArray, function(magicWordIndexArray) {
+          if (magicWordIndexArray) {
+            returnedIds = returnedIds.concat(magicWordIndexArray);
+          }
+        });
+      }
     }, true);
     return returnedIds;
   }
-
+  
   function _bestMagicWordsMatch(wishesMagicWords, givenMagicWord) {
-    var bestMatch = _matchRankMap.noMatch;
-    _each(wishesMagicWords, function(wishesMagicWord) {
+    var bestMatch = {
+      matchType: _matchRankMap.noMatch,
+      magicWordIndex: -1
+    };
+    _each(wishesMagicWords, function(wishesMagicWord, index) {
       var matchRank = _stringsMatch(wishesMagicWord, givenMagicWord);
-      if (matchRank > bestMatch) {
-        bestMatch = matchRank;
+      if (matchRank > bestMatch.matchType) {
+        bestMatch.matchType = matchRank;
+        bestMatch.magicWordIndex = index;
       }
-      return bestMatch !== _matchRankMap.equals;
+      return bestMatch.matchType !== _matchRankMap.equals;
     });
     return bestMatch;
   }
@@ -367,7 +455,6 @@
   function _stringsMatch(magicWord, givenMagicWord) {
     /* jshint maxcomplexity:8 */
     magicWord = ('' + magicWord).toLowerCase();
-    givenMagicWord = ('' + givenMagicWord).toLowerCase();
 
     // too long
     if (givenMagicWord.length > magicWord.length) {
@@ -443,6 +530,25 @@
       }
     }
     return _matchRankMap.matches;
+  }
+  
+  function _maybeAddWishToMatchPriorityArray(wish, matchPriority, matchPriorityArrays, currentMatchingWishIds) {
+    var indexOfWishInCurrent = currentMatchingWishIds.indexOf(wish.id);
+    if (matchPriority.matchType !== _matchRankMap.noMatch) {
+      if (indexOfWishInCurrent === -1) {
+        _getMatchPriorityArray(matchPriorityArrays, matchPriority).push(wish.id);
+      }
+    } else if (indexOfWishInCurrent !== -1) {
+      // remove current matching wishIds if it doesn't match
+      currentMatchingWishIds.splice(indexOfWishInCurrent, 1);
+    }
+  }
+  
+  function _getMatchPriorityArray(arry, matchPriority) {
+    arry[matchPriority.matchType] = arry[matchPriority.matchType] || [];
+    var matchTypeArray = arry[matchPriority.matchType];
+    var matchPriorityArray = matchTypeArray[matchPriority.magicWordIndex] = matchTypeArray[matchPriority.magicWordIndex] || [];
+    return matchPriorityArray;
   }
 
   /**
@@ -526,7 +632,7 @@
    */
   function _contextIsDefault(context) {
     if (!_isObject(context)) {
-      context = _arrayize(context);
+      context = _arrayify(context);
     }
     if (_isArray(context) && context.length === 1) {
       return context[0] === _defaultContext[0];
@@ -602,22 +708,22 @@
    */
   function _updateEnteredMagicWords(wish, magicWord) {
     // Reset entered magicWords order.
-    function createSpotInEnteredMagicWords(spot, chars) {
-      var firstChar = chars.substring(0, 1);
-      var remainingChars = chars.substring(1);
-      var nextSpot = spot[firstChar] = spot[firstChar] || {};
-      if (remainingChars) {
-        return createSpotInEnteredMagicWords(nextSpot, remainingChars);
-      } else {
-        return nextSpot;
-      }
-    }
-
-    var spotForWishes = createSpotInEnteredMagicWords(_enteredMagicWords, magicWord);
+    var spotForWishes = _createSpotInEnteredMagicWords(_enteredMagicWords, magicWord);
     spotForWishes.wishes = spotForWishes.wishes || [];
     var existingIndex = spotForWishes.wishes.indexOf(wish.id);
     if (existingIndex !== 0) {
       _repositionWishIdInEnteredMagicWordsArray(wish.id, spotForWishes.wishes, existingIndex);
+    }
+  }
+
+  function _createSpotInEnteredMagicWords(spot, chars) {
+    var firstChar = chars.substring(0, 1);
+    var remainingChars = chars.substring(1);
+    var nextSpot = spot[firstChar] = spot[firstChar] || {};
+    if (remainingChars) {
+      return _createSpotInEnteredMagicWords(nextSpot, remainingChars);
+    } else {
+      return nextSpot;
     }
   }
 
@@ -633,25 +739,6 @@
       id = first;
     }
     arry.unshift(id);
-  }
-
-  function _getWishIdsInEnteredMagicWords(word) {
-    var wishIds = [];
-    function loadWishIds(wishesObj, chars) {
-      var firstChar = chars.substring(0, 1);
-      var remainingChars = chars.substring(1);
-      var nextWishObj = wishesObj[firstChar];
-      if (nextWishObj) {
-        if (nextWishObj.wishes) {
-          wishIds = wishesObj[firstChar].wishes.concat(wishIds);
-        }
-        if (remainingChars) {
-          loadWishIds(nextWishObj, remainingChars);
-        }
-      }
-    }
-    loadWishIds(_enteredMagicWords, word);
-    return wishIds;
   }
 
   /**
@@ -741,7 +828,7 @@
    * @returns {Array}
    * @private
    */
-  function _arrayize(obj) {
+  function _arrayify(obj) {
     if (!obj) {
       return [];
     } else if (_isArray(obj)) {
@@ -759,7 +846,7 @@
    * @private
    */
   function _addUniqueItems(arry, obj) {
-    obj = _arrayize(obj);
+    obj = _arrayify(obj);
     _each(obj, function(o) {
       if (arry.indexOf(o) < 0) {
         arry.push(o);
@@ -775,7 +862,7 @@
    * @private
    */
   function _removeItems(arry, obj) {
-    obj = _arrayize(obj);
+    obj = _arrayify(obj);
     var i = 0;
 
     while(i < arry.length) {
@@ -795,8 +882,8 @@
    * @private
    */
   function _arrayContainsAny(arry1, arry2) {
-    arry1 = _arrayize(arry1);
-    arry2 = _arrayize(arry2);
+    arry1 = _arrayify(arry1);
+    arry2 = _arrayify(arry2);
     for (var i = 0; i < arry2.length; i++) {
       if (_contains(arry1, arry2[i])) {
         return true;
@@ -813,8 +900,8 @@
    * @private
    */
   function _arrayContainsNone(arry1, arry2) {
-    arry1 = _arrayize(arry1);
-    arry2 = _arrayize(arry2);
+    arry1 = _arrayify(arry1);
+    arry2 = _arrayify(arry2);
     for (var i = 0; i < arry2.length; i++) {
       if (_contains(arry1, arry2[i])) {
         return false;
@@ -831,8 +918,8 @@
    * @private
    */
   function _arrayContainsAll(arry1, arry2) {
-    arry1 = _arrayize(arry1);
-    arry2 = _arrayize(arry2);
+    arry1 = _arrayify(arry1);
+    arry2 = _arrayify(arry2);
     for (var i = 0; i < arry2.length; i++) {
       if (!_contains(arry1, arry2[i])) {
         return false;
@@ -867,7 +954,7 @@
    */
   function _each(obj, fn, reverse) {
     if (_isPrimitive(obj)) {
-      obj = _arrayize(obj);
+      obj = _arrayify(obj);
     }
     if (_isArray(obj)) {
       return _eachArray(obj, fn, reverse);
@@ -876,22 +963,55 @@
     }
   }
 
+  /**
+   * If reverse is true, calls _eachArrayReverse(arry, fn)
+   *   otherwise calls _eachArrayForward(arry, fn)
+   * @param arry
+   * @param fn
+   * @param reverse
+   * @returns {bool}
+   * @private
+   */
   function _eachArray(arry, fn, reverse) {
-    var ret = true;
-    var i;
-    if (reverse == true) {
-      for (i = arry.length - 1; i >= 0; i--) {
-        ret = fn(arry[i], i, arry);
-        if (ret == false) {
-          break;
-        }
-      }
+    if (_isTrue(reverse)) {
+      return _eachArrayReverse(arry, fn);
     } else {
-      for (i = 0; i < arry.length; i++) {
-        ret = fn(arry[i], i, arry);
-        if (ret == false) {
-          break;
-        }
+      return _eachArrayForward(arry, fn);
+    }
+  }
+
+  /**
+   * Iterates through the array and calls the given function
+   *   in reverse order.
+   * @param arry
+   * @param fn
+   * @returns {boolean} whether the loop broke early
+   * @private
+   */
+  function _eachArrayReverse(arry, fn) {
+    var ret = true;
+    for (var i = arry.length - 1; i >= 0; i--) {
+      ret = fn(arry[i], i, arry);
+      if (_isFalse(ret)) {
+        break;
+      }
+    }
+    return ret;
+  }
+
+  /**
+   * Iterates through the array and calls the given function
+   * @param arry
+   * @param fn
+   * @returns {boolean} whether the loop broke early
+   * @private
+   */
+  function _eachArrayForward(arry, fn) {
+    var ret = true;
+    for (var i = 0; i < arry.length; i++) {
+      ret = fn(arry[i], i, arry);
+      if (_isFalse(ret)) {
+        break;
       }
     }
     return ret;
@@ -902,12 +1022,22 @@
     for (var prop in obj) {
       if (obj.hasOwnProperty(prop)) {
         ret = fn(obj[prop], prop, obj);
-        if (ret == false) {
+        if (_isFalse(ret)) {
           break;
         }
       }
     }
     return ret;
+  }
+  
+  function _isTrue(bool) {
+    /* jshint -W116 */
+    return bool == true;
+  }
+  
+  function _isFalse(bool) {
+    /* jshint -W116 */
+    return bool == false;
   }
 
   function _isArray(obj) {
@@ -1018,6 +1148,26 @@
       previousContext: _previousContext,
       enabled: _enabled
     };
+  }
+
+  /**
+   * This will override the matching algorithm (getMatchingWishes)
+   * @param fn the new function. Should accept wishes array,
+   *   magicWord string, and enteredMagicWords object.
+   *   You wont need to change how you interface with
+   *   getMatching wishes at all by using this.
+   */
+  function overrideMatchingAlgorithm(fn) {
+    genie.getMatchingWishes = _passThrough(function(magicWord) {
+      return fn(_wishes, magicWord, _context, _enteredMagicWords);
+    }, []);
+  }
+
+  /**
+   * This will set the matching algorithm back to the original
+   */
+  function restoreMatchingAlgorithm() {
+    genie.getMatchingWishes = _originalMatchingAlgorithm;
   }
 
   /**
@@ -1171,15 +1321,15 @@
   function addPathContext(pathContexts) {
     _each(pathContexts, function(pathContext) {
       if (pathContext.paths) {
-        pathContext.paths = _arrayize(pathContext.paths);
+        pathContext.paths = _arrayify(pathContext.paths);
       }
 
       if (pathContext.regexes) {
-        pathContext.regexes = _arrayize(pathContext.regexes);
+        pathContext.regexes = _arrayify(pathContext.regexes);
       }
 
       if (pathContext.contexts) {
-        pathContext.contexts = _arrayize(pathContext.contexts);
+        pathContext.contexts = _arrayify(pathContext.contexts);
       }
     });
     _addUniqueItems(_pathContexts, pathContexts);
@@ -1230,11 +1380,14 @@
     };
   }
 
+
   genie = _passThrough(registerWish, {});
   genie.getWishesInContext = _passThrough(getWishesInContext, []);
   genie.getWishesWithContext = _passThrough(getWishesWithContext, []);
   genie.getWish = _passThrough(getWish, {});
   genie.getMatchingWishes = _passThrough(getMatchingWishes, []);
+  genie.overrideMatchingAlgorithm = _passThrough(overrideMatchingAlgorithm, {});
+  genie.restoreMatchingAlgorithm = _passThrough(restoreMatchingAlgorithm, {});
   genie.makeWish = _passThrough(makeWish, {});
   genie.options = _passThrough(options, {});
   genie.mergeWishes = _passThrough(mergeWishes, {});
@@ -1251,6 +1404,9 @@
   genie.removePathContext = _passThrough(removePathContext, []);
   genie.enabled = _passThrough(enabled, false);
   genie.returnOnDisabled = _passThrough(returnOnDisabled, true);
+  
+  _originalMatchingAlgorithm = genie.getMatchingWishes;
+  
   return genie;
 
 }));

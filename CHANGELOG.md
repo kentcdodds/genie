@@ -7,6 +7,7 @@
  Also changing context a tad internally. Now all context will
  be created as an object. Though a string or array can still
  be provided, it will be assigned to the `context.any` property.
+ - Update to the matching algorithm to improve suggestions.
  - Genie now adds a `data` property to all wishes with a
  `timesMade` object indicating how many times that wish had
  been made (how many times the action was called) total as well
@@ -14,6 +15,9 @@
  - Added getWishesWithContext(context, type, wishContextTypes)
  - Added getWishesInContext(context)
  - Added getWish(id)
+ - Added overrideMatchingAlgorithm(function(wishes, magicWord, enteredMagicWords){}).
+ See README.
+ - Added restoreMatchingAlgorithm()
  - Seriously documented some functions.
  - Adding jshint to the build. Some errors corrected.
  - Old tests fixed/removed

@@ -92,6 +92,8 @@ magic word, `vacuumWish` was the wish given.
 This behavior simulates apps such as [Alfred](http://www.alfredapp.com/) which is the
 goal of this library!
 
+##Objects
+
 ##API
 
 There are a few internal objects you may want to be aware of:
@@ -116,8 +118,21 @@ var wishObject = {
 };
 
 var enteredMagicWords = {
-  'Any Magic Word': ['wishId1', 'wishId2', 'wishId3'],
-  'Another magic word': ['wishId1', 'wishId2', 'wishId3']
+  'h': {
+    wishes: ['wishid1', 'wishid2'],
+    'e': {
+      'l': {
+        'l': {
+          'o': {
+            wishes: ['wishid3', 'wishid4']
+          }
+        },
+        'p': {
+          wishes: ['wishid5', 'wishid2']
+        }
+      }
+    }
+  }
 };
 
 var pathContext = {
@@ -173,6 +188,23 @@ genie.reset();
  *  2. Following the order of their initial registration
  */
 genie.getMatchingWishes(magicWord [string | required]);
+
+/*
+ * Replace genie's matching algorithm with your own.
+ * Gives you three parameters:
+ *   - wishes (all genie wishes)
+ *   - magicWord (the magicWord to match)
+ *   - context (genie's current context)
+ *   - enteredMagicWords (genie's current enteredMagicWords object)
+ */
+genie.overrideMatchingAlgorithm(function(wishes, magicWord, context, enteredMagicWords) {
+  // Your matching code.
+});
+
+/*
+ * Sets the matching algorithm back to genie's default algorithm.
+ */
+genie.restoreMatchingAlgorithm();
 
 /* 
  * Executes the given wish's action.

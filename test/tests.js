@@ -272,6 +272,126 @@ describe('genie', function(){
       genie.context(['context1', 'context3', 'context5']);
       var allWishes = genie.getMatchingWishes();
       expect(allWishes).to.have.length(6);
-    })
+    });
+  }); // end #context #addContext #removeContext
+  
+  describe('#getMatchingWishes', function() {
+    var wishes;
+    var wishesArray;
+    beforeEach(function(done) {
+      wishes = {};
+      wishesArray = [];
+      wishes.equal = genie(fillInWish({
+        magicWords: 'tTOtc' // equal
+      }));
+      wishesArray.push(wishes.equal);
+      
+      wishes.equal2 = genie(fillInWish({
+        magicWords: ['First Magic Word', 'tTOtc'] // equal 2nd magic word
+      }));
+      wishesArray.push(wishes.equal2);
+      
+      wishes.contains = genie(fillInWish({
+        magicWords: 'The ttotc container' // contains
+      }));
+      wishesArray.push(wishes.contains);
+      
+      wishes.contains2 = genie(fillInWish({
+        magicWords: ['First Magic Word', 'The ttotc container'] // contains 2nd magic word
+      }));
+      wishesArray.push(wishes.contains2);
+      
+      wishes.acronym = genie(fillInWish({
+        magicWords: 'The Tail of Two Cities' // acronym
+      }));
+      wishesArray.push(wishes.acronym);
+      
+      wishes.acronym2 = genie(fillInWish({
+        magicWords: ['First Magic Word', 'The Tail of Two Cities'] // acronym 2nd magic word
+      }));
+      wishesArray.push(wishes.acronym2);
+      
+      wishes.match = genie(fillInWish({
+        magicWords: 'The Tail of Forty Cities' // match
+      }));
+      wishesArray.push(wishes.match);
+      
+      wishes.match2 = genie(fillInWish({
+        magicWords: ['First Magic Word', 'The Tail of Forty Cities'] // match 2nd magic word
+      }));
+      wishesArray.push(wishes.match2);
+      
+      wishes.noMatch = genie(fillInWish({
+        magicWords: 'no match'
+      }));
+      wishesArray.push(wishes.noMatch);
+      
+      done();
+    });
+    
+    it('should return wishes in order of most recently registered when not given any params', function() {
+      var allWishes = genie.getMatchingWishes();
+      var j = wishesArray.length - 1;
+      for (var i = 0; i < allWishes.length && j >= 0; i++, j--) {
+        expect(allWishes[i]).to.equal(wishesArray[j]);
+      }
+    });
+    
+    it('should match equal, contains, acronym, and then match with the second magic word match coming after the first', function() {
+      var ttotcAcronym = 'ttotc';
+
+      // Even though they were registered in reverse order, the matching should follow this pattern
+      var matchingWishes = genie.getMatchingWishes(ttotcAcronym);
+      expect(matchingWishes).to.have.length(wishesArray.length - 1);
+      expect(matchingWishes[0]).to.equal(wishes.equal);
+      expect(matchingWishes[1]).to.equal(wishes.equal2);
+      expect(matchingWishes[2]).to.equal(wishes.contains);
+      expect(matchingWishes[3]).to.equal(wishes.contains2);
+      expect(matchingWishes[4]).to.equal(wishes.acronym);
+      expect(matchingWishes[5]).to.equal(wishes.acronym2);
+      expect(matchingWishes[6]).to.equal(wishes.match);
+      expect(matchingWishes[7]).to.equal(wishes.match2);
+    });
+    
+    it('should match entered magic words before anything else', function() {
+      genie.makeWish(wishes.contains, 'tt');
+      // This shouldn't affect the results of a search with more text
+
+      genie.makeWish(wishes.match, 'ttot');
+      var matchingWishes = genie.getMatchingWishes('ttot');
+      expect(matchingWishes).to.have.length(wishesArray.length - 1);
+      expect(matchingWishes[0]).to.equal(wishes.match);
+      expect(matchingWishes[1]).to.equal(wishes.equal); // starts with (not equal) in this case
+      expect(matchingWishes[2]).to.equal(wishes.equal2); // starts with 2 in this case
+      expect(matchingWishes[3]).to.equal(wishes.contains);
+      expect(matchingWishes[4]).to.equal(wishes.contains2);
+      expect(matchingWishes[5]).to.equal(wishes.acronym);
+      expect(matchingWishes[6]).to.equal(wishes.acronym2);
+      expect(matchingWishes[7]).to.equal(wishes.match2);
+      
+      genie.makeWish(wishes.match2, 'ttotc');
+      matchingWishes = genie.getMatchingWishes('ttot');
+      expect(matchingWishes).to.have.length(wishesArray.length - 1);
+      expect(matchingWishes[0]).to.equal(wishes.match);
+      expect(matchingWishes[1]).to.equal(wishes.match2);
+      expect(matchingWishes[2]).to.equal(wishes.equal); // starts with in this case
+      expect(matchingWishes[3]).to.equal(wishes.equal2); // starts with 2 in this case
+      expect(matchingWishes[4]).to.equal(wishes.contains);
+      expect(matchingWishes[5]).to.equal(wishes.contains2);
+      expect(matchingWishes[6]).to.equal(wishes.acronym);
+      expect(matchingWishes[7]).to.equal(wishes.acronym2);
+
+
+      matchingWishes = genie.getMatchingWishes('ttotc');
+      expect(matchingWishes).to.have.length(wishesArray.length - 1);
+      expect(matchingWishes[0]).to.equal(wishes.match2);
+      expect(matchingWishes[1]).to.equal(wishes.equal);
+      expect(matchingWishes[2]).to.equal(wishes.equal2);
+      expect(matchingWishes[3]).to.equal(wishes.contains);
+      expect(matchingWishes[4]).to.equal(wishes.contains2);
+      expect(matchingWishes[5]).to.equal(wishes.acronym);
+      expect(matchingWishes[6]).to.equal(wishes.acronym2);
+      expect(matchingWishes[7]).to.equal(wishes.match);
+    });
   });
 });
