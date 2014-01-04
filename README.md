@@ -597,3 +597,5 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/kentcdodds/genie/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
+[![Analytics](https://ga-beacon.appspot.com/UA-42764912-2/genie/readme)](https://github.com/igrigorik/ga-beacon)
