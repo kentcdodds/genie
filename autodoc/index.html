@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>genie</title>
+
+    <link rel="stylesheet" type="text/css" href="docs.css" />
+    <link rel="stylesheet" type="text/css" href="examples.css" />
+    <link rel="stylesheet" type="text/css" href="highlight.css" />
+    <script src="//pivotal.github.io/jasmine/lib/jasmine-1.3.1/jasmine.js"></script>
+    <script src="//lodash.com/_js/lodash.js"></script>
+    <script src="//benchmarkjs.com/_js/benchmark.js"></script>
+    <script src="//code.jquery.com/jquery-1.10.1.min.js"></script>
+    <script src="//code.highcharts.com/highcharts.js"></script>
+    <script src="//danieltao.com/HighTables/hightables.js"></script>
+    <script type="text/javascript" src="utils.js"></script>
+
+    <script type="text/javascript" src="genie.js"></script>
+
+    <script type="text/javascript" src="defaults.js"></script>
+
+    <script type="text/javascript">
+      var benchmarks = {};
+    </script>
+</head>
+
+<body>
+    <main>
+        <header>
+            <h1>genie</h1>
+
+            <p>A JavaScript library committed to improving
+user experience by empowering users to interact with web
+apps using the keyboard (better than cryptic shortcuts).</p>
+
+        </header>
+
+        <!-- Notification area for failing specs -->
+        <div id="spec-failures"></div>
+
+        <div class="layout">
+            <div class="index">
+                <nav>
+                    <ul>
+                    </ul>
+                </nav>
+            </div>
+
+            <article>
+            </article>
+        </div>
+    </main>
+
+    <script type="text/javascript" src="docs.js"></script>
+</body>
+
+</html>
