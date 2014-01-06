@@ -17,6 +17,7 @@
  - Added getWish(id)
  - Added overrideMatchingAlgorithm(function(wishes, magicWord, enteredMagicWords){}).
  See README.
+ - Adding autodocs
  - Added restoreMatchingAlgorithm()
  - Seriously documented some functions.
  - Adding jshint to the build. Some errors corrected.

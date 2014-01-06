@@ -95,6 +95,12 @@ goal of this library!
 
 ##API
 
+Genie is undergoing an overhaul on the API documentation using [autodocs](https://github.com/dtao/autodoc).
+It is still being worked on, but you can see that documentation
+[here](http://kent.doddsfamily.us/genie/autodoc).
+
+Below you can see full documentation. It's just less enjoyable to read...
+
 ###Objects
 
 There are a few internal objects you may want to be aware of:
