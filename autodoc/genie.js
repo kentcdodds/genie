@@ -1,13 +1,9 @@
 /**
- * @name genie
- * @fileOverview A JavaScript library committed to improving
- * user experience by empowering users to interact with web
- * apps using the keyboard (better than cryptic shortcuts).
- * @license genie.js may be freely distributed under the MIT license.
- * @copyright (c) 2014 Kent C. Dodds
- * @author Kent C. Dodds <kent@doddsfamily.us>
- * 
+ * genie.js @license
+ * (c) 2013 Kent C. Dodds
+ * genie.js may be freely distributed under the MIT license.
  * http://www.github.com/kentcdodds/genie
+ * See README.md
  */
 
 (function (root, factory) {
@@ -34,19 +30,6 @@
     _returnOnDisabled = true,
 
     _contextRegex = /\{\{(\d+)\}\}/,
-    /**
-     * The _matchRankMap
-     * @typedef {Object} _matchRankMap
-     * @property {number} equals - 5
-     * @property {number} startsWith - 4
-     * @property {number} wordStartsWith - 3
-     * @property {number} contains - 2
-     * @property {number} acronym - 1
-     * @property {number} matches - 0
-     * @property {number} noMatch - -1
-     * @readonly
-     * @private
-     */
     _matchRankMap = {
       equals: 5,
       startsWith: 4,
@@ -82,30 +65,11 @@
    */
 
   /**
-   * Wish Ids
-   * @typedef {string|string[]} wishIds
-   */
-
-  /**
    * A path context
    * @typedef {Object} PathContext
    * @property {RegExp[]} regexes
    * @property {string[]} paths
    * @property {string[]} contexts
-   */
-
-  /**
-   * Letter in an entered magic words
-   * @typedef {Object} EnteredMagicLetter
-   * @property {EnteredMagicLetter}
-   * @property {string[]} wishIds
-   */
-
-  /**
-   * The object used for genie's matching algorithm.
-   * @typedef {Object} EnteredMagicWords
-   * @property {EnteredMagicLetter}
-   * @property {string[]} wishIds
    */
 
   /**
@@ -173,12 +137,6 @@
     return newContext;
   }
 
-  /**
-   * Makes all the context properties arrays.
-   * @param {*} context
-   * @returns {*}
-   * @private
-   */
   function _arrayizeContext(context) {
     function checkAndAdd(type) {
       if (context[type]) {
@@ -247,13 +205,6 @@
     return wish;
   }
 
-  /**
-   * Iterates through _enteredMagicWords and removes
-   * all instances of this id. If this leaves the letter
-   * empty it removes the letter.
-   * @param id
-   * @private
-   */
   function _removeWishIdFromEnteredMagicWords(id) {
     function removeIdFromWishes(charObj, parent, charObjName) {
       _each(charObj, function(childProp, propName) {
@@ -366,8 +317,8 @@
    *   given array.
    * Note: If the id does not correspond to
    *   a registered wish, it will be undefined
-   * @param {wishIds} id
-   * @returns {wish|wish[]|null}
+   * @param {string|string[]} id
+   * @returns {{}|{}[]|null}
    */
   function getWish(id) {
     if (_isArray(id)) {
@@ -388,8 +339,8 @@
 
   /**
    * Gets a wish from the _wishes array by its ID
-   * @param {wishIds} id
-   * @returns {wish|wish[]}
+   * @param {string|string[]} id
+   * @returns {{}|{}[]}
    * @private
    */
   function _getWishIndexById(id) {
@@ -413,7 +364,7 @@
 
   /**
    * Sets genie's options to the default options
-   * @returns {GenieOptions}
+   * @returns {{}}
    */
   function reset() {
     var oldOptions = options();
@@ -429,14 +380,6 @@
     return oldOptions;
   }
 
-  /**
-   * Uses the given magic word to return an intelligently sorted
-   *   list of wishes which are in context and match the magic word
-   *   (based on their own magic words and genie's enteredMagicWords)
-   * @param {?string} [magicWord=''] - the magic word to match against
-   * @returns {wish[]} wishes - the matching wishes.
-   * @public
-   */
   function getMatchingWishes(magicWord) {
     magicWord = (_isNullOrUndefined(magicWord) ? '' : '' + magicWord).toLowerCase();
     var allWishIds = _getWishIdsInEnteredMagicWords(magicWord);
@@ -448,14 +391,6 @@
     return matchingWishes.concat(otherWishes);
   }
 
-  /**
-   * Climbs down the chain with the _enteredMagicWords object to find
-   *   where the word ends and then gets the 'wish' property from
-   *   the posterity at that point in the _enteredMagicWords object.
-   * @param {string} word
-   * @returns {wish[]}
-   * @private
-   */
   function _getWishIdsInEnteredMagicWords(word) {
     var startingCharWishesObj = _climbDownChain(_enteredMagicWords, word.split(''));
     if (startingCharWishesObj) {
@@ -465,12 +400,6 @@
     }
   }
 
-  /**
-   * Returns a filtered array of the wishes which are in context.
-   * @param {wish[]} wishes - the wishes to filter
-   * @returns {wish[]} wishes - the wishes which are in context
-   * @private
-   */
   function _filterInContextWishes(wishes) {
     var inContextWishes = [];
     _each(wishes, function(wish) {
@@ -481,17 +410,6 @@
     return inContextWishes;
   }
 
-  /**
-   * Climbs down an object's properties based on the given
-   * array of properties. (obj[props[0]][props[1]][props[2]] etc.)
-   * @param {*} obj - the object to climb down.
-   * @param {string[]} props - the ordered list of properties
-   * to climb down with
-   * @returns {*}
-   * @private
-   * @examples
-   * _climbDownChain({a: { b: {c: {d: 'hello'}}}}, ['a', 'b', 'c', 'd']) // => 'hello' 
-   */
   function _climbDownChain(obj, props) {
     var finalObj = obj;
     props = _arrayify(props);
@@ -510,18 +428,6 @@
     }
   }
 
-  /**
-   * Iterates through all child properties of the given object
-   *   and if it has the given property, it will add that property
-   *   to the array that's returned at the end.
-   * @param {*} objToStartWith
-   * @param {string} prop
-   * @param {boolean} [unique=false]
-   * @returns {{}[]}
-   * @private
-   * @examples
-   * _getPropFromPosterity({a: {p: 1, b: {p: 2}}}, 'p') // => [1,2]
-   */
   function _getPropFromPosterity(objToStartWith, prop, unique) {
     var values = [];
     function loadValues(obj) {
@@ -543,24 +449,6 @@
     return values;
   }
 
-  /**
-   * A matchPriority for a wish
-   * @typedef {Object} MatchPriority
-   * @property {number} matchType - based on _matchRankMap
-   * @property {number} magicWordIndex - the index of the magic word
-   *   in the wish's array of magic words.
-   */
-  
-  /**
-   * Takes the given wishes and sorts them by how well they match the givenMagicWord.
-   * The wish must be in context, and they follow the order defined in the
-   * {@link "#_matchRankMap"}
-   * @param {*} wishes
-   * @param {string[]} currentMatchingWishIds
-   * @param givenMagicWord
-   * @returns {string[]}
-   * @private
-   */
   function _sortWishesByMatchingPriority(wishes, currentMatchingWishIds, givenMagicWord) {
     var matchPriorityArrays = [];
     var returnedIds = [];
@@ -584,13 +472,6 @@
     return returnedIds;
   }
 
-  /**
-   * Gets the best magic words match of the wish's magic words
-   * @param {string|string[]} wishesMagicWords
-   * @param {string} givenMagicWord
-   * @returns {MatchPriority}
-   * @private
-   */
   function _bestMagicWordsMatch(wishesMagicWords, givenMagicWord) {
     var bestMatch = {
       matchType: _matchRankMap.noMatch,
@@ -612,7 +493,7 @@
    * how well the two strings match.
    * @param {string} magicWord
    * @param {string} givenMagicWord
-   * @returns {number}
+   * @returns {*}
    * @private
    */
   function _stringsMatch(magicWord, givenMagicWord) {
@@ -678,15 +559,6 @@
     return acronym;
   }
 
-  /**
-   * Returns a _matchRankMap.matches or noMatch score based on whether
-   * the characters in the givenMagicWord are found in order in the
-   * magicWord
-   * @param {string} magicWord
-   * @param {string} givenMagicWord
-   * @returns {number}
-   * @private
-   */
   function _stringsByCharOrder(magicWord, givenMagicWord) {
     var charNumber = 0;
 
@@ -713,16 +585,6 @@
     return _matchRankMap.matches;
   }
 
-  /**
-   * If the wish has a matchType which is not equal to the _matchRankMap.noMatch
-   * and it is not contained in the currentMatchingWishIds, then it is added to
-   * the matchPriorityArrays based on the matchPriority.
-   * @param {wish} wish
-   * @param {MatchPriority} matchPriority
-   * @param {[[]]} matchPriorityArrays
-   * @param {wishIds} currentMatchingWishIds
-   * @private
-   */
   function _maybeAddWishToMatchPriorityArray(wish, matchPriority, matchPriorityArrays, currentMatchingWishIds) {
     var indexOfWishInCurrent = currentMatchingWishIds.indexOf(wish.id);
     if (matchPriority.matchType !== _matchRankMap.noMatch) {
@@ -735,26 +597,19 @@
     }
   }
 
-  /**
-   * Creates a spot in the given array for the matchPriority
-   * @param {[]} arry
-   * @param {MatchPriority} matchPriority
-   * @returns {string[]}
-   * @private
-   */
   function _getMatchPriorityArray(arry, matchPriority) {
     arry[matchPriority.matchType] = arry[matchPriority.matchType] || [];
     var matchTypeArray = arry[matchPriority.matchType];
-    return matchTypeArray[matchPriority.magicWordIndex] = matchTypeArray[matchPriority.magicWordIndex] || [];
+    var matchPriorityArray = matchTypeArray[matchPriority.magicWordIndex] = matchTypeArray[matchPriority.magicWordIndex] || [];
+    return matchPriorityArray;
   }
 
   /**
    * Take the given wish/wish id and call it's action
    *   method if it is in context.
-   * @param {?wish|string} wish - if null, then the first wish
-   * to come back from getMatchingWishes(magicWord) will be made.
+   * @param {*} wish - object or id or null
    * @param {string} magicWord
-   * @returns {wish}
+   * @returns {*}
    */
   function makeWish(wish, magicWord) {
     wish = _convertToWishObjectFromNullOrId(wish, magicWord);
@@ -773,12 +628,12 @@
 
   /**
    * Convert the given wish argument to a valid wish object.
-   *   It could be an ID, or null.
-   * @param {?wish|string} wish - If it's null, use the
+   *   It could be an ID, or null. If it's null, use the
    *   magic word and assign it to be the first result from
    *   the magic word.
+   * @param {*} wish - object or id
    * @param {string} magicWord
-   * @returns {wish}
+   * @returns {*}
    * @private
    */
   function _convertToWishObjectFromNullOrId(wish, magicWord) {
@@ -800,18 +655,9 @@
    *   - doesn't exist
    *   - doesn't have an action
    *   - wish is not in context
-   * @param {wish} wish
-   * @returns {boolean} canBeMade
-   * @private
-   * @examples
-   * _wishCanBeMade(null) // => false
-   * _wishCanBeMade(undefined) // => false
-   * _wishCanBeMade({}) // => false
-   * _wishCanBeMade({action: function(){}}) // => false
-   * _wishCanBeMade({action: function(){}, context: {any:'universe'}}) // => true
    */
   function _wishCanBeMade(wish) {
-    return !!wish && !_isNullOrUndefined(wish.action) && _wishInContext(wish);
+    return wish && !_isNullOrUndefined(wish.action) && _wishInContext(wish);
   }
 
   /**
@@ -833,14 +679,9 @@
 
   /**
    * Returns true if the given context is the default context.
-   * @param {string|string[]|context} context
-   * @returns {boolean} contextIsDefault
+   * @param {string|string[]} context
+   * @returns {boolean}
    * @private
-   * @examples
-   * _contextIsDefault(_defaultContext[0]) // => true
-   * _contextIsDefault(_defaultContext) // => true
-   * _contextIsDefault(_defaultContext.concat(['1', '2', '3']) // => true
-   * _contextIsDefault('something else') // => false
    */
   function _contextIsDefault(context) {
     if (!_isObject(context)) {
@@ -861,8 +702,8 @@
    *  2. The wish's context is equal to the default context
    *  3. The wish's context is equal to genie's context
    *  4. The wish is _wishInThisContext(_context)
-   * @param {wish} wish
-   * @returns {boolean} wishInContext
+   * @param {*} wish
+   * @returns {*}
    * @private
    */
   function _wishInContext(wish) {
@@ -883,9 +724,9 @@
    *  2. all: genie's context contains all of these.
    *  3. none: genie's context contains none of these.
    *
-   * @param {wish} wish
+   * @param {{}} wish
    * @param {string|string[]} theContexts
-   * @returns {boolean} wishInThisContext
+   * @returns {boolean}
    * @private
    */
   function _wishInThisContext(wish, theContexts) {
@@ -914,7 +755,7 @@
    *  4. If the wish was not already the second element,
    *    set is as the second element. If it was, set it
    *    as the first element.
-   * @param {wish} wish
+   * @param {*} wish
    * @param {string} magicWord
    * @private
    */
@@ -928,14 +769,6 @@
     }
   }
 
-  /**
-   * Recursively creates a new object property if one does not exist
-   * for each character in the chars string.
-   * @param {{}} spot
-   * @param {string} chars
-   * @returns {{}} - the final object.
-   * @private
-   */
   function _createSpotInEnteredMagicWords(spot, chars) {
     var firstChar = chars.substring(0, 1);
     var remainingChars = chars.substring(1);
@@ -947,19 +780,6 @@
     }
   }
 
-  /**
-   * Updates the order of wish ids based on "king of the hill"
-   *   and "on deck" concepts. Meaning, for a wish to be placed
-   *   in front, it needs to be "on deck" which is the second
-   *   position. If it is not already on deck then it will be
-   *   placed in the second position. If it is on deck then it
-   *   will replace the king of the hill and the king of the hill
-   *   will be placed in the second position (on deck).
-   * @param {string} id
-   * @param {[]} arry
-   * @param {number} existingIndex
-   * @private
-   */
   function _repositionWishIdInEnteredMagicWordsArray(id, arry, existingIndex) {
     if (existingIndex !== -1) {
       // If it already exists, remove it before re-adding it in the correct spot
@@ -1206,23 +1026,6 @@
     return arry.indexOf(obj) > -1;
   }
 
-  /**
-   * Whether the given object is empty.
-   * @param obj
-   * @returns {boolean}
-   * @private
-   * @examples
-   * _isEmpty() // => true
-   * _isEmpty(null) // => true
-   * _isEmpty(undefined) // => true
-   * _isEmpty('') // => true
-   * _isEmpty({}) // => true
-   * _isEmpty([]) // => true
-   * _isEmpty(1) // => false
-   * _isEmpty('a') // => false
-   * _isEmpty(['a', 'b']) // => false
-   * _isEmpty({a: 'b'}) // => false
-   */
   function _isEmpty(obj) {
     if (_isNullOrUndefined(obj)) {
       return true;
@@ -1230,8 +1033,6 @@
       return obj.length === 0;
     } else if (_isPrimitive(obj)) {
       return false;
-    } else if (_isObject) {
-      return Object.keys(obj).length > 0;
     } else {
       return false;
     }
@@ -1313,8 +1114,7 @@
   }
 
   /**
-   * Iterates through each property and calls the callback
-   * if the object hasOwnProperty.
+   *
    * @param {{}} obj
    * @param {Function} fn
    * @returns {boolean}
@@ -1334,95 +1134,65 @@
   }
 
   /**
+   *
    * @param {*} bool
    * @returns {boolean}
    * @private
-   * _isTrue(true) // => true
-   * _isTrue() // => false
-   * _isTrue(false) // => false
-   * _isTrue(null) // => false
-   * _isTrue(undefined) // => false
-   * _isTrue('') // => false
-   * _isTrue({}) // => false
-   * _isTrue([]) // => false
    */
   function _isTrue(bool) {
-    return bool === true;
+    /* jshint -W116 */
+    return bool == true;
   }
 
   /**
+   *
    * @param {*} bool
    * @returns {boolean}
    * @private
-   * @examples
-   * _isFalse(false) // => true
-   * _isFalse() // => false
-   * _isFalse(true) // => false
-   * _isFalse(null) // => false
-   * _isFalse(undefined) // => false
-   * _isFalse('') // => false
-   * _isFalse({}) // => false
-   * _isFalse([]) // => false
    */
   function _isFalse(bool) {
-    return bool === false;
+    /* jshint -W116 */
+    return bool == false;
   }
 
   /**
+   *
    * @param {*} obj
    * @returns {boolean}
    * @private
    * @examples
-   * _isArray([1]) // => true
    * _isArray({x: 1}) // => false
-   * _isArray() // => false
+   * _isArray([1]) // => true
    */
   function _isArray(obj) {
     return obj instanceof Array;
   }
 
   /**
+   *
    * @param {*} obj
    * @returns {boolean}
    * @private
-   * @examples
-   * _isString('') // => true
-   * _isString({}) // => false
-   * _isString([]) // => false
-   * _isString(1) // => false
-   * _isString(true) // => false
    */
   function _isString(obj) {
     return typeof obj === 'string';
   }
 
   /**
+   *
    * @param {*} obj
    * @returns {boolean}
    * @private
-   * @examples
-   * _isObject({}) // => true
-   * _isObject([]) // => true
-   * _isObject(1) // => false
-   * _isObject('a') // => false
-   * _isObject(true) // => false
    */
   function _isObject(obj) {
     return typeof obj === 'object';
   }
 
   /**
+   *
    * @param {*} obj
    * @returns {boolean}
    * @private
-   * @examples
-   * _isPrimitive('string') // => true
-   * _isPrimitive(1) // => true
-   * _isPrimitive(true) // => true
-   * _isPrimitive(undefined) // => true
-   * _isPrimitive(null) // => false
-   * _isPrimitive({}) // => false
-   * _isPrimitive([]) // => false
    */
   function _isPrimitive(obj) {
     /* jshint maxcomplexity:5 */
@@ -1438,20 +1208,10 @@
   }
 
   /**
-   * @param {*|[*]} obj
+   *
+   * @param {*} obj
    * @returns {boolean}
    * @private
-   * @examples
-   * _isUndefined() // => true
-   * _isUndefined(undefined) // => true
-   * _isUndefined(null) // => false
-   * _isUndefined({}) // => false
-   * _isUndefined(1) // => false
-   * _isUndefined(false) // => false
-   * _isUndefined('defined') // => false
-   * _isUndefined('defined') // => false
-   * _isUndefined(['defined', undefined]) // => true
-   * _isUndefined([undefined, undefined]) // => true
    */
   function _isUndefined(obj) {
     if (_isArray(obj)) {
@@ -1464,17 +1224,10 @@
   }
 
   /**
+   *
    * @param {*} obj
    * @returns {boolean}
    * @private
-   * @examples
-   * _isNull(null) // => true
-   * _isNull() // => false
-   * _isNull(1) // => false
-   * _isNull('hello') // => false
-   * _isNull(true) // => false
-   * _isNull(['hello', null]) // => true
-   * _isNull([null, null]) // => true
    */
   function _isNull(obj) {
     if (_isArray(obj)) {
@@ -1487,23 +1240,10 @@
   }
 
   /**
+   *
    * @param {*} obj
    * @returns {boolean}
    * @private
-   * _isNullOrUndefined(null) // => true
-   * _isNullOrUndefined() // => true
-   * _isNullOrUndefined(undefined) // => true
-   * _isNullOrUndefined(1) // => false
-   * _isNullOrUndefined({}) // => false
-   * _isNullOrUndefined('hello') // => false
-   * _isNullOrUndefined(true) // => false
-   * _isNullOrUndefined(['hello', null]) // => true
-   * _isNullOrUndefined([undefined, null]) // => true
-   * _isNullOrUndefined(false) // => false
-   * _isNullOrUndefined('defined') // => false
-   * _isNullOrUndefined('defined') // => false
-   * _isNullOrUndefined(['defined', undefined]) // => true
-   * _isNullOrUndefined([null, undefined]) // => true
    */
   function _isNullOrUndefined(obj) {
     return _isNull(obj) || _isUndefined(obj);
@@ -1532,8 +1272,7 @@
    *    given wishes to genie's _wishes variable. If falsy, then
    *    genie.mergeWishes is called with the wishes.
    *
-   * @param {{}} [opts] - if not given, simply returns the options
-   *   @public
+   * @param {{}} opts
    * @returns {GenieOptions}
    */
   function options(opts) {
@@ -1564,7 +1303,6 @@
    *   magicWord string, and enteredMagicWords object.
    *   You wont need to change how you interface with
    *   getMatching wishes at all by using this.
-   * @public
    */
   function overrideMatchingAlgorithm(fn) {
     genie.getMatchingWishes = _passThrough(function(magicWord) {
@@ -1574,7 +1312,6 @@
 
   /**
    * This will set the matching algorithm back to the original
-   * @public
    */
   function restoreMatchingAlgorithm() {
     genie.getMatchingWishes = _originalMatchingAlgorithm;
@@ -1605,7 +1342,6 @@
    *   with genie based on its wishId
    * @param {[]} wishes - Array of wish objects
    * @returns {[wish]}
-   * @public
    */
   function mergeWishes(wishes) {
     _each(wishes, function(newWish) {
@@ -1636,7 +1372,6 @@
    *   to the given context.
    * @param {string|string[]} newContext
    * @returns {string[]}
-   * @public
    */
   function context(newContext) {
     if (newContext !== undefined) {
@@ -1656,7 +1391,6 @@
    *   duplicates.
    * @param {string|string[]} newContext
    * @returns {Array}
-   * @public
    */
   function addContext(newContext) {
     _previousContext = _context;
@@ -1668,7 +1402,6 @@
    * Removes the given context
    * @param {string|string[]} contextToRemove
    * @returns {string[]}
-   * @public
    */
   function removeContext(contextToRemove) {
     _previousContext = _context;
@@ -1682,7 +1415,6 @@
   /**
    * Changes genie's context to _previousContext
    * @returns {string[]}
-   * @public
    */
   function revertContext() {
     return context(_previousContext);
@@ -1691,7 +1423,6 @@
   /**
    * Changes context to _defaultContext
    * @returns {string[]}
-   * @public
    */
   function restoreContext() {
     return context(_defaultContext);
@@ -1703,7 +1434,6 @@
    * @param {boolean=} noDeregister - Do not deregister wishes
    *   which are no longer in context
    * @returns {string[]} - The new context
-   * @public
    */
   function updatePathContext(path, noDeregister) {
     if (path) {
@@ -1729,7 +1459,6 @@
    * Add a path context to genie's pathContexts
    * @param {PathContext[]} pathContexts
    * @returns {PathContext[]} - The new path contexts
-   * @public
    */
   function addPathContext(pathContexts) {
     _each(pathContexts, function(pathContext) {
@@ -1753,7 +1482,6 @@
    * Removes the given path contexts from genie's path contexts
    * @param {PathContext[]} pathContext
    * @returns {PathContext[]}
-   * @public
    */
   function removePathContext(pathContext) {
     _removeItems(_pathContexts, pathContext);
@@ -1764,7 +1492,6 @@
    * Set/get genie's enabled state
    * @param {boolean=} newState
    * @returns {boolean}
-   * @public
    */
   function enabled(newState) {
     if (newState !== undefined) {
@@ -1781,7 +1508,6 @@
    *   null checks in your code everywhere you use genie.
    * @param {boolean=} newState
    * @returns {boolean}
-   * @public
    */
   function returnOnDisabled(newState) {
     if (newState !== undefined) {

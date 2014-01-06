@@ -71,7 +71,6 @@ module.exports = function (grunt) {
     }
   });
 
-  // Load grunt mocha task
   grunt.loadNpmTasks('grunt-mocha');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-bumpup');
