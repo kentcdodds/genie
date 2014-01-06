@@ -798,6 +798,7 @@
    * @public
    */
   function makeWish(wish, magicWord) {
+    magicWord = (!!magicWord ? '' + magicWord : '').toLowerCase();
     wish = _convertToWishObjectFromNullOrId(wish, magicWord);
 
     if (!_wishCanBeMade(wish)) {
