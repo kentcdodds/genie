@@ -745,7 +745,8 @@
   function _getMatchPriorityArray(arry, matchPriority) {
     arry[matchPriority.matchType] = arry[matchPriority.matchType] || [];
     var matchTypeArray = arry[matchPriority.matchType];
-    return matchTypeArray[matchPriority.magicWordIndex] = matchTypeArray[matchPriority.magicWordIndex] || [];
+    var matchPriorityArray = matchTypeArray[matchPriority.magicWordIndex] = matchTypeArray[matchPriority.magicWordIndex] || [];
+    return matchPriorityArray;
   }
 
   /**
@@ -1224,6 +1225,7 @@
    * _isEmpty({a: 'b'}) // => false
    */
   function _isEmpty(obj) {
+    /* jshint maxcomplexity:5 */
     if (_isNullOrUndefined(obj)) {
       return true;
     } else if (_isArray(obj)) {
