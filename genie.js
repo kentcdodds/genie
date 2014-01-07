@@ -17,7 +17,6 @@
  * @license genie.js may be freely distributed under the MIT license.
  * @copyright (c) 2014 Kent C. Dodds
  * @author Kent C. Dodds <kent@doddsfamily.us>
- * 
  */
 
 (function (root, factory) {
@@ -129,7 +128,7 @@
   /**
    * **Note:** This is actually assigned to the `genie` variable, so
    * it is called like so: `genie({wish: object});`
-   * 
+   *
    * Creates and registers a new wish with the given pseudo wish(es).
    * @param {object|Array.<object>} wish pseudo wish(es)
    * @returns {wish|Array.<wish>} The registered wish or array of wishes.
@@ -1662,9 +1661,9 @@
    * @public
    */
   function context(newContext) {
-    if (newContext !== undefined) {
+    if (!_isUndefined(newContext)) {
       _previousContext = _context;
-      if (typeof newContext === 'string') {
+      if (!_isArray(newContext)) {
         newContext = [newContext];
       }
       _context = newContext;
@@ -1682,8 +1681,10 @@
    * @public
    */
   function addContext(newContext) {
-    _previousContext = _context;
-    _addUniqueItems(_context, newContext);
+    if (newContext && newContext.length) {
+      _previousContext = _context;
+      _addUniqueItems(_context, newContext);
+    }
     return _context;
   }
 
@@ -1694,10 +1695,12 @@
    * @public
    */
   function removeContext(contextToRemove) {
-    _previousContext = _context;
-    _removeItems(_context, contextToRemove);
-    if (_isEmpty(context)) {
-      _context = _defaultContext;
+    if (contextToRemove && contextToRemove.length) {
+      _previousContext = _context;
+      _removeItems(_context, contextToRemove);
+      if (_isEmpty(context)) {
+        _context = _defaultContext;
+      }
     }
     return _context;
   }

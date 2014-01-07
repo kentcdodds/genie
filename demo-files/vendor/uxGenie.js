@@ -57,6 +57,7 @@
 
         var mathResultId = 'ux-genie-math-result';
         var startTextForSubContext = null;
+        var preSubContextContext = null;
         var inputEl = angular.element(el.children()[0]);
         var genieOptionContainer = angular.element(el.children()[1]);
         var rubShortcut = scope.rubShortcut || '32';
@@ -194,6 +195,7 @@
             if (wish.data && wish.data.uxGenie && wish.data.uxGenie.displayText) {
               startTextForSubContext = wish.data.uxGenie.displayText;
             }
+            preSubContextContext = genie.context();
             genie.context(wish.data.uxGenie.subContext);
             scope.$apply(function() {
               scope.genieInput = startTextForSubContext;
@@ -202,14 +204,19 @@
         }
 
         function _exitSubContext() {
-          genie.revertContext();
+          genie.context(preSubContextContext);
           scope.state = states.userEntry;
           startTextForSubContext = null;
+          preSubContextContext = null;
         }
 
         // Making a wish
         scope.makeWish = function(wish) {
           var makeWish = true;
+          var magicWord = scope.genieInput;
+          if (scope.state === states.subContext) {
+            magicWord = magicWord.substring(startTextForSubContext.length);
+          }
           var makeInvisible = true;
           if (wish.id === mathResultId) {
             makeWish = false;
@@ -224,13 +231,13 @@
           }
 
           if (makeWish) {
-            wish = genie.makeWish(wish, scope.genieInput);
-            saveToLocalStorage(wish);
+            wish = genie.makeWish(wish, magicWord);
+            saveToLocalStorage();
           }
 
           scope.wishCallback({
             wish: wish,
-            magicWord: scope.genieInput
+            magicWord: magicWord
           });
           if (makeInvisible) {
             scope.$apply(function() {
@@ -303,9 +310,6 @@
         }
 
         scope.$watch('lampVisible', function(lampIsVisible) {
-          if (scope.state === states.subContext) {
-            _exitSubContext();
-          }
           if (lampIsVisible) {
             handleInputChange(scope.genieInput);
             if (scope.rubClass) {
