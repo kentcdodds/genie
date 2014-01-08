@@ -72,6 +72,7 @@
    * @property {Array.<string>} any
    * @property {Array.<string>} all
    * @property {Array.<string>} none
+   * @public
    */
 
 
@@ -80,6 +81,7 @@
    * @callback WishAction
    * @param {wish} wish
    * @param {string} magicWord
+   * @public
    */
 
   /**
@@ -96,11 +98,13 @@
    * @property {Array.<string>} magicWords - Used to match this wish on genie.getMatchingWishes
    * @property {WishAction} action - The action to be performed when genie.makeWish is
    *    called with this wish.
+   * @public
    */
 
   /**
    * Wish Ids
    * @typedef {string|Array.<string>} wishIds
+   * @public
    */
 
   /**
@@ -109,6 +113,7 @@
    * @property {Array.<RegExp>} regexes
    * @property {Array.<string>} paths
    * @property {Array.<string>} contexts
+   * @public
    */
 
   /**
@@ -1541,6 +1546,7 @@
    * @property {boolean} enabled - whether genie is enabled
    * @property {boolean} returnOnDisabled - whether genie will return an
    * empty object when it is disabled.
+   * @public
    */
   
   /**
