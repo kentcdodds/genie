@@ -11,6 +11,8 @@ within a bottle or oil lamp, and capable of granting wishes when summoned.
 
 [API Docs](http://kentcdodds.github.io/genie/autodoc)
 
+[Chrome Extension](https://chrome.google.com/webstore/detail/genies-lamp/pimmaneflgfbknjkjdlnffagpgfeklko)
+
 [![Build Status](https://travis-ci.org/kentcdodds/genie.png)](https://travis-ci.org/kentcdodds/genie)
 
 [![Bower version](https://badge.fury.io/bo/genie.png)](http://badge.fury.io/bo/genie) `bower install genie`
