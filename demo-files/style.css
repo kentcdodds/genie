@@ -47,25 +47,25 @@ h3 {
   height: 300px;
 }
 
-.genie-container {
+.genie-lamp-container {
   opacity: 0;
 }
 
-#uxLampContainer.fast .genie-container {
+.fast .genie-lamp-container {
   transition: all .2s ease-in-out;
 }
 
-#uxLampContainer.slow .genie-container {
+.slow .genie-lamp-container {
   transition: all 1s ease-in-out;
 }
 
-.genie-container.visible {
+.genie-lamp-container.visible {
   opacity: 1;
   z-index: 1050;
 }
 
 /* ng-genie default styles */
-.genie-container {
+.genie-lamp-container {
   position: fixed;
   top: 10%;
   left: 50%;
@@ -74,115 +74,115 @@ h3 {
   border-radius: 8px;
 }
 
-.genie-container > input {
+.lamp-input {
   -mos-border-radius: 8px;
   border-radius: 8px;
   margin: 0px;
   width: 100%;
 }
 
-.genie-wishes {
+.genie-lamp-container div {
   width: 100%;
-  margin-top: 10px;
   cursor: pointer;
   overflow-y: auto;
+  margin-top: 10px;
 }
 
-.genie-wish {
+.lamp-wish {
 }
 
-.genie-wish > img, .genie-wish > i {
-  vertical-align: text-top;
+.wish-img-icon, .wish-i-icon {
+  vertical-align: middle;
 }
 
-.genie-wish.focused {
+.lamp-wish.focused {
   -mos-border-radius: 8px;
   border-radius: 8px;
 }
 
 /* ng-genie light styles */
-#uxLampContainer.light .genie-container {
+.light .genie-lamp-container {
   color: #333;
   background-color: #F7F7F7;
   box-shadow: 0px 0px 26px 6px #888888;
 }
 
-#uxLampContainer.light .genie-wish.focused {
+.light .lamp-wish.focused {
   background-color: #DDD;
 }
 
 /* ng-genie light styles */
-#uxLampContainer.dark .genie-container {
+.dark .genie-lamp-container {
   color: rgb(238, 238, 238);
   background-color: #474747;
   box-shadow: 0px 0px 26px 6px #CCCCCC;
 }
 
-#uxLampContainer.dark .genie-container > input {
+.dark .lamp-input {
   background-color: #272727;
   border-color: #2E2E2E;
   color: white;
 }
 
-#uxLampContainer.dark .genie-wish.focused {
+.dark .lamp-wish.focused {
   background-color: #2E2E2E;
 }
 
 
 /* ng-genie large styles */
-#uxLampContainer.large .genie-container {
+.large .genie-lamp-container {
   width: 600px;
   margin-left: -300px;
   padding: 16px;
 }
 
-#uxLampContainer.large .genie-container > input {
+.large .lamp-input {
   line-height: 60px;
   padding: 0px 12px 0px 12px;
   font-size: 40px;
   height: 60px;
 }
 
-#uxLampContainer.large .genie-wishes {
+.large .lamp-wishes-container {
   max-height: 300px;
   font-size: 30px;
 }
 
-#uxLampContainer.large .genie-wish {
+.large .lamp-wish {
   padding: 0px 12px 0px 12px;
   line-height: 50px;
 }
 
-#uxLampContainer.large .genie-wish > img, #uxLampContainer.large .genie-wish > i {
+.large .wish-img-icon, .large .wish-i-icon {
   height: 35px;
   margin-right: 10px;
 }
 
 /* ng-genie small styles */
-#uxLampContainer.small .genie-container {
+.small .genie-lamp-container {
   width: 300px;
   margin-left: -150px;
   padding: 12px;
 }
 
-#uxLampContainer.small .genie-container > input {
+.small .lamp-input {
   line-height: 50px;
   padding: 0px 12px 0px 12px;
   font-size: 34px;
   height: 54px;
 }
 
-#uxLampContainer.small .genie-wishes {
+.small .lamp-wishes-container {
   max-height: 216px;
   font-size: 18px;
 }
 
-#uxLampContainer.small .genie-wish {
+.small .lamp-wish {
   padding: 0px 12px 0px 12px;
   line-height: 36px;
 }
 
-#uxLampContainer.small .genie-wish > img, #uxLampContainer.small .genie-wish > i {
+.small .wish-img-icon, .small .wish-i-icon {
   height: 20px;
   margin-right: 5px;
 }

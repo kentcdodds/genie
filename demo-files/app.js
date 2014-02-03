@@ -15,19 +15,24 @@
     }
     genie.context($scope.demoContext);
 
-    $scope.genieVisible = false;
-    
     $scope.genieStyle = {
       color: 'light',
       size: 'large',
-      animationSpeed: 'fast'
+      animationSpeed: 'fast',
+      template: 'default'
     };
     $scope.wishesMade = 0;
-    $scope.wishMade = function(wish) {
-      $scope.wishesMade++;
-      ga('send', 'event', 'wish', 'made', $scope.wishesMade);
+    
+    $scope.lamp = {
+      wishMade: function(wish) {
+        $scope.wishesMade++;
+        ga('send', 'event', 'wish', 'made', $scope.wishesMade);
+      },
+      genieVisible: false
     };
-
+    
+    $scope.customLamp = angular.copy($scope.lamp);
+    
     $scope.wishMagicWords = '';
     
     $scope.exportOrImportGenie = function() {
@@ -64,7 +69,7 @@
       });
     }
     
-    function addStyleWish(style, altStyle, property, iIcon, altiIcon) {
+    function addStyleWish(style, altStyle, property, iIcon, altiIcon, wishCalled) {
       var originalWish, altWish;
       function swapWishes(wish) {
         genie.removeContext(wish.context.all);
@@ -73,6 +78,7 @@
       function applyStyleAndSwapWishes(wish) {
         $scope.genieStyle[property] = wish.data.style.toLowerCase();
         swapWishes(wish);
+        wishCalled && wishCalled(wish);
       }
       originalWish = genie({
         magicWords: 'Make lamp ' + style,
@@ -114,6 +120,10 @@
     addStyleWish('Dark', 'Light', 'color', 'picture', 'picture');
     addStyleWish('Small', 'Large', 'size', 'resize-small', 'resize-full');
     addStyleWish('Slow', 'Fast', 'animationSpeed', 'fast-backward', 'fast-forward');
+    addStyleWish('Custom', 'Default', 'template', 'random', 'random', function() {
+      $scope.lamp.genieVisible = false;
+      $scope.customLamp.genieVisible = false;
+    });
 
     var genieTagline = encodeURIComponent('Genie: Better than keyboard shortcuts');
     var genieHome = encodeURIComponent('http://kent.doddsfamily.us/genie');

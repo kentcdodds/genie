@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" />
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
     <link rel="stylesheet" href="./demo-files/style.css" />
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.10/angular.min.js"></script>
   </head>
   <body>
     <div>
@@ -128,6 +129,16 @@
           <input type="radio" value="slow" ng-model="genieStyle.animationSpeed"> Slow
         </label>
       </div>
+      <span></span>
+      <div class="radio col-md-2">
+        <label>
+          <input type="radio" value="default" ng-model="genieStyle.template"> Default Template
+        </label>
+        <br />
+        <label>
+          <input type="radio" value="custom" ng-model="genieStyle.template"> Custom Template
+        </label>
+      </div>
     </div>
     
     <div id="bottom-stuff">
@@ -137,8 +148,38 @@
         <button class="btn btn-info" ng-click="exportOrImportGenie()">Export/Import Genie</button><br />
         <textarea id="genie-export-import" class="form-control" ng-model="genieExportImport" placeholder="Output/Input of Export/Import Genie"></textarea>
       </div>
-      <div id="uxLampContainer" class="{{genieStyle.color + ' ' + genieStyle.size + ' ' + genieStyle.animationSpeed}}">
-        <div ux-lamp lamp-visible="genieVisible" rub-class="visible" wish-callback="wishMade()" local-storage="true"></div>
+      <div class="custom-template {{genieStyle.color + ' ' + genieStyle.size + ' ' + genieStyle.animationSpeed}}" ng-show="genieStyle.template === 'custom'">
+        <div ux-lamp="lamp" lamp-visible="lamp.genieVisible" rub-class="visible" wish-callback="lamp.wishMade()" local-storage="true">
+          <input type="text" ng-model="lamp.input" class="lamp-input input form-control" />
+          <div>
+            This is a custom template! Type "Default" to go back :)<br />
+            You can customize the dom used for the lamp. Type "uxGenie" to see the docs.
+            <div  ng-if="lamp.focusedWish">
+              Wish <strong>"{{lamp.focusedWish.data.uxGenie.displayText || lamp.focusedWish.magicWords[0]}}"</strong> Data:<br />
+              Total Times Executed: {{lamp.focusedWish.data.timesMade.total}}<br />
+              Magic words executed with:
+              <ul>
+                <li ng-repeat="(key, value) in lamp.focusedWish.data.timesMade.magicWords" ng-if="key !== 'total'">
+                  {{key}}: {{value}}
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div ng-show="lamp.matchingWishes.length > 0" class="lamp-wishes-container">
+            <div class="lamp-wish wish-{{wish.id}}" ng-repeat="wish in lamp.matchingWishes" ng-class="{focused: lamp.focusedWish == wish}" ng-click="lamp.makeWish(wish)" ng-mouseenter="lamp.focusOnWish(wish, false)">
+              <span class="wish-icon">
+                <img class="wish-img-icon" ng-if="wish.data.uxGenie.imgIcon" ng-src="{{wish.data.uxGenie.imgIcon}}">
+                <i class="wish-i-icon" ng-if="wish.data.uxGenie.iIcon" class="{{wish.data.uxGenie.iIcon}}"></i>
+              </span>
+              <span class="wish-display">{{wish.data.uxGenie.displayText || wish.magicWords[0]}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="default-template {{genieStyle.color + ' ' + genieStyle.size + ' ' + genieStyle.animationSpeed}}" ng-show="genieStyle.template === 'default'">
+        <div ux-lamp lamp-visible="customLamp.genieVisible" rub-class="visible" wish-callback="customLamp.wishMade()" local-storage="true">
+        </div>
       </div>
 
       <hr />
@@ -152,7 +193,6 @@
     </div>
     
     <script src="genie.js"></script>
-    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.5/angular.min.js"></script>
     <script src="./demo-files/app.js"></script>
     <script src="demo-files/vendor/uxGenie.js"></script>
     <script src="demo-files/vendor/ga.js"></script>
