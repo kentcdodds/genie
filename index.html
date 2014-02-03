@@ -169,7 +169,7 @@
             <div class="lamp-wish wish-{{wish.id}}" ng-repeat="wish in lamp.matchingWishes" ng-class="{focused: lamp.focusedWish == wish}" ng-click="lamp.makeWish(wish)" ng-mouseenter="lamp.focusOnWish(wish, false)">
               <span class="wish-icon">
                 <img class="wish-img-icon" ng-if="wish.data.uxGenie.imgIcon" ng-src="{{wish.data.uxGenie.imgIcon}}">
-                <i class="wish-i-icon" ng-if="wish.data.uxGenie.iIcon" class="{{wish.data.uxGenie.iIcon}}"></i>
+                <i class="wish-i-icon {{wish.data.uxGenie.iIcon}}" ng-if="wish.data.uxGenie.iIcon"></i>
               </span>
               <span class="wish-display">{{wish.data.uxGenie.displayText || wish.magicWords[0]}}</span>
             </div>
