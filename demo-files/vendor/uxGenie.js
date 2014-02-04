@@ -56,12 +56,14 @@
         rubModifier: '@',
         rubEventType: '@',
         wishCallback: '&?',
-        localStorage: '=?'
+        localStorage: '@',
+        firebase: '@'
       },
-      link: function(scope, el, attr) {
+      link: function(scope, el) {
         scope.uxLamp = scope.uxLamp || {};
         scope.uxLamp.input = '';
         scope.uxLamp.state = states.userEntry;
+        scope.lampVisible = false;
 
         var mathResultId = 'ux-genie-math-result';
         var startTextForSubContext = null;
@@ -88,15 +90,64 @@
 
         var rubShortcut = scope.rubShortcut || '32';
         var rubModifier = scope.rubModifier || 'ctrlKey';
-        var saveToLocalStorage = function() {};
 
         rubShortcut = parseInt(rubShortcut, 10);
         if (isNaN(rubShortcut)) {
           rubShortcut = rubShortcut[0].charCodeAt(0);
         }
 
-        scope.lampVisible = false;
 
+        /*
+         * Setup persistance
+         */
+        if (scope.firebase && scope.localStorage) {
+          throw new Error('ux-lamp cannot have both firebase and local-storage attributes. Choose one or the other.');
+        }
+
+        var firebaseRef = null;
+        if (scope.firebase) {
+          if  (typeof Firebase === 'function') {
+            firebaseRef = new Firebase(scope.firebase);
+          } else {
+            throw new Error('ux-lamp cannot use the given firebase url without the "Firebase" global variable.');
+          }
+        }
+
+        function saveToLocalStorage(key, words) {
+          if (key && localStorage) {
+            var json = JSON.stringify(words);
+            localStorage.setItem(key, json);
+          }
+        }
+
+        function saveToFirebase(ref, words) {
+          if (ref) {
+            ref.set(words);
+          }
+        }
+
+        function saveGenie () {
+          var words = genie.options().enteredMagicWords;
+          saveToLocalStorage(scope.localStorage, words);
+          saveToFirebase(firebaseRef, words);
+        }
+
+        if (firebaseRef) {
+          firebaseRef.on('value', function(snapshot) {
+            genie.options({
+              enteredMagicWords: snapshot.val()
+            });
+          });
+        } else if (scope.localStorage && localStorage) {
+          genie.options({
+            enteredMagicWords: JSON.parse(localStorage.getItem(scope.localStorage))
+          });
+        }
+
+
+        /*
+         * Helpers
+         */
         function safeApply(fn) {
           var phase = scope.$root.$$phase;
           if(phase == '$apply' || phase == '$digest') {
@@ -115,15 +166,6 @@
             scope.lampVisible = !scope.lampVisible;
           });
         }
-
-        // Wish focus
-        scope.uxLamp.focusOnWish = function(wishElement, autoScroll) {
-          scope.uxLamp.focusedWish = wishElement;
-          if (scope.uxLamp.focusedWish && autoScroll) {
-            scrollToWish(scope.uxLamp.matchingWishes.indexOf(wishElement));
-          }
-        };
-
         function getElementOuterHeight(element, includeMargin) {
           var cs = document.defaultView.getComputedStyle(element, '');
 
@@ -153,7 +195,19 @@
           }
         }
 
-        // Document events
+        /*
+         * Wish focus
+         */
+        scope.uxLamp.focusOnWish = function(wishElement, autoScroll) {
+          scope.uxLamp.focusedWish = wishElement;
+          if (scope.uxLamp.focusedWish && autoScroll) {
+            scrollToWish(scope.uxLamp.matchingWishes.indexOf(wishElement));
+          }
+        };
+
+        /*
+         * Document events
+         */
         $document.bind('click', function(event) {
           // If it's not part of the lamp, then make the lamp invisible.
           var clickedElement = event.srcElement || event.target;
@@ -192,7 +246,9 @@
           }
         });
 
-        // Input events
+        /*
+         * Input events
+         */
         function changeSelection(change, event) {
           var wishes = scope.uxLamp.matchingWishes;
           if (wishes && change) {
@@ -260,7 +316,9 @@
           preSubContextContext = null;
         }
 
-        // Making a wish
+        /*
+         * Making a wish
+         */
         scope.uxLamp.makeWish = function(wish) {
           var makeWish = true;
           var magicWord = scope.uxLamp.input;
@@ -278,7 +336,7 @@
           if (_isSubContextWish(wish)) {
             // Make the wish before the context changes.
             wish = genie.makeWish(wish, magicWord);
-            saveToLocalStorage();
+            saveGenie();
             _setSubContextState(wish);
             makeInvisible = false;
             makeWish = false;
@@ -286,7 +344,7 @@
 
           if (makeWish) {
             wish = genie.makeWish(wish, magicWord);
-            saveToLocalStorage();
+            saveGenie();
           }
 
           scope.wishCallback({
@@ -304,7 +362,9 @@
           }
         });
 
-        // Updating list of wishes
+        /*
+         * Updating list of wishes
+         */
         function updateMatchingWishes(magicWord) {
           if (magicWord) {
             if (magicWord.indexOf('\'') === 0) {
@@ -380,20 +440,6 @@
             inputEl[0].blur();
           }
         });
-
-        if (scope.localStorage && localStorage) {
-          // Load machine's preferences
-          var options = {
-            enteredMagicWords: JSON.parse(localStorage.getItem('genie'))
-          };
-          genie.options(options);
-
-          // Setup update machine's preferences
-          saveToLocalStorage = function(wish) {
-            // This way 'genie' is never set in local storage until a wish is made.
-            localStorage.setItem('genie', JSON.stringify(genie.options().enteredMagicWords, null, 2));
-          }
-        }
 
         function _isSubContextWish(wish) {
           return !!wish && !!wish.data && !!wish.data.uxGenie && !!wish.data.uxGenie.subContext;
