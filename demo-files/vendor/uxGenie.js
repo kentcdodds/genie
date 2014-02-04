@@ -35,8 +35,8 @@
               '<div class="lamp-wish wish-{{wish.id}}" ' +
                 'ng-repeat="wish in uxLamp.matchingWishes" ' +
                 'ng-class="{focused: uxLamp.focusedWish == wish}" ' +
-                'ng-click="makeWish(wish)" ' +
-                'ng-mouseenter="focusOnWish(wish, false)">',
+                'ng-click="uxLamp.makeWish(wish)" ' +
+                'ng-mouseenter="uxLamp.focusOnWish(wish, false)">',
                   '<span class="wish-icon" ng-class="{\'has-img\': wish.data.uxGenie.imgIcon, \'has-i\': wish.data.uxGenie.iIcon}">',
                     '<img class="wish-img-icon" ng-if="wish.data.uxGenie.imgIcon" ng-src="{{wish.data.uxGenie.imgIcon}}">',
                     '<i class="wish-i-icon {{wish.data.uxGenie.iIcon}}" ng-if="wish.data.uxGenie.iIcon"></i>',
@@ -117,7 +117,7 @@
         }
 
         // Wish focus
-        scope.focusOnWish = function(wishElement, autoScroll) {
+        scope.uxLamp.focusOnWish = function(wishElement, autoScroll) {
           scope.uxLamp.focusedWish = wishElement;
           if (scope.uxLamp.focusedWish && autoScroll) {
             scrollToWish(scope.uxLamp.matchingWishes.indexOf(wishElement));
@@ -208,7 +208,7 @@
               newIndex = newIndex - totalWishes;
             }
             safeApply(function() {
-              scope.focusOnWish(wishes[newIndex], true);
+              scope.uxLamp.focusOnWish(wishes[newIndex], true);
             });
           }
         }
@@ -261,7 +261,7 @@
         }
 
         // Making a wish
-        scope.makeWish = function(wish) {
+        scope.uxLamp.makeWish = function(wish) {
           var makeWish = true;
           var magicWord = scope.uxLamp.input;
           if (magicWord.indexOf('\'') === 0) {
@@ -276,11 +276,12 @@
           }
 
           if (_isSubContextWish(wish)) {
+            // Make the wish before the context changes.
+            wish = genie.makeWish(wish, magicWord);
+            saveToLocalStorage();
             _setSubContextState(wish);
             makeInvisible = false;
-            if (!wish.action) {
-              makeWish = false;
-            }
+            makeWish = false;
           }
 
           if (makeWish) {
@@ -299,7 +300,7 @@
 
         el.bind('keyup', function(event) {
           if (event.keyCode === 13 && scope.uxLamp.focusedWish) {
-            scope.makeWish(scope.uxLamp.focusedWish);
+            scope.uxLamp.makeWish(scope.uxLamp.focusedWish);
           }
         });
 
