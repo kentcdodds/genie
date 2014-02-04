@@ -37,7 +37,7 @@
                 'ng-class="{focused: uxLamp.focusedWish == wish}" ' +
                 'ng-click="makeWish(wish)" ' +
                 'ng-mouseenter="focusOnWish(wish, false)">',
-                  '<span class="wish-icon">',
+                  '<span class="wish-icon" ng-class="{\'has-img\': wish.data.uxGenie.imgIcon, \'has-i\': wish.data.uxGenie.iIcon}">',
                     '<img class="wish-img-icon" ng-if="wish.data.uxGenie.imgIcon" ng-src="{{wish.data.uxGenie.imgIcon}}">',
                     '<i class="wish-i-icon {{wish.data.uxGenie.iIcon}}" ng-if="wish.data.uxGenie.iIcon"></i>',
                   '</span>',
