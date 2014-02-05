@@ -1,4 +1,4 @@
-# Genie.js
+# Genie
 
 ![Genie logo](other/logo.png)
 
@@ -65,12 +65,18 @@ The flow of using GenieJS is simple:
 ```javascript
 /* Register wishes */
 // One magic word
-var trashWish = genie('Take out the trash', function() {
-  console.log('Yes! I love taking out the trash!');
+var trashWish = genie({
+  magicWords: 'Take out the trasn',
+  action: function() {
+    console.log('Yes! I love taking out the trash!');
+  }
 });
 // Multiple magic words
-var vacuumWish = genie(['Get dust out of the carpet', 'vacuum'], function() {
-  console.log('Can NOT wait to get that dust out of that carpet!');
+var vacuumWish = genie({
+  magicWords: ['Get dust out of the carpet', 'vacuum'],
+  action: function() {
+    console.log('Can NOT wait to get that dust out of that carpet!');
+  }
 });
 
 /* Get wishes based on magic word matches */
