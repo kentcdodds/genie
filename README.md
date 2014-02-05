@@ -1,4 +1,6 @@
-#Genie.js
+# Genie.js
+
+![Genie logo](other/logo.png)
 
 A JavaScript library committed to improving user experience by empowering users to interact with web apps using the keyboard (better than cryptic shortcuts).
 

@@ -1,22 +1,33 @@
-body {
-  margin: 50px 100px 50px 100px;
+@media all and (max-width: 740px) {
+  body {
+    margin: 30px 20px 30px 20px;
+  }
+  #genie-logo {
+    width: 310px;
+  }
+}
+
+@media all and (min-width: 739px) {
+  body {
+    margin: 25px 100px 75px 100px;
+  }
+  #genie-logo {
+    width: 500px;
+  }
+}
+
+pre {
+  overflow-x: scroll;
+  white-space: pre;
+  word-wrap: normal;
 }
 
 h3 {
   color: #999
 }
 
-.rub-the-lamp {
-  background: rgba(0, 0, 0, 0);
-  color: #428BCA;
-  text-decoration: none;
+#genie-logo {
   cursor: pointer;
-}
-
-.rub-the-lamp:hover, .rub-the-lamp:focus {
-  color: #2A6496;
-  outline: 0;
-  text-decoration: underline;
 }
 
 #fork-me {
@@ -26,25 +37,13 @@ h3 {
   border: 0;
 }
 
-.btn {
-  margin-bottom: 12px;
-}
-
 .follow-social {
   margin-top: 12px;
 }
 
-#bottom-stuff {
-  clear: both;
-}
-
-#wish-output {
-  color: #808080;
-}
-
-#genie-export-import {
-  width: 250px;
-  height: 300px;
+#styles-control .radio {
+  margin: 0 10px 0 0;
+  display: inline-block;
 }
 
 .genie-lamp-container {

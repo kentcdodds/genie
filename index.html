@@ -18,11 +18,10 @@
     </div>
     <a href="https://github.com/kentcdodds/genie"><img id="fork-me" src="demo-files/images/forkme.png" alt="Fork me on GitHub"></a>
     <header>
-      <h1>GenieJS</h1>
-      <h2 id="wish-output">Press Ctrl+Space (or click
-        <span class="rub-the-lamp" ng-click="genieVisible=!genieVisible; $event.stopPropagation();" ga>here</span>) to rub the lamp</h2>
-      <h3>Then type an apostrophe ( ' ) to see all the wishes</h3>
-      <h4>Wishes made: {{wishesMade}}</h4>
+      <img id="genie-logo" src="demo-files/images/genie-lamp.png" alt="GenieJS Logo" ng-click="rubLamp($event, genieStyle.template)" ga>
+      <h3>Type an apostrophe ( ' ) to see all the wishes</h3>
+      <small class="muted">*You can also click/tap the lamp image above.</small>
+      <h4 ng-if="wishesMade">Wishes made: {{wishesMade}}</h4>
       <p>
         GenieJS was built to simulate the behavior in apps like
         <a href="http://www.alfredapp.com/" genie-wish="What is Alfred?" wish-context="{{demoContext}}" wish-i-icon="{{iconPrefix.b}}question-sign" target="_blank" ga>Alfred</a>.<br />
@@ -38,9 +37,9 @@
         I'm in the process of moving tests to Mocha. Go <a href="./test/testrunner.html" genie-wish="Run Tests" wish-context="{{demoContext}}" wish-img-icon="./demo-files/images/mocha.png" target="_blank" ga>here</a> to run the Mocha tests,
         click <a href="./test/old-tests" target="_blank" ga>here</a> to run the old tests...
       </p>
-      <p>
+      <div>
         <h4>See the api docs <a href="./autodoc" genie-wish="API Docs" wish-context="{{demoContext}}" wish-i-icon="{{iconPrefix.f}}file-text-o" ga>here</a></h4>
-      </p>
+      </div>
       <p>
         <strong>Note:</strong> If you're on a mobile device, you will not be able to use this demo. Instead you can watch this
         <a href="http://www.youtube.com/watch?v=nJrtn8B4FzM" genie-wish="Watch Demo Video" wish-context="{{demoContext}}" wish-i-icon="{{iconPrefix.f}}youtube-play" target="_blank" ga>demo video</a>. Please also visit the
@@ -54,9 +53,7 @@
     <hr />
 
     <div>
-      <p>
-        Here are some instructions for this demo.
-      </p>
+      <h1>Demo</h1>
       <ol id="instructions-list">
         <li>Press Ctrl+Space to open the Genie Search Box</li>
         <li>Optionally type an apostrophe (') to show all wishes
@@ -69,10 +66,76 @@
         </li>
         <li>Type anything to filter the wishes</li>
         <li>Mouse over or arrow down to the wish you wish and click/press return</li>
-        <li>Notice how genie organizes the wishes as you make them</li>
-        <li>Create your own wishes below</li>
+        <li>Notice how genie learns the wishes you make and organizes them more logically the more you use it</li>
         <li>Change the lamp's styles below</li>
       </ol>
+      <div id="styles-control">
+        <p>
+          Change Lamp Styles
+        </p>
+      <span class="radio">
+        <label>
+          <input type="radio" value="light" ng-model="genieStyle.color"> Light
+        </label>
+        <br />
+        <label>
+          <input type="radio" value="dark" ng-model="genieStyle.color"> Dark
+        </label>
+      </span>
+      <span class="radio">
+        <label>
+          <input type="radio" value="large" ng-model="genieStyle.size"> Large
+        </label>
+        <br />
+        <label>
+          <input type="radio" value="small" ng-model="genieStyle.size"> Small
+        </label>
+      </span>
+      <span class="radio">
+        <label>
+          <input type="radio" value="fast" ng-model="genieStyle.animationSpeed"> Fast
+        </label>
+        <br />
+        <label>
+          <input type="radio" value="slow" ng-model="genieStyle.animationSpeed"> Slow
+        </label>
+      </span>
+      <span class="radio">
+        <label>
+          <input type="radio" value="default" ng-model="genieStyle.template"> Default Template
+        </label>
+        <br />
+        <label>
+          <input type="radio" value="custom" ng-model="genieStyle.template"> Custom Template
+        </label>
+      </span>
+      </div>
+    </div>
+
+
+    <hr />
+
+    <div id="usage">
+      <h1>
+        How to use Genie
+      </h1>
+      Both examples below will create a wish which will alert "Consider them done!" to the user.<br />
+      Go ahead and give it a try! Copy the JavaScript and paste it in your console then make the wish!
+      <div>
+        <h2>JavaScript</h2>
+        <pre>genie({
+  magicWords: 'Do my dishes',
+  action: function doDishes() {
+    alert('Consider them done!');
+  }
+});</pre>
+      </div>
+      <div>
+        <h2>AngularJS Directive</h2>
+        <pre>&lt;button ng-click="doDishes()" genie-wish&gt;Do my dishes&lt;/button&gt;</pre>
+      </div>
+      That's it! It's pretty simple! Obviously, you need to include the dependency on your page and there is a lot more to it if you want more control.<br />
+      Head over to the <a href="https://github.com/kentcdodds/genie" ga>GitHub project</a> to see more documentation on the customization you can do.
     </div>
 
     <hr />
@@ -82,72 +145,7 @@
       Try the <a href="https://chrome.google.com/webstore/detail/genies-lamp/pimmaneflgfbknjkjdlnffagpgfeklko" genie-wish wish-i-icon="{{iconPrefix.f}}cog" wish-context="{{demoContext}}">Chrome Extension</a>
     </div>
 
-    <hr />
-
-    <div id="wish-creator">
-      <p>
-        Create and add wishes here
-      </p>
-      <form name="wishCreator">
-        <input class="form-control" type="text" ng-model="wishMagicWords" placeholder="Comma separated Magic Words" /><br />
-        <button type="submit" class="btn btn-success" ng-click="addWishFromInput(wish.magicWords)">Create Wish</button>
-      </form>
-    </div>
-    
-    <hr />
-
-    <div id="styles-control">
-      <p>
-        Change Lamp Styles
-      </p>
-      <div class="radio col-md-1">
-        <label>
-          <input type="radio" value="light" ng-model="genieStyle.color"> Light
-        </label>
-        <br />
-        <label>
-          <input type="radio" value="dark" ng-model="genieStyle.color"> Dark
-        </label>
-      </div>
-      <span></span>
-      <div class="radio col-md-1">
-        <label>
-          <input type="radio" value="large" ng-model="genieStyle.size"> Large
-        </label>
-        <br />
-        <label>
-          <input type="radio" value="small" ng-model="genieStyle.size"> Small
-        </label>
-      </div>
-      <span></span>
-      <div class="radio col-md-1">
-        <label>
-          <input type="radio" value="fast" ng-model="genieStyle.animationSpeed"> Fast
-        </label>
-        <br />
-        <label>
-          <input type="radio" value="slow" ng-model="genieStyle.animationSpeed"> Slow
-        </label>
-      </div>
-      <span></span>
-      <div class="radio col-md-2">
-        <label>
-          <input type="radio" value="default" ng-model="genieStyle.template"> Default Template
-        </label>
-        <br />
-        <label>
-          <input type="radio" value="custom" ng-model="genieStyle.template"> Custom Template
-        </label>
-      </div>
-    </div>
-    
     <div id="bottom-stuff">
-      <hr />
-
-      <div>
-        <button class="btn btn-info" ng-click="exportOrImportGenie()">Export/Import Genie</button><br />
-        <textarea id="genie-export-import" class="form-control" ng-model="genieExportImport" placeholder="Output/Input of Export/Import Genie"></textarea>
-      </div>
       <div class="custom-template {{genieStyle.color + ' ' + genieStyle.size + ' ' + genieStyle.animationSpeed}}" ng-show="genieStyle.template === 'custom'">
         <div ux-lamp="lamp" lamp-visible="lamp.genieVisible" rub-class="visible" wish-callback="lamp.wishMade()" local-storage="genie">
           <input type="text" ng-model="lamp.input" class="lamp-input input form-control" />
@@ -185,9 +183,11 @@
       <hr />
 
       <div>
-        Don't be a stranger :-)
+        Don't be a stranger <i class="{{iconPrefix.f}}smile-o"></i>
         <div class="follow-social">
-          <iframe src="http://ghbtns.com/github-btn.html?user=kentcdodds&type=follow&count=true" height="20" width="168" frameborder="0" scrolling="0" style="width:168px; height: 20px;" allowTransparency="true"></iframe> <a href="https://twitter.com/kentcdodds" class="twitter-follow-button" data-show-count="true" data-lang="en">Follow @kentcdodds</a> <div class="g-follow" data-annotation="bubble" data-height="20" data-href="//plus.google.com/114245123507194646768" data-rel="author"></div>
+          <iframe src="http://ghbtns.com/github-btn.html?user=kentcdodds&type=follow&count=true" height="20" width="168" frameborder="0" scrolling="0" style="width:168px; height: 20px;" allowTransparency="true"></iframe>
+          <a href="https://twitter.com/kentcdodds" class="twitter-follow-button" data-show-count="true" data-lang="en">Follow @kentcdodds</a>
+          <div class="g-follow" data-annotation="bubble" data-height="20" data-href="//plus.google.com/114245123507194646768" data-rel="author"></div>
         </div>
       </div>
     </div>

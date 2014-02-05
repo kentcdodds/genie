@@ -21,6 +21,6 @@
     "grunt-bumpup": "~0.4.2",
     "grunt-contrib-watch": "~0.5.3",
     "grunt-contrib-jshint": "~0.8.0",
-    "autodoc": "dtao/autodoc"
+    "autodoc": "~0.5.5"
   }
 }

@@ -6,13 +6,13 @@
   // Makes this modular if we don't just use the global instance and use it as a module instead  
   app.constant('genie', genie);
 
-  app.controller('GenieCtrl', function($scope, genie, ga) {
+  app.controller('GenieCtrl', function($scope, genie, ga, $http) {
     $scope.demoContext = 'genie-demo';
     $scope.iconPrefix = 'glyphicon glyphicon-';
     $scope.iconPrefix = {
       b: 'glyphicon glyphicon-',
       f: 'fa fa-'
-    }
+    };
     genie.context($scope.demoContext);
 
     $scope.genieStyle = {
@@ -32,16 +32,17 @@
     };
     
     $scope.customLamp = angular.copy($scope.lamp);
+
+    $scope.rubLamp = function($event, lampTemplate) {
+      if (lampTemplate === 'default') {
+        $scope.customLamp.genieVisible = !$scope.customLamp.genieVisible;
+      } else {
+        $scope.lamp.genieVisible = !$scope.lamp.genieVisible;
+      }
+      $event.stopPropagation();
+    };
     
     $scope.wishMagicWords = '';
-    
-    $scope.exportOrImportGenie = function() {
-      if ($scope.genieExportImport) {
-        genie.options(JSON.parse($scope.genieExportImport));
-      } else {
-        $scope.genieExportImport = JSON.stringify(genie.options(), null, 2);
-      }
-    };
 
     $scope.addWishFromInput = function() {
       if ($scope.wishMagicWords) {
