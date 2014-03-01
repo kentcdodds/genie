@@ -9,7 +9,9 @@ within a bottle or oil lamp, and capable of granting wishes when summoned.
 
 [Demo](http://kentcdodds.github.io/genie)
 
-[Tests](http://kentcdodds.github.io/genie/test)
+**Tests:** [New (Mocha) Tests](http://kent.doddsfamily.us/genie/test/testrunner.html) - [Old Tests](http://kent.doddsfamily.us/genie/test/old-tests)
+
+[Genie Workshop](http://kent.doddsfamily.us/genie-workshop/) - Terrific way to learn how to use genie right in your browser.
 
 [API Docs](http://kentcdodds.github.io/genie/autodoc)
 
