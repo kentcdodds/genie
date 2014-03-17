@@ -42,7 +42,7 @@
     _enabled = true,
     _returnOnDisabled = true,
 
-    _contextRegex = /\{\{(\d+)\}\}/,
+    _contextRegex = /\{\{(\d+)\}\}/g,
     /**
      * The _matchRankMap
      * @typedef {object} _matchRankMap

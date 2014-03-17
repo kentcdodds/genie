@@ -1,5 +1,7 @@
 # Latest
 
+ - Bug Fix: Path Contexts would only match the first group in the regex. One character change.
+
 # 0.3.0
 
  - Breaking changes: Changed how wishes are registered. Now you

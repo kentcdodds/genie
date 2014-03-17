@@ -335,7 +335,7 @@
 
           if (_isSubContextWish(wish)) {
             // Make the wish before the context changes.
-            wish = genie.makeWish(wish, magicWord);
+            genie.makeWish(wish, magicWord);
             saveGenie();
             _setSubContextState(wish);
             makeInvisible = false;
