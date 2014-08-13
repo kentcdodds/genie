@@ -8,7 +8,7 @@ module.exports = function (grunt) {
 
     mocha: {
       all: {
-        src: ['test/testrunner.html']
+        src: ['tests/testrunner.html']
       },
       options: {
         run: true
@@ -28,7 +28,7 @@ module.exports = function (grunt) {
       },
       all: {
         files: {
-          'genie.min.js': ['genie.js']
+          'dist/genie.min.js': ['src/genie.js']
         }
       }
     },
@@ -36,7 +36,7 @@ module.exports = function (grunt) {
     bumpup: 'bower.json',
     
     watch: {
-      files: ['genie.js', 'test/*.js', 'Gruntfile.js'],
+      files: ['src/**/*', 'test/**/*', 'Gruntfile.js'],
       tasks: ['mocha', 'jshint']
     },
     
@@ -66,7 +66,7 @@ module.exports = function (grunt) {
         }
       },
       files: {
-        src: ['genie.js']
+        src: ['src/genie.js']
       }
     }
   });
