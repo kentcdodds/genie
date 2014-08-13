@@ -23,8 +23,6 @@ within a bottle or oil lamp, and capable of granting wishes when summoned.
 
 [![Built with Grunt](https://cdn.gruntjs.com/builtwith.png)](http://gruntjs.com/)
 
-[![RequireJS Ready](other/requirejs-badge.png)](http://requirejs.org/)
-
 ##Watered Down Explanation
 
 GenieJS is a simple library to emulate the same kind of behavior seen in apps like
