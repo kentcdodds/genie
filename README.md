@@ -7,19 +7,21 @@ A JavaScript library committed to improving user experience by empowering users 
 *Genie* |ˈjēnē| (noun): a spirit of Arabian folklore, as traditionally depicted imprisoned
 within a bottle or oil lamp, and capable of granting wishes when summoned.
 
-[Demo](http://kentcdodds.github.io/genie)
+[Demo](http://kent.doddsfamily.us/genie)
 
-[Tests](http://kent.doddsfamily.us/genie/test/testrunner.html)
+[Tests](http://kent.doddsfamily.us/genie/tests/testrunner.html)
 
 [Genie Workshop](http://kent.doddsfamily.us/genie-workshop/) - Terrific way to learn how to use genie right in your browser.
 
-[API Docs](http://kentcdodds.github.io/genie/autodoc)
+[API Docs](http://kent.doddsfamily.us/genie/autodoc)
 
 [Chrome Extension](https://chrome.google.com/webstore/detail/genies-lamp/pimmaneflgfbknjkjdlnffagpgfeklko)
 
 [![Build Status](https://travis-ci.org/kentcdodds/genie.png)](https://travis-ci.org/kentcdodds/genie)
 
-[![Bower version](https://badge.fury.io/bo/genie.png)](http://badge.fury.io/bo/genie) `bower install genie`
+[![Bower version](https://badge.fury.io/bo/geniejs.png)](http://bower.io/search/?q=genie) `bower install geniejs`
+
+[![NPM version](http://img.shields.io/npm/v/geniejs.svg)](https://www.npmjs.org/package/geniejs) `npm install geniejs`
 
 [![Built with Grunt](https://cdn.gruntjs.com/builtwith.png)](http://gruntjs.com/)
 
