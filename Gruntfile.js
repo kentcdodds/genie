@@ -36,7 +36,7 @@ module.exports = function (grunt) {
     bumpup: 'bower.json',
     
     watch: {
-      files: ['src/**/*', 'test/**/*', 'Gruntfile.js'],
+      files: ['src/**/*', 'tests/**/*', 'Gruntfile.js'],
       tasks: ['mocha', 'jshint']
     },
     
@@ -61,6 +61,7 @@ module.exports = function (grunt) {
         quotmark: 'single',
         trailing: true,
         globals: {
+          module: false,
           define: false,
           window: false
         }

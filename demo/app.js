@@ -1,12 +1,12 @@
-'use strict';
-
 (function() {
+  'use strict';
+
   var app = angular.module('genieApp', ['uxGenie', 'ga']);
 
   // Makes this modular if we don't just use the global instance and use it as a module instead  
   app.constant('genie', genie);
 
-  app.controller('GenieCtrl', function($scope, genie, ga, $http) {
+  app.controller('GenieCtrl', function($scope, genie, ga) {
     $scope.demoContext = 'genie-demo';
     $scope.iconPrefix = 'fa fa-';
     genie.context($scope.demoContext);

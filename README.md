@@ -9,7 +9,7 @@ within a bottle or oil lamp, and capable of granting wishes when summoned.
 
 [Demo](http://kentcdodds.github.io/genie)
 
-**Tests:** [New (Mocha) Tests](http://kent.doddsfamily.us/genie/test/testrunner.html) - [Old Tests](http://kent.doddsfamily.us/genie/test/old-tests)
+[Tests](http://kent.doddsfamily.us/genie/test/testrunner.html)
 
 [Genie Workshop](http://kent.doddsfamily.us/genie-workshop/) - Terrific way to learn how to use genie right in your browser.
 
@@ -529,7 +529,7 @@ The `1` in `a-page-{{1}}` represents the group that is matched on the path in th
 digit in `{{\d}}` with the group that's matched (Note: in true JavaScript form, group 0 represents the entire
 match string, hence, 1 is the first group in parentheses).
 
-##Enabling & Disabiling
+##Enabling & Disabling
 
 To give you a little more control, you can enable and disable genie globally. All genie
 functions go through a check to make sure genie is enabled. If it is enabled, everything
@@ -617,5 +617,3 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/kentcdodds/genie/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
-
-[![Analytics](https://ga-beacon.appspot.com/UA-42764912-2/genie/readme)](https://github.com/igrigorik/ga-beacon)
