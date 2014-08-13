@@ -8,11 +8,7 @@
 
   app.controller('GenieCtrl', function($scope, genie, ga, $http) {
     $scope.demoContext = 'genie-demo';
-    $scope.iconPrefix = 'glyphicon glyphicon-';
-    $scope.iconPrefix = {
-      b: 'glyphicon glyphicon-',
-      f: 'fa fa-'
-    };
+    $scope.iconPrefix = 'fa fa-';
     genie.context($scope.demoContext);
 
     $scope.genieStyle = {
@@ -140,14 +136,14 @@
       });
     }
 
-    addNavigateWishWithoutPrefix('Tweet #GenieJS', 'https://twitter.com/intent/tweet?hashtags=GenieJS&original_referer=' + genieHome + '&text=' + genieTagline + '&tw_p=tweetbutton&url=' + genieHome + '&via=kentcdodds', $scope.iconPrefix.f + 'share');
-    addNavigateWishWithoutPrefix('Share #GenieJS on Google+', 'http://plus.google.com/share?&url=' + genieHome, $scope.iconPrefix.f + 'share');
-    addNavigateWishWithoutPrefix('Email about GenieJS', 'mailto:?&subject=' + encodeURIComponent('Cool JavaScript Library: Genie') + '&body=' + genieTagline + encodeURIComponent('\nCheck it out here: ') + genieHome, $scope.iconPrefix.f + 'envelope');
+    addNavigateWishWithoutPrefix('Tweet #GenieJS', 'https://twitter.com/intent/tweet?hashtags=GenieJS&original_referer=' + genieHome + '&text=' + genieTagline + '&tw_p=tweetbutton&url=' + genieHome + '&via=kentcdodds', $scope.iconPrefix + 'share');
+    addNavigateWishWithoutPrefix('Share #GenieJS on Google+', 'http://plus.google.com/share?&url=' + genieHome, $scope.iconPrefix + 'share');
+    addNavigateWishWithoutPrefix('Email about GenieJS', 'mailto:?&subject=' + encodeURIComponent('Cool JavaScript Library: Genie') + '&body=' + genieTagline + encodeURIComponent('\nCheck it out here: ') + genieHome, $scope.iconPrefix + 'envelope');
     
-    addNavigateWishWithoutPrefix('Code with @kentcdodds', 'http://www.github.com/kentcdodds', $scope.iconPrefix.f + 'github');
-    addNavigateWishWithoutPrefix('Follow @kentcdodds', 'https://twitter.com/intent/follow?original_referer=' + genieHome + '&region=follow_link&screen_name=kentcdodds&tw_p=followbutton&variant=2.0', $scope.iconPrefix.f + 'twitter');
-    addNavigateWishWithoutPrefix('Circle +KentCDodds', 'http://plus.google.com/+KentCDodds', $scope.iconPrefix.f + 'google-plus');
-    addNavigateWishWithoutPrefix('Visit Kent\'s website', 'http://kent.doddsfamily.us', $scope.iconPrefix.f + 'globe');
+    addNavigateWishWithoutPrefix('Code with @kentcdodds', 'http://www.github.com/kentcdodds', $scope.iconPrefix + 'github');
+    addNavigateWishWithoutPrefix('Follow @kentcdodds', 'https://twitter.com/intent/follow?original_referer=' + genieHome + '&region=follow_link&screen_name=kentcdodds&tw_p=followbutton&variant=2.0', $scope.iconPrefix + 'twitter');
+    addNavigateWishWithoutPrefix('Circle +KentCDodds', 'http://plus.google.com/+KentCDodds', $scope.iconPrefix + 'google-plus');
+    addNavigateWishWithoutPrefix('Visit Kent\'s website', 'http://kent.doddsfamily.us', $scope.iconPrefix + 'globe');
 
   });
 

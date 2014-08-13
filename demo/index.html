@@ -24,29 +24,29 @@
       <h4 ng-if="wishesMade">Wishes made: {{wishesMade}}</h4>
       <p>
         GenieJS was built to simulate the behavior in apps like
-        <a href="http://www.alfredapp.com/" genie-wish="What is Alfred?" wish-context="{{demoContext}}" wish-i-icon="{{iconPrefix.b}}question-sign" target="_blank" ga>Alfred</a>.<br />
+        <a href="http://www.alfredapp.com/" genie-wish="What is Alfred?" wish-context="{{demoContext}}" wish-i-icon="{{iconPrefix}}question-circle" target="_blank" ga>Alfred</a>.<br />
 
         Essentially, you register actions with keywords and then you can find those actions via a keyword search.<br />
         
-        For info on the <a href="https://github.com/kentcdodds/genie#vernacular" genie-wish="What's a wish?" wish-context="{{demoContext}}" wish-i-icon="{{iconPrefix.b}}question-sign" target="_blank" ga>vernacular</a> of wishes and magic words,
-        see the <a href="https://github.com/kentcdodds/genie" genie-wish="See Genie on GitHub" wish-context="{{demoContext}}" wish-i-icon="{{iconPrefix.f}}github" target="_blank" ga>project on GitHub</a>.<br />
+        For info on the <a href="https://github.com/kentcdodds/genie#vernacular" genie-wish="What's a wish?" wish-context="{{demoContext}}" wish-i-icon="{{iconPrefix}}question-circle" target="_blank" ga>vernacular</a> of wishes and magic words,
+        see the <a href="https://github.com/kentcdodds/genie" genie-wish="See Genie on GitHub" wish-context="{{demoContext}}" wish-i-icon="{{iconPrefix}}github" target="_blank" ga>project on GitHub</a>.<br />
         
-        There's also an <a href="http://www.angularjs.org/" target="_blank" genie-wish="What's AngularJS?" wish-context="{{demoContext}}" wish-i-icon="{{iconPrefix.b}}question-sign" ga>AngularJS</a>
-        module with a few useful directives called <a href="http://www.github.com/kentcdodds/ux-genie" target="_blank" genie-wish="See uxGenie on GitHub" wish-context="{{demoContext}}" wish-i-icon="{{iconPrefix.f}}github" ga>uxGenie on GitHub</a>.<br />
+        There's also an <a href="http://www.angularjs.org/" target="_blank" genie-wish="What's AngularJS?" wish-context="{{demoContext}}" wish-i-icon="{{iconPrefix}}question-circle" ga>AngularJS</a>
+        module with a few useful directives called <a href="http://www.github.com/kentcdodds/ux-genie" target="_blank" genie-wish="See uxGenie on GitHub" wish-context="{{demoContext}}" wish-i-icon="{{iconPrefix}}github" ga>uxGenie on GitHub</a>.<br />
 
         I'm in the process of moving tests to Mocha. Go <a href="tests/testrunner.html" genie-wish="Run Tests" wish-context="{{demoContext}}" wish-img-icon="./images/mocha.png" target="_blank" ga>here</a> to run the Mocha tests,
         click <a href="tests/old-tests" target="_blank" ga>here</a> to run the old tests...
       </p>
       <div>
-        <h4>See the api docs <a href="autodoc" genie-wish="API Docs" wish-context="{{demoContext}}" wish-i-icon="{{iconPrefix.f}}file-text-o" ga>here</a></h4>
+        <h4>See the api docs <a href="autodoc" genie-wish="API Docs" wish-context="{{demoContext}}" wish-i-icon="{{iconPrefix}}file-text-o" ga>here</a></h4>
       </div>
       <p>
         <strong>Note:</strong> If you're on a mobile device, you will not be able to use this demo. Instead you can watch this
-        <a href="http://www.youtube.com/watch?v=nJrtn8B4FzM" genie-wish="Watch Demo Video" wish-context="{{demoContext}}" wish-i-icon="{{iconPrefix.f}}youtube-play" target="_blank" ga>demo video</a>. Please also visit the
+        <a href="http://www.youtube.com/watch?v=nJrtn8B4FzM" genie-wish="Watch Demo Video" wish-context="{{demoContext}}" wish-i-icon="{{iconPrefix}}youtube-play" target="_blank" ga>demo video</a>. Please also visit the
         <a href="https://github.com/kentcdodds/genie" target="_blank" ga>GitHub project</a>.
       </p>
       <p>
-        Do you see a problem? <a href="http://github.com/kentcdodds/genie/issues" genie-wish wish-context="{{demoContext}}" wish-i-icon="{{iconPrefix.f}}bug">Report an issue!</a>
+        Do you see a problem? <a href="http://github.com/kentcdodds/genie/issues" genie-wish wish-context="{{demoContext}}" wish-i-icon="{{iconPrefix}}bug">Report an issue!</a>
       </p>
     </header>
 
@@ -60,7 +60,7 @@
           (<a href="https://github.com/kentcdodds/ux-genie#view-all-wishes"
               target="_blank"
               genie-wish="Read about the ' feature"
-              wish-i-icon="{{iconPrefix.f}}github"
+              wish-i-icon="{{iconPrefix}}github"
               wish-context="{{demoContext}}"
               ga>about this feature</a>)
         </li>
@@ -142,14 +142,14 @@
     <div>
       <h2>Genie Workshop</h2>
       The best way to learn how to use Genie in an interactive way. Checkout the
-      <a href="http://kent.doddsfamily.us/genie-workshop/" genie-wish wish-i-icon="{{iconPrefix.f}}cogs" wish-context="{{demoContext}}">Genie Workshop</a>.
+      <a href="http://kent.doddsfamily.us/genie-workshop/" genie-wish wish-i-icon="{{iconPrefix}}cogs" wish-context="{{demoContext}}">Genie Workshop</a>.
     </div>
 
     <hr />
 
     <div>
       <h2>Want Genie Everywhere?</h2>
-      Try the <a href="https://chrome.google.com/webstore/detail/genies-lamp/pimmaneflgfbknjkjdlnffagpgfeklko" genie-wish wish-i-icon="{{iconPrefix.f}}cog" wish-context="{{demoContext}}">Chrome Extension</a>
+      Try the <a href="https://chrome.google.com/webstore/detail/genies-lamp/pimmaneflgfbknjkjdlnffagpgfeklko" genie-wish wish-i-icon="{{iconPrefix}}cog" wish-context="{{demoContext}}">Chrome Extension</a>
     </div>
 
     <div id="bottom-stuff">
@@ -157,7 +157,7 @@
         <div ux-lamp="lamp" lamp-visible="lamp.genieVisible" rub-class="visible" wish-callback="lamp.wishMade()" local-storage="genie">
           <input type="text" ng-model="lamp.input" class="lamp-input input form-control" />
           <div>
-            This is a custom template! Type "Default" to go back <i class="{{iconPrefix.f}}smile-o"></i><br />
+            This is a custom template! Type "Default" to go back <i class="{{iconPrefix}}smile-o"></i><br />
             You can customize the dom used for the lamp. Type "uxGenie" to see the docs.
             <div  ng-if="lamp.focusedWish">
               Wish <strong>"{{lamp.focusedWish.data.uxGenie.displayText || lamp.focusedWish.magicWords[0]}}"</strong> Data:<br />
@@ -190,7 +190,7 @@
       <hr />
 
       <div>
-        Don't be a stranger <i class="{{iconPrefix.f}}smile-o"></i>
+        Don't be a stranger <i class="{{iconPrefix}}smile-o"></i>
         <div class="follow-social">
           <iframe src="http://ghbtns.com/github-btn.html?user=kentcdodds&type=follow&count=true" height="20" width="168" frameborder="0" scrolling="0" style="width:168px; height: 20px;" allowTransparency="true"></iframe>
           <a href="https://twitter.com/kentcdodds" class="twitter-follow-button" data-show-count="true" data-lang="en">Follow @kentcdodds</a>
