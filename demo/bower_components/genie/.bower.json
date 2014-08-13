@@ -1,0 +1,25 @@
+{
+  "name": "genie",
+  "main": "genie.js",
+  "version": "0.3.0",
+  "homepage": "https://github.com/kentcdodds/genie",
+  "authors": [
+    "Kent C. Dodds <kent@doddsfamily.us>"
+  ],
+  "description": "A JavaScript library committed to improving user experience by empowering users to interact with web apps using the keyboard (better than cryptic shortcuts).",
+  "license": "MIT",
+  "private": false,
+  "ignore": [
+    "*",
+    "!genie.js"
+  ],
+  "_release": "0.3.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "0.3.0",
+    "commit": "2f90f9dbda97bfe14990a2d4a76799c8068fa052"
+  },
+  "_source": "git://github.com/kentcdodds/genie.git",
+  "_target": "*",
+  "_originalSource": "genie"
+}

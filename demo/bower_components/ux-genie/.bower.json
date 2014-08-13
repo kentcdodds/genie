@@ -1,0 +1,30 @@
+{
+  "name": "ux-genie",
+  "version": "0.3.1",
+  "homepage": "https://github.com/kentcdodds/ux-genie",
+  "authors": [
+    "Kent C. Dodds <kent@doddsfamily.us>"
+  ],
+  "description": "AngularJS module for GenieJS",
+  "main": "uxGenie.js",
+  "dependencies": {
+    "angular": "~1.2.10",
+    "genie": "*"
+  },
+  "license": "MIT",
+  "private": false,
+  "ignore": [
+    "*",
+    "!uxGenie.js"
+  ],
+  "_release": "0.3.1",
+  "_resolution": {
+    "type": "version",
+    "tag": "0.3.1",
+    "commit": "1c642d6b3ee1be08672b2160746e7cf06d95dd60"
+  },
+  "_source": "git://github.com/kentcdodds/ux-genie.git",
+  "_target": "~0.3.1",
+  "_originalSource": "ux-genie",
+  "_direct": true
+}
