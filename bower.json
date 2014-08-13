@@ -9,8 +9,7 @@
   ],
   "license": "MIT",
   "ignore": [
-    "*",
-    "!genie.js"
+    "other"
   ],
   "moduleType": [
     "amd",
