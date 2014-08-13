@@ -2,6 +2,7 @@
 var path = require('path');
 
 module.exports = function (grunt) {
+  require('time-grunt')(grunt);
   var bowerInfo = grunt.file.readJSON('bower.json');
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
@@ -12,6 +13,13 @@ module.exports = function (grunt) {
       },
       options: {
         run: true
+      }
+    },
+
+    copy: {
+      dist: {
+        src: 'src/genie.js',
+        dest: 'dist/genie.js'
       }
     },
     
@@ -69,6 +77,13 @@ module.exports = function (grunt) {
       files: {
         src: ['src/genie.js']
       }
+    },
+
+    'gh-pages': {
+      options: {
+        base: 'demo'
+      },
+      src: ['**']
     }
   });
 
@@ -77,8 +92,10 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-bumpup');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-gh-pages');
+  grunt.loadNpmTasks('grunt-contrib-copy');
 
-  grunt.registerTask('build', ['jshint', 'mocha', 'uglify']);
+  grunt.registerTask('build', ['jshint', 'mocha', 'copy:dist', 'uglify']);
   grunt.registerTask('default', ['build']);
 
 };

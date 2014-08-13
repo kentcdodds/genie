@@ -24,6 +24,8 @@
 
   if (typeof define === 'function' && define.amd) {
     define(factory);
+  } else if (typeof module !== 'undefined' && module.exports) {
+    module.exports = factory();
   } else {
     root.genie = factory();
   }
@@ -1565,7 +1567,7 @@
     /* jshint maxcomplexity:8 */
     if (opts) {
       _updateWishesWithOptions(opts);
-      _previousId = opts.previousId || _previousId;
+      _previousId = isNaN(opts.previousId) ? _previousId : opts.previousId;
       _enteredMagicWords = opts.enteredMagicWords || _enteredMagicWords;
       _context = opts.context || _context;
       _previousContext = opts.previousContext || _previousContext;
