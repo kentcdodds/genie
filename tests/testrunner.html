@@ -1,0 +1,37 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Mocha Tests</title>
+    <link rel="stylesheet" href="vendor/mocha.css" />
+  </head>
+  <body>
+    <div id="mocha">
+      <h1>Genie Tests</h1>
+      <div style="font-size:11px;margin-left:10px;">
+        <div>Click <a href="../">here</a> to go back to the demo.</div>
+        <div>Click <a href="http://www.github.com/kentcdodds/genie">here</a> to go to the repository.</div>
+      </div>
+    </div>
+    <div id="messages"></div>
+    <div id="fixtures"></div>
+    
+    <script src="vendor/mocha.js"></script>
+    <script src="vendor/chai.js"></script>
+    <script src="vendor/blanket.min.js" data-cover-adapter="vendor/mocha-blanket.js"></script>
+    <script>
+      mocha.setup('bdd');
+      mocha.reporter('html');
+    </script>
+
+    <!-- Tests -->
+    <script src="src/genie.js" data-cover></script>
+    <script src="tests.js"></script>
+
+    <script>
+      // Only tests run in real browser, injected script run if options.run == true
+      if (navigator.userAgent.indexOf('PhantomJS') < 0) {
+        mocha.run();
+      }
+    </script>
+  </body>
+</html>

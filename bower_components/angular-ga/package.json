@@ -1,0 +1,23 @@
+{
+  "name": "angular-ga",
+  "description": "Google Universal Analytics adapter for AngularJS",
+  "version": "0.1.3",
+  "author": "Rafal Lindemann <rl@stamina.pl>",
+  "main": "ga.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/panrafal/angular-ga"
+  },
+  "scripts": {
+    "postinstall": "bower install",
+    "test": "./node_modules/karma/bin/karma start test/karma.conf.js"
+  },
+  "dependencies": {
+    "bower": "^1.3.2"
+  },
+  "devDependencies": {
+    "karma": "^0.12.9",
+    "karma-jasmine": "^0.1.5",
+    "karma-phantomjs-launcher": "^0.1.2"
+  }
+}
