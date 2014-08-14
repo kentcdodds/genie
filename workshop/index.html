@@ -1,7 +1,7 @@
 <!doctype html>
 <html ng-app="gw">
 <head>
-  <title>Genie-Workshop</title>
+  <title>Genie Workshop</title>
   <link rel="stylesheet" href="black-box/bootstrap/css/bootstrap.css">
   <link rel="stylesheet" href="black-box/codemirror/codemirror.css">
   <link rel="stylesheet" href="style.css">
@@ -20,11 +20,15 @@
     <span ng-if="previousLesson">
       <a ng-href="{{'#/' + (lessonNum - 1)}}" ga><i class="glyphicon glyphicon-arrow-left"></i> {{previousLesson.concept}}</a>
     </span>
-    <span ng-if="previousLesson && nextLesson">
-      |
+    <span ng-if="!previousLesson">
+      Beginning...
     </span>
+    |
     <span ng-if="nextLesson">
       <a ng-href="{{'#/' + (lessonNum + 1)}}" ga>{{nextLesson.concept}} <i class="glyphicon glyphicon-arrow-right"></i></a>
+    </span>
+    <span ng-if="!nextLesson">
+      All Done!
     </span>
   </div>
 
