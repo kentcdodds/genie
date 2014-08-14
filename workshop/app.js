@@ -28,16 +28,10 @@
       { concept: 'genie-wish', noScript: true }
     ];
 
-    $scope.repo = 'https://github.com/kentcdodds/genie-workshop/tree/';
-    $scope.docs = 'http://kent.doddsfamily.us/genie/autodoc/';
     $scope.links = [
       {
-        text: 'Genie-Workshop Slides',
+        text: 'Genie Workshop Slides',
         href: 'http://slid.es/kentcdodds/genie'
-      },
-      {
-        text: 'Genie-Workshop Repo',
-        href: 'http://github.com/kentcdodds/genie-workshop'
       },
       {
         text: 'Genie Repo',
@@ -49,7 +43,7 @@
       },
       {
         text: 'Genie Documentation',
-        href: $scope.docs
+        href: 'http://kent.doddsfamily.us/genie/autodoc/'
       }
     ];
 
