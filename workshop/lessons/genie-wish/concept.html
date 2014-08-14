@@ -1,0 +1,55 @@
+<div>
+  <h3>Short Version</h3>
+  <pre>&lt;a href="/home" genie-wish=&gt;Go Home&lt;/a&gt;</pre>
+  That is the equivalent to:
+  <pre>genie({
+  magicWords: 'Go Home',
+  action: '/home'
+});</pre>
+
+  <h3>Long Version</h3>
+  <pre>&lt;a href="/home"
+  genie-wish="Go Home"
+  wish-id="go-home-wish-id"
+  wish-context="comma separated,wish contexts"
+  wish-data="scopeVariable"
+  wish-event="click"
+  event-modifiers="altKey"
+  wish-i-icon="glyphicon glyphicon-envelope"
+  wish-img-icon="/home-logo.png"&gt;Home&lt;/a&gt;</pre>
+
+  That is the equivalent to:
+  <pre>var wish = genie({
+  id: 'go-home-wish-id',
+  magicWords: 'Go Home',
+  context: ['comma separated', 'wish contexts'],
+  data: scopeVariable
+  action: function(wish) {
+    var event = new MouseEvent('click', {
+      view: window,
+      bubbles: true,
+      cancelable: true,
+      altKey: true,
+    });
+    // ux-genie adds the element property to data.uxGenie.
+    wish.data.uxGenie.element.dispatchEvent(event);
+  }
+});
+wish.data.uxGenie.iIcon = 'glyphicon glyphicon-envelope';
+wish.data.uxGenie.imgIcon = '/home-logo.png';</pre>
+
+  <h3>Attributes</h3>
+  <ul>
+    <li><code>genie-wish</code> - The directive itself. This can be a comma separated list for multiple magic words.</li>
+    <li><code>wish-id</code> - The id of the wish</li>
+    <li><code>wish-context</code> - A comma separated list of contexts</li>
+    <li><code>wish-data</code> - A scope object to be assigned to the wish's data object. This is doubly bound.</li>
+    <li><code>wish-event</code> - The dom event to trigger on the element. Defaults to 'click'.</li>
+    <li><code>event-modifiers</code> - a comma separated list of modifiers to add to the event triggered on the element.</li>
+    <li><code>wish-i-icon</code> - Used to set data.uxGenie.iIcon (see the ux-lamp directive for what this is used for).</li>
+    <li><code>wish-img-icon</code> - Used to set data.uxGenie.imgIcon (see the ux-lamp directive for what this is used for).</li>
+  </ul>
+  If for some reason you would rather not have the genie-wish attribute be the magic words, you can leave
+  that attribute empty and the genie-wish directive will look for a name, id, or the text of the element (in that order)
+  and assign the magicWords to that value (split by commas). If none of these have values, you will get an error.
+</div>

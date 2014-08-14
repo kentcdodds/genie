@@ -1,0 +1,105 @@
+<!doctype html>
+<html ng-app="gw">
+<head>
+  <title>Genie-Workshop</title>
+  <link rel="stylesheet" href="black-box/bootstrap/css/bootstrap.css">
+  <link rel="stylesheet" href="black-box/codemirror/codemirror.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="black-box/angular.js"></script>
+</head>
+<body ng-controller="MainCtrl">
+
+<h1>Genie Workshop</h1>
+<div>A lesson-by-lesson tutorial to illustrate how to use <a href="http://github.com/kentcdodds/genie">genie</a> and its related components.</div>
+<small class="text-muted"><strong>Note:</strong> This workshop is running genie version {{genie.version}}.</small>
+
+<div ng-show="lesson">
+
+  <div>
+    <h2>{{lesson.concept}}</h2>
+    <span ng-if="previousLesson">
+      <a ng-href="{{'#/' + (lessonNum - 1)}}" ga><i class="glyphicon glyphicon-arrow-left"></i> {{previousLesson.concept}}</a>
+    </span>
+    <span ng-if="previousLesson && nextLesson">
+      |
+    </span>
+    <span ng-if="nextLesson">
+      <a ng-href="{{'#/' + (lessonNum + 1)}}" ga>{{nextLesson.concept}} <i class="glyphicon glyphicon-arrow-right"></i></a>
+    </span>
+  </div>
+
+  <hr />
+
+  <h2>Concept Explanation</h2>
+  <div ng-include="lessonDir + 'concept.html'"></div>
+
+  <hr />
+
+  <h2>Play around!</h2>
+  <div ng-hide="lesson.noScript">
+    <div ng-hide="lesson.readOnly">
+      Feel free to edit this code and click re-run!
+      <small class="text-muted">This code has already been run once :-)</small>
+    </div>
+    <div ng-show="lesson.readOnly">
+      This one is in read only mode. Sorry...
+    </div>
+    <small class="text-muted">
+      At any time, you can rub the lamp (<kbd>ctrl</kbd> + <kbd>space</kbd>) and interact with the wishes that have been registered.
+    </small>
+    <pre class="genie-code margin-top-small margin-right-xxxlarge" code-mirror></pre>
+    <button class="btn btn-primary margin-top-small" ng-click="rerunGenieCode()" ng-disabled="lesson.readOnly"><i class="glyphicon glyphicon-refresh"></i> Re-run code</button>
+
+    <h4 class="margin-top-medium">Output:</h4>
+    <pre id="output" class="pre-scrollable margin-top-small margin-right-xxxlarge"></pre>
+
+    <h4 class="margin-top-medium">Genie's Options:</h4>
+    <pre id="genie-options" class="pre-scrollable margin-top-small margin-right-xxxlarge">{{genie.options() | json}}</pre>
+  </div>
+  <div ng-show="lesson.noScript">
+    There's nothing to play with for this one. Move on!
+  </div>
+
+  <div ng-if="!nextLesson">
+    <hr />
+    <h2>All done!</h2>
+    Congratulations!
+  </div>
+
+</div>
+<div ng-hide="lesson">
+  <a  ng-href="#/0" ga>Let's get started</a>
+</div>
+<hr />
+
+<div>
+  <div><strong>Related Links</strong></div>
+  <div ng-repeat="link in links">
+    <a ng-href="{{link.href}}" target="_blank" ga>{{link.text}}</a>
+  </div>
+</div>
+
+<div ux-lamp rub-class="visible" local-storage="genie" wish-callback="wishMade(wish, magicWord)"></div>
+
+<script src="black-box/codemirror/codemirror.js"></script>
+<script src="black-box/codemirror/javascript.js"></script>
+<script src="black-box/ga.js"></script>
+<script src="black-box/other.js"></script>
+<script src="black-box/genie.js"></script>
+<script src="black-box/uxGenie.js"></script>
+<script src="app.js"></script>
+
+<!-- Google Analytics -->
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-42764912-1', 'doddsfamily.us');
+  ga('require', 'displayfeatures');
+  ga('send', 'pageview');
+
+</script>
+</body>
+</html>

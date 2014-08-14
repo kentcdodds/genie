@@ -11,7 +11,7 @@ within a bottle or oil lamp, and capable of granting wishes when summoned.
 
 [Tests](http://kent.doddsfamily.us/genie/tests/testrunner.html)
 
-[Genie Workshop](http://kent.doddsfamily.us/genie-workshop/) - Terrific way to learn how to use genie right in your browser.
+[Genie Workshop](http://kent.doddsfamily.us/genie/workshop) - Terrific way to learn how to use genie right in your browser.
 
 [API Docs](http://kent.doddsfamily.us/genie/autodoc)
 
@@ -381,17 +381,51 @@ property (URL). If the action is an object this gives you a few options:
 ##About Matching Priority
 
 The wishes returned from `getMatchingWishes` are ordered with the following priority
-  1. In order of most recently executed (`makeWish`) with the given magic word
-  2. If the given magic word is equal to any magic words of a wish
-  3. If the given magic word is the start to any magic word of a wish (i.e. 'he' in 'hello');
-  4. If the given magic word is the start to any word in a magic word (i.e. 'wo' in 'hello world');
-  5. If the given magic word is contained in any magic words of a wish
-  6. If the given magic word is an acronym of any magic words of a wish
-  7. If the given magic word matches the order of characters in any magic words of a wish.
+  1. King of the Hill for the given `magicWords` (genie optimistically anticipates this as well)
+  2. On Deck for the given `magicWords` (also optimistically anticipated)
+  3. If the given magic word is equal to any magic words of a wish
+  4. If the given magic word is the start to any magic word of a wish (i.e. 'he' in 'hello');
+  5. If the given magic word is the start to any word in a magic word (i.e. 'wo' in 'hello world');
+  6. If the given magic word is contained in any magic words of a wish
+  7. If the given magic word is an acronym of any magic words of a wish
+  8. If the given magic word matches the order of characters in any magic words of a wish.
 
 Just trust the genie. He knows best. And if you think otherwise,
 [let me know](https://github.com/kentcdodds/genie/issues) or (even better)
 [contribute](https://github.com/kentcdodds/genie/pulls) :)
+
+##About Optimistic Anticipation
+
+Genie keeps track of which wishes were executed with which magic words so it knows which wish is "King of the Hill" and
+"On Deck." But it's not a simple string-to-string comparison. If I have a wish with the magic words of `'Do laundry'`
+and another with `'Laundry stinks`' then make the `'Do laundry`' wish with `'laundry`', I would have to type the entire
+word `'laundry`' before `'Do laundry'` came up to the top. So genie will anticipate that what I'm typing to be
+`'laundry'` until I type something that renders this impossible (like if I type `'lan'`, it will anticipate `'laundry`'
+until I type the `'n'` and keep `'Do laundry'` at the top until I do).
+
+This is possible because the structure of object that genie uses to keep track of entered magic words:
+
+```json
+"enteredMagicWords": {
+  "w": {
+    "i": {
+      "s": {
+        "h": {
+          "wishes": [
+            "g-4",
+            "g-3"
+          ]
+        }
+      },
+      "wishes": [
+        "g-5"
+      ]
+    }
+  }
+}
+```
+
+If you're curious, look in the code :-)
 
 ##About Context
 
