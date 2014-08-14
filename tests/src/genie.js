@@ -1870,6 +1870,7 @@
   genie.removePathContext = _passThrough(removePathContext, []);
   genie.enabled = _passThrough(enabled, false);
   genie.returnOnDisabled = _passThrough(returnOnDisabled, true);
+  genie.version = '0.4.0';
   
   _originalMatchingAlgorithm = genie.getMatchingWishes;
   
