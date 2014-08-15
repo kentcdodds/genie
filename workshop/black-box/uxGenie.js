@@ -1,6 +1,6 @@
 /**
  * uxGenie.js @license
- * (c) 2013 Kent C. Dodds
+ * (c) 2014 Kent C. Dodds
  * uxGenie.js may be freely distributed under the MIT license.
  * http://www.github.com/kentcdodds/ux-genie
  * See README.md
@@ -8,6 +8,8 @@
 (function (root, factory) {
   if (typeof define === 'function' && define.amd) {
     define(['./genie'], factory);
+  } else if (typeof module !== 'undefined' && module.exports) {
+    module.exports = factory(require('geniejs'));
   } else {
     root.genieUx = factory(genie);
   }
@@ -33,17 +35,17 @@
             '<input type="text" ng-model="uxLamp.input" class="lamp-input input form-control" />',
             '<div ng-show="uxLamp.matchingWishes.length > 0" class="lamp-wishes-container">',
               '<div class="lamp-wish wish-{{wish.id}}" ' +
-                'ng-repeat="wish in uxLamp.matchingWishes" ' +
-                'ng-class="{focused: uxLamp.focusedWish == wish}" ' +
-                'ng-click="uxLamp.makeWish(wish)" ' +
-                'ng-mouseenter="uxLamp.focusOnWish(wish, false)">',
-                  '<span class="wish-icon" ng-class="{\'has-img\': wish.data.uxGenie.imgIcon, \'has-i\': wish.data.uxGenie.iIcon}">',
-                    '<img class="wish-img-icon" ng-if="wish.data.uxGenie.imgIcon" ng-src="{{wish.data.uxGenie.imgIcon}}">',
-                    '<i class="wish-i-icon {{wish.data.uxGenie.iIcon}}" ng-if="wish.data.uxGenie.iIcon"></i>',
-                  '</span>',
-                  '<span class="wish-display-text">{{wish.data.uxGenie.displayText || wish.magicWords[0]}}</span>',
-                '</div>',
-              '</div>',
+              'ng-repeat="wish in uxLamp.matchingWishes" ' +
+              'ng-class="{focused: uxLamp.focusedWish == wish}" ' +
+              'ng-click="uxLamp.makeWish(wish)" ' +
+              'ng-mouseenter="uxLamp.focusOnWish(wish, false)">',
+            '<span class="wish-icon" ng-class="{\'has-img\': wish.data.uxGenie.imgIcon, \'has-i\': wish.data.uxGenie.iIcon}">',
+            '<img class="wish-img-icon" ng-if="wish.data.uxGenie.imgIcon" ng-src="{{wish.data.uxGenie.imgIcon}}">',
+            '<i class="wish-i-icon {{wish.data.uxGenie.iIcon}}" ng-if="wish.data.uxGenie.iIcon"></i>',
+            '</span>',
+            '<span class="wish-display-text">{{wish.data.uxGenie.displayText || wish.magicWords[0]}}</span>',
+            '</div>',
+            '</div>',
             '</div>'].join('');
         }
         return template;
@@ -264,7 +266,7 @@
             });
           }
         }
-        
+
         inputEl.bind('keydown', (function() {
           return function keydownHandler(event) {
             var change = 0;
@@ -402,18 +404,20 @@
             _setSubContextState(firstWish);
           }
 
-          var result = _evaluateMath(newVal || '');
-          if (angular.isNumber(result)) {
-            scope.uxLamp.matchingWishes = scope.uxLamp.matchingWishes || [];
-            scope.uxLamp.matchingWishes.unshift({
-              id: mathResultId,
-              data: {
-                uxGenie: {
-                  displayText: newVal + ' = ' + result
+          if (scope.uxLamp.state !== states.subContext) {
+            var result = _evaluateMath(newVal || '');
+            if (angular.isNumber(result)) {
+              scope.uxLamp.matchingWishes = scope.uxLamp.matchingWishes || [];
+              scope.uxLamp.matchingWishes.unshift({
+                id: mathResultId,
+                data: {
+                  uxGenie: {
+                    displayText: newVal + ' = ' + result
+                  }
                 }
-              }
-            });
-            scope.uxLamp.focusedWish = scope.uxLamp.matchingWishes[0];
+              });
+              scope.uxLamp.focusedWish = scope.uxLamp.matchingWishes[0];
+            }
           }
         }
 

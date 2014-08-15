@@ -7,7 +7,7 @@ genie({
   context: 'app',
   data: {
     uxGenie: {
-      subContext: 'posts'
+      subContext: ['posts', 'sub-context']
     }
   }
 });
