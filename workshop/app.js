@@ -157,7 +157,7 @@
       if (path.length > 1) {
         initScope();
       } else {
-        addPageWish({
+        genie({
           action: '#/0',
           magicWords: 'Let\'s get started!',
           data: {
