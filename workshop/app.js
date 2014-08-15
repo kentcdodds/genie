@@ -76,7 +76,7 @@
         });
       }
 
-      genie.reset();
+      resetGenie();
       if (!$scope.lesson.noScript) {
         GW.loadScript($scope.lessonDir + 'genie-code.js', function() {
           $scope.$apply();
@@ -86,7 +86,7 @@
 
 
     $scope.rerunGenieCode = function() {
-      genie.reset();
+      resetGenie();
       console.clear();
       runCodeMirrorCode();
     };
@@ -96,13 +96,137 @@
       $window.eval(genieCodeMirror.getValue());
     }
 
+    function resetGenie() {
+      genie.reset();
+      genie.context('demo-context');
+      addPageWishes();
+    }
+
+    function addPageWishes() {
+      if ($scope.lessonNum + 1 <= $scope.lessons.length) {
+        addPageWish({
+          action: '#/' + ($scope.lessonNum + 1),
+          magicWords: 'Next Lesson: ' + $scope.lessons[$scope.lessonNum + 1].concept,
+          data: {
+            uxGenie: {
+              iIcon: 'glyphicon glyphicon-arrow-right'
+            }
+          }
+        });
+      }
+      if ($scope.lessonNum - 1 >= 0) {
+        addPageWish({
+          action: '#/' + ($scope.lessonNum - 1),
+          magicWords: 'Previous Lesson: ' + $scope.lessons[$scope.lessonNum - 1].concept,
+          data: {
+            uxGenie: {
+              iIcon: 'glyphicon glyphicon-arrow-left'
+            }
+          }
+        });
+      }
+      addPageWish({
+        action: $scope.rerunGenieCode,
+        magicWords: 'Rerun Genie Code',
+        data: {
+          uxGenie: {
+            iIcon: 'glyphicon glyphicon-refresh'
+          }
+        }
+      });
+      addRelatedLinksWishes();
+      setupPageContext();
+      addLessonSubContextWishes();
+    }
+
     $scope.$watch(function() {
       return $location.path();
     }, function(path) {
       if (path.length > 1) {
         initScope();
+      } else {
+        addPageWish({
+          action: '#/0',
+          magicWords: 'Let\'s get started!',
+          data: {
+            uxGenie: {
+              iIcon: 'glyphicon glyphicon-play'
+            }
+          }
+        });
+        addRelatedLinksWishes();
+        setupPageContext();
+        addLessonSubContextWishes();
       }
     });
+
+    function addRelatedLinksWishes() {
+      $scope.links.forEach(function(link) {
+        addPageWish({
+          action: link.href,
+          magicWords: link.text,
+          data: {
+            uxGenie: {
+              iIcon: 'glyphicon glyphicon-globe'
+            }
+          }
+        });
+      });
+    }
+
+    function addLessonSubContextWishes() {
+      var subContext = 'lesson-wish';
+      $scope.lessons.forEach(function(lesson, index) {
+        genie({
+          action: '#/' + index,
+          magicWords: (index + 1) + '. ' + lesson.concept,
+          context: subContext
+        });
+      });
+      addPageWish({
+        magicWords: 'Go to lesson...',
+        data: {
+          uxGenie: {
+            subContext: [subContext, 'sub-context']
+          }
+        }
+      });
+    }
+
+    function setupPageContext() {
+      var pageContext = 'page-wish';
+      genie.addContext(pageContext);
+      addPageWish({
+        action: function() {
+          genie.removeContext(pageContext);
+        },
+        magicWords: 'Hide non-demo wishes',
+        data: {
+          uxGenie: {
+            iIcon: 'glyphicon glyphicon-ban-circle'
+          }
+        }
+      });
+      genie({
+        action: function() {
+          genie.addContext(pageContext);
+        },
+        magicWords: 'Show non-demo wishes',
+        context: {
+          none: [pageContext, 'sub-context']
+        },
+        data: {
+          uxGenie: {
+            iIcon: 'glyphicon glyphicon-plus-sign'
+          }
+        }
+      });
+    }
+
+    function addPageWish(wish) {
+      wish.context = 'page-wish';
+      genie(wish);
+    }
 
     var totalWishesMade = 0;
     $scope.wishMade = function(wish, magicWord) {
