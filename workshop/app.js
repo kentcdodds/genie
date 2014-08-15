@@ -10,6 +10,8 @@
   var genieCodeMirror = null;
 
   app.controller('MainCtrl', function($scope, genie, GW, $window, $http, $location, ga) {
+    var useNonLessonWishes = 'non-lesson-wishes';
+    $scope.useNonLessonWishes = shouldHaveNonLessonWishes();
     $scope.genie = genie;
     $scope.lessons = [
       { concept: 'Initial Setup' },
@@ -103,6 +105,9 @@
     }
 
     function addPageWishes() {
+      if (!shouldHaveNonLessonWishes()) {
+        return;
+      }
       if ($scope.lessonNum + 1 <= $scope.lessons.length) {
         addPageWish({
           action: '#/' + ($scope.lessonNum + 1),
@@ -134,10 +139,17 @@
           }
         }
       });
-      addRelatedLinksWishes();
-      setupPageContext();
-      addLessonSubContextWishes();
+      setupNonLessonWishes();
     }
+
+    $scope.$watch('useNonLessonWishes', function(newVal) {
+      if (newVal) {
+        $window.localStorage.setItem(useNonLessonWishes, 'true');
+      } else {
+        $window.localStorage.removeItem(useNonLessonWishes);
+      }
+      $scope.rerunGenieCode();
+    });
 
     $scope.$watch(function() {
       return $location.path();
@@ -154,11 +166,22 @@
             }
           }
         });
-        addRelatedLinksWishes();
-        setupPageContext();
-        addLessonSubContextWishes();
+        setupNonLessonWishes();
       }
     });
+
+    function setupNonLessonWishes() {
+      if (!shouldHaveNonLessonWishes()) {
+        return;
+      }
+      addRelatedLinksWishes();
+      setupPageContext();
+      addLessonSubContextWishes();
+    }
+
+    function shouldHaveNonLessonWishes() {
+      return $window.localStorage.getItem(useNonLessonWishes) === 'true';
+    }
 
     function addRelatedLinksWishes() {
       $scope.links.forEach(function(link) {
@@ -200,7 +223,7 @@
         action: function() {
           genie.removeContext(pageContext);
         },
-        magicWords: 'Hide non-demo wishes',
+        magicWords: 'Hide non-lesson wishes',
         data: {
           uxGenie: {
             iIcon: 'glyphicon glyphicon-ban-circle'
@@ -211,7 +234,7 @@
         action: function() {
           genie.addContext(pageContext);
         },
-        magicWords: 'Show non-demo wishes',
+        magicWords: 'Show non-lesson wishes',
         context: {
           none: [pageContext, 'sub-context']
         },
