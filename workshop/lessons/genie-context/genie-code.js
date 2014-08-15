@@ -1,3 +1,5 @@
+genie.restoreContext(); // set to default context
+
 // Context
 function register(magicWords, context) {
   return genie({
@@ -11,8 +13,10 @@ function setAndPrint(newContext) {
   genie.context(newContext);
   var matchingWishes = genie.getMatchingWishes();
   console.log('Wishes in context: ' + genie.context());
+  var contexts;
   for (var i = 0; i < matchingWishes.length; i++) {
-    console.log('  ' + (i + 1) + '. ' + matchingWishes[i].magicWords[0] + ' - ' + matchingWishes[i].context.any.join(', '));
+    contexts = matchingWishes[i].context.any ? matchingWishes[i].context.any.join(', ') : '';
+    console.log('  ' + (i + 1) + '. ' + matchingWishes[i].magicWords[0] + ' - ' + contexts);
   }
   console.log();
 }
