@@ -21,5 +21,11 @@
     "genie",
     "alfred",
     "ux"
-  ]
+  ],
+  "devDependencies": {
+    "angular": "~1.2.22",
+    "chai": "~1.9.1",
+    "mocha": "~1.21.4",
+    "angular-mocks": "~1.2.22"
+  }
 }

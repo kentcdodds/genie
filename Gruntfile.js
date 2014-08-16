@@ -4,6 +4,7 @@ var path = require('path');
 module.exports = function (grunt) {
   require('time-grunt')(grunt);
   var bowerInfo = grunt.file.readJSON('bower.json');
+  var unimplementedLamps = ['!*/dojo/**/*', '!*/ember/**/*', '!*/react/**/*', '!*/vanilla/**/*'];
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
 
@@ -18,8 +19,14 @@ module.exports = function (grunt) {
 
     copy: {
       dist: {
-        src: 'src/genie.js',
-        dest: 'dist/genie.js'
+        files: [
+          {
+            expand: true,
+            cwd: 'src/',
+            src: ['**/*.js', '!**/*Spec.js'].concat(unimplementedLamps),
+            dest: 'dist/'
+          }
+        ]
       }
     },
     
@@ -41,7 +48,7 @@ module.exports = function (grunt) {
       }
     },
     
-    bumpup: 'bower.json',
+    bumpup: ['package.json', 'bower.json'],
     
     watch: {
       files: ['src/**/*', 'tests/**/*', 'Gruntfile.js'],
@@ -49,34 +56,7 @@ module.exports = function (grunt) {
     },
     
     jshint: {
-      options: {
-        unused: true,
-        undef: true,
-        curly: true,
-        forin: true,
-        eqeqeq: true,
-        immed: true,
-        freeze: true,
-        latedef: true,
-        newcap: true,
-        noarg: true,
-        noempty: true,
-        nonew: true,
-        maxcomplexity: 4,
-        strict: true,
-        indent: 2,
-        maxdepth: 3,
-        quotmark: 'single',
-        trailing: true,
-        globals: {
-          module: false,
-          define: false,
-          window: false
-        }
-      },
-      files: {
-        src: ['src/genie.js']
-      }
+      src: ['src/**/*.js']
     },
 
     'gh-pages': {

@@ -1,0 +1,39 @@
+{
+  "unused": true,
+  "undef": true,
+  "curly": true,
+  "forin": true,
+  "eqeqeq": true,
+  "immed": true,
+  "freeze": true,
+  "latedef": true,
+  "newcap": true,
+  "noarg": true,
+  "noempty": true,
+  "nonew": true,
+  "maxcomplexity": 4,
+  "strict": true,
+  "indent": 2,
+  "maxdepth": 3,
+  "quotmark": "single",
+  "trailing": true,
+
+  "browser": true,
+  "node": true,
+  "globals": {
+    "genie": true,
+    "define": false,
+    "chai": false,
+
+    /* MOCHA */
+    "describe": false,
+    "it": false,
+    "before": false,
+    "beforeEach": false,
+    "after": false,
+    "afterEach": false,
+
+    /* angular-mock */
+    "inject": false
+  }
+}

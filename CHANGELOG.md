@@ -1,5 +1,12 @@
 # Latest
 
+ - Pulling in ux-genie.
+ - Reorganizing some of the project.
+ - Creating slots for lamps made to work with other frameworks and libraries.
+ - Starting tests for ux-genie.
+
+# 0.4.0
+
  - Bug Fix: Path Contexts would only match the first group in the regex. One character change.
 
 # 0.3.0

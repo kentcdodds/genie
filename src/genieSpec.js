@@ -1,35 +1,9 @@
-// tests.js
-
-function fillInWish(defaults) {
-  defaults = defaults || {};
-  if (typeof defaults === 'string') {
-    defaults = {
-      magicWords: defaults
-    };
-  }
-  return {
-    id: defaults.id,
-    context: defaults.context,
-    data: defaults.data,
-    magicWords: defaults.magicWords || 'magicWords',
-    action: defaults.action || function() {}
-  };
-}
-if (typeof require !== 'undefined') {
-  var chai = require('chai');
-}
-function prepForTest(done) {
-  genie.reset();
-  genie.restoreContext();
-  genie.enabled(true);
-  genie.returnOnDisabled(true);
-  done && done();
-}
-
+/* jshint -W030 */
+/* jshint -W003 */
+/* jshint -W098 */
 var expect = chai.expect;
-
-
-describe('genie', function(){
+describe('genie', function() {
+  'use strict';
   beforeEach(prepForTest);
 
   describe('#', function() {
@@ -217,6 +191,7 @@ describe('genie', function(){
     beforeEach(prepForTest);
     var defaultContextWish;
     var complexContextNone;
+    var allWishes;
     beforeEach(function(done) {
       defaultContextWish = genie(fillInWish());
       var newContextWish1 = genie(fillInWish({
@@ -296,21 +271,21 @@ describe('genie', function(){
 
     it('should be able to remove string context', function() {
       genie.context(['context1', 'context2']);
-      var allWishes = genie.getMatchingWishes();
+      allWishes = genie.getMatchingWishes();
       expect(allWishes).to.have.length(5);
 
       genie.removeContext('context1');
-      var allWishes = genie.getMatchingWishes();
+      allWishes = genie.getMatchingWishes();
       expect(allWishes).to.have.length(3);
     });
 
     it('should be able to remove an array of contexts', function() {
       genie.context(['context1', 'context2', 'context3']);
-      var allWishes = genie.getMatchingWishes();
+      allWishes = genie.getMatchingWishes();
       expect(allWishes).to.have.length(7);
 
       genie.removeContext(['context1', 'context2']);
-      var allWishes = genie.getMatchingWishes();
+      allWishes = genie.getMatchingWishes();
       expect(allWishes).to.have.length(5);
     });
     
@@ -535,4 +510,36 @@ describe('genie', function(){
       });
     });
   });
+
+  // UTIL FUNCTIONS
+
+  function fillInWish(defaults) {
+    defaults = defaults || {};
+    if (typeof defaults === 'string') {
+      defaults = {
+        magicWords: defaults
+      };
+    }
+    return createWishWithDefaults(defaults);
+  }
+
+  function createWishWithDefaults(defaults) {
+    return {
+      id: defaults.id,
+      context: defaults.context,
+      data: defaults.data,
+      magicWords: defaults.magicWords || 'magicWords',
+      action: defaults.action || function() {}
+    };
+  }
+
+  function prepForTest(done) {
+    genie.reset();
+    genie.restoreContext();
+    genie.enabled(true);
+    genie.returnOnDisabled(true);
+    done && done();
+  }
 });
+
+
