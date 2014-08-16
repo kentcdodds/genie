@@ -95,7 +95,10 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-gh-pages');
   grunt.loadNpmTasks('grunt-contrib-copy');
 
-  grunt.registerTask('build', ['jshint', 'mocha', 'copy:dist', 'uglify']);
+  grunt.registerTask('buildNoUgly', ['jshint', 'mocha', 'copy:dist']);
+  grunt.registerTask('deploy', ['buildNoUgly', 'gh-pages']);
+
+  grunt.registerTask('build', ['buildNoUgly', 'uglify']);
   grunt.registerTask('default', ['build']);
 
 };
