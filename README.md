@@ -68,7 +68,7 @@ The flow of using GenieJS is simple:
 /* Register wishes */
 // One magic word
 var trashWish = genie({
-  magicWords: 'Take out the trasn',
+  magicWords: 'Take out the trash',
   action: function() {
     console.log('Yes! I love taking out the trash!');
   }
