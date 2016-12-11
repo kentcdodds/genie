@@ -7,13 +7,13 @@ A JavaScript library committed to improving user experience by empowering users 
 *Genie* |ˈjēnē| (noun): a spirit of Arabian folklore, as traditionally depicted imprisoned
 within a bottle or oil lamp, and capable of granting wishes when summoned.
 
-[Demo](http://kent.doddsfamily.us/genie)
+[Demo](http://kentcdodds.github.io/genie/)
 
-[Tests](http://kent.doddsfamily.us/genie/tests/testrunner.html)
+[Tests](http://kentcdodds.github.io/genie/tests/testrunner.html)
 
-[Genie Workshop](http://kent.doddsfamily.us/genie/workshop) - Terrific way to learn how to use genie right in your browser.
+[Genie Workshop](http://kentcdodds.github.io/genie/workshop) - Terrific way to learn how to use genie right in your browser.
 
-[API Docs](http://kent.doddsfamily.us/genie/autodoc)
+[API Docs](http://kentcdodds.github.io/genie/autodoc)
 
 [Chrome Extension](https://chrome.google.com/webstore/detail/genies-lamp/pimmaneflgfbknjkjdlnffagpgfeklko)
 
@@ -111,7 +111,7 @@ goal of this library!
 
 Genie is undergoing an overhaul on the API documentation using [autodocs](https://github.com/dtao/autodoc).
 It is still being worked on, but you can see that documentation
-[here](http://kent.doddsfamily.us/genie/autodoc).
+[here](http://kentcdodds.github.io/genie/autodoc).
 
 Below you can see full documentation. It's just less enjoyable to read...
 
