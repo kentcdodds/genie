@@ -25,7 +25,7 @@ within a bottle or oil lamp, and capable of granting wishes when summoned.
 
 [![Built with Grunt](https://cdn.gruntjs.com/builtwith.png)](http://gruntjs.com/)
 
-##Watered Down Explanation
+## Watered Down Explanation
 
 GenieJS is a simple library to emulate the same kind of behavior seen in apps like
 [Alfred](http://www.alfredapp.com/). Essentially, you register actions associated with
@@ -37,7 +37,7 @@ those will be come first when a list of matching actions is requested. If that d
 make sense, don't worry, hopefully the tutorial, tests, and demo will help explain how
 it works.
 
-##Vernacular
+## Vernacular
 
 *Wish*: An object with an id, action, and magic words.
 
@@ -51,7 +51,7 @@ the Hill if chosen again.
 *King of the Hill*: The wish which gets preference for a certain magic word until the
 On Deck wish is chosen again (it then becomes On Deck).
 
-##How to use it
+## How to use it
 
 If you're using [RequireJS](http://requirejs.org/) then you can simply `require('path/to/genie')`.
 Or you could simply include the regular script tag:
@@ -107,7 +107,7 @@ This behavior simulates apps such as [Alfred](http://www.alfredapp.com/) which i
 goal of this library!
 
 
-##API
+## API
 
 Genie is undergoing an overhaul on the API documentation using [autodocs](https://github.com/dtao/autodoc).
 It is still being worked on, but you can see that documentation
@@ -115,7 +115,7 @@ It is still being worked on, but you can see that documentation
 
 Below you can see full documentation. It's just less enjoyable to read...
 
-###Objects
+### Objects
 
 There are a few internal objects you may want to be aware of:
 
@@ -366,19 +366,19 @@ genie.enabled(boolean | optional);
 genie.returnOnDisabled(boolean | optional);
 ```
 
-##Special Wish Actions
+## Special Wish Actions
 
 There are some actions that are common use cases, so genie helps with these (currently only one
 special wish action):
 
-###Navigation
+### Navigation
 
 You for the action of the wish you can provide either a string (URL) or an object with a destination
 property (URL). If the action is an object this gives you a few options:
  - openNewTab - If truthy, this will open the URL using '_blank'. Otherwise opens in the current window.
  - That's all for now... any [other](https://github.com/kentcdodds/genie/pulls) [ideas?](https://github.com/kentcdodds/genie/issues)
 
-##About Matching Priority
+## About Matching Priority
 
 The wishes returned from `getMatchingWishes` are ordered with the following priority
   1. King of the Hill for the given `magicWords` (genie optimistically anticipates this as well)
@@ -394,7 +394,7 @@ Just trust the genie. He knows best. And if you think otherwise,
 [let me know](https://github.com/kentcdodds/genie/issues) or (even better)
 [contribute](https://github.com/kentcdodds/genie/pulls) :)
 
-##About Optimistic Anticipation
+## About Optimistic Anticipation
 
 Genie keeps track of which wishes were executed with which magic words so it knows which wish is "King of the Hill" and
 "On Deck." But it's not a simple string-to-string comparison. If I have a wish with the magic words of `'Do laundry'`
@@ -427,7 +427,7 @@ This is possible because the structure of object that genie uses to keep track o
 
 If you're curious, look in the code :-)
 
-##About Context
+## About Context
 
 Genie has a concept of context that allows you to switch between sets of wishes easily.
 It's a toss up between context and the matching algorithm on which is more complex but
@@ -523,7 +523,7 @@ genie.restoreContext(); // resets genie's context to default
 genie.getMatchingWishes(); // returns [wish0, wish2]
 ```
 
-###Path Context
+### Path Context
 
 A big use case for context is to have a url path (or route) represent the context for genie. For example,
 if you have an email app, you can have the `/index` and the `/message/:id` routes which would have
@@ -563,7 +563,7 @@ The `1` in `a-page-{{1}}` represents the group that is matched on the path in th
 digit in `{{\d}}` with the group that's matched (Note: in true JavaScript form, group 0 represents the entire
 match string, hence, 1 is the first group in parentheses).
 
-##Enabling & Disabling
+## Enabling & Disabling
 
 To give you a little more control, you can enable and disable genie globally. All genie
 functions go through a check to make sure genie is enabled. If it is enabled, everything
@@ -572,7 +572,7 @@ depending on what the function you're calling is expecting. This behavior is to 
 the need to do null/undefined checking everywhere you use `genie` and can be disabled as
 well via the returnOnDisabled function.
 
-##Merging Wishes
+## Merging Wishes
 
 To persist the user's experience, you may want to store the result of `genie.options()` in
 `localStorage` or even a database associated with the user. Then after you have registered
@@ -589,13 +589,13 @@ To completely overwrite the existing wishes, simply pass in `noWishMerge` along 
 
 Note: Genie provides direct access to the `mergeWishes` function as well.
 
-##UX-Genie
+## UX-Genie
 
 There is a [AngularJS](https://www.angularjs.org) directive available for GenieJS. Genie is
 awesome, but it's not too useful without a way to interact with it. It is used in the demo for
 GenieJS. Feel free to go to that project [here](https://www.github.com/kentcdodds/ux-genie).
 
-##Contributing
+## Contributing
 
 I'd love to accept [pull requests](https://github.com/kentcdodds/genie/pulls). I'm in the middle
 of moving all tests to mocha, so please make sure that test the old tests still runs (test/index.html).
@@ -606,13 +606,13 @@ Also before you push, make sure to do the following:
 **Note:** genie has a jshint grunt task which enforces some of the styling we want to be consistent
 in the project. Take a look at the configuration for this task to know what those requirements are.
 
-##Issues
+## Issues
 
 If you have a problem with GenieJS please don't hesitate to use GitHub's
 [issue tracker](https://github.com/kentcdodds/genie/issues) to report it. I'll do my best
 to get it resolved as quickly as I can.
 
-##Special Thanks
+## Special Thanks
 
 To the developers that make software development awesome. Thanks to pull requesters and issue reporters.
 And a special thanks to these projects:
@@ -626,7 +626,7 @@ And a special thanks to these projects:
  - [Chai](http://chaijs.com/)
  - And of course [GitHub](http://www.github.com)
 
-##License
+## License
 
 The MIT License (MIT)
 
