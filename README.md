@@ -7,6 +7,8 @@ A JavaScript library committed to improving user experience by empowering users 
 *Genie* |ˈjēnē| (noun): a spirit of Arabian folklore, as traditionally depicted imprisoned
 within a bottle or oil lamp, and capable of granting wishes when summoned.
 
+<a href="https://app.codesponsor.io/link/PKGFLnhDiFvsUA5P4kAXfiPs/kentcdodds/genie" rel="nofollow"><img src="https://app.codesponsor.io/embed/PKGFLnhDiFvsUA5P4kAXfiPs/kentcdodds/genie.svg" style="width: 888px; height: 68px;" alt="Sponsor" /></a>
+
 [Demo](http://kentcdodds.github.io/genie/)
 
 [Tests](http://kentcdodds.github.io/genie/tests/testrunner.html)
