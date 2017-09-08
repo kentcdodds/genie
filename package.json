@@ -1,6 +1,6 @@
 {
   "name": "geniejs",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description":
     "A JavaScript library committed to improving user experience by empowering users to interact with web apps using the keyboard (better than cryptic shortcuts).",
   "homepage": "https://github.com/kentcdodds/genie",
