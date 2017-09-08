@@ -1,12 +1,16 @@
-language:
- - node_js
-node_js:
- - '0.10'
+sudo: false
+language: node_js
+cache:
+  directories:
+    - ~/.npm
+notifications:
+  email: false
+node_js: '8'
+install: npm install
+script: npm run validate
+after_success:
+  - npx codecov
+  # enable this later...
+  # - npx -p semantic-release@7 -c "semantic-release pre && npm publish && semantic-release post"
 branches:
-  only:
-    - master
-before_script:
- - npm install -g grunt-cli
- - npm install
-script:
- - grunt build
+  only: master

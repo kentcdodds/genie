@@ -1,35 +1,34 @@
 {
   "name": "geniejs",
   "version": "0.4.0",
-  "description": "A JavaScript library committed to improving user experience by empowering users to interact with web apps using the keyboard (better than cryptic shortcuts).",
-  "main": "dist/genie.js",
+  "description":
+    "A JavaScript library committed to improving user experience by empowering users to interact with web apps using the keyboard (better than cryptic shortcuts).",
   "homepage": "https://github.com/kentcdodds/genie",
   "author": "Kent C. Dodds <kent@doddsfamily.us>",
+  "main": "dist/genie.cjs.js",
+  "jsnext:main": "dist/genie.es.js",
+  "module": "dist/genie.es.js",
   "scripts": {
-    "test": "grunt mocha"
+    "add-contributor": "kcd-scripts contributors add",
+    "build": "kcd-scripts build --browser --environment BUILD_NAME:genie",
+    "lint": "kcd-scripts lint",
+    "test": "kcd-scripts test --env=jsdom",
+    "test:update": "npm run test -s -- --coverage --updateSnapshot",
+    "validate": "kcd-scripts validate",
+    "precommit": "kcd-scripts precommit"
   },
-  "engines": {
-    "node": ">=0.8.0"
-  },
+  "files": ["dist"],
   "keywords": [],
-  "dependencies": {},
   "devDependencies": {
-    "autodoc": "^0.5.5",
-    "chai": "^1.8.1",
-    "grunt": "^0.4.5",
-    "grunt-bumpup": "^0.4.2",
-    "grunt-contrib-copy": "^0.5.0",
-    "grunt-contrib-jshint": "^0.8.0",
-    "grunt-contrib-uglify": "^0.2.7",
-    "grunt-contrib-watch": "^0.5.3",
-    "grunt-gh-pages": "^0.9.1",
-    "grunt-mocha": "^0.4.6",
-    "mocha": "^1.14.0",
-    "time-grunt": "^0.4.0"
+    "kcd-scripts": "^0.6.0"
   },
-  "directories": {
-    "test": "tests"
+  "eslintConfig": {
+    "extends": "./node_modules/kcd-scripts/eslint.js",
+    "rules": {
+      "max-lines": "off"
+    }
   },
+  "eslintIgnore": ["node_modules", "coverage", "dist"],
   "repository": {
     "type": "git",
     "url": "https://kentcdodds@github.com/kentcdodds/genie.git"

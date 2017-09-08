@@ -1,43 +1,54 @@
-# Genie
+<div align="center">
+<h1>GenieJS</h1>
 
-![Genie logo](other/logo.png)
+<img src="https://rawgit.com/kentcdodds/genie/master/other/logo.png" alt="genie logo" title="genie logo" width="300">
 
-A JavaScript library committed to improving user experience by empowering users to interact with web apps using the keyboard (better than cryptic shortcuts).
+<p>A JavaScript library committed to improving user experience by empowering users to interact with web apps using the keyboard (better than cryptic shortcuts).</p>
+<p><i>Genie</i> |ˈjēnē| (noun): a spirit of Arabian folklore, as traditionally depicted imprisoned
+within a bottle or oil lamp, and capable of granting wishes when summoned.</p>
+</div>
 
-*Genie* |ˈjēnē| (noun): a spirit of Arabian folklore, as traditionally depicted imprisoned
-within a bottle or oil lamp, and capable of granting wishes when summoned.
+<hr />
+
+[![Build Status][build-badge]][build]
+[![Code Coverage][coverage-badge]][coverage]
+[![version][version-badge]][package]
+[![downloads][downloads-badge]][npmcharts]
+[![MIT License][license-badge]][LICENSE]
+
+[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors)
+[![PRs Welcome][prs-badge]][prs]
+[![Code of Conduct][coc-badge]][coc]
+
+[![Watch on GitHub][github-watch-badge]][github-watch]
+[![Star on GitHub][github-star-badge]][github-star]
+[![Tweet][twitter-badge]][twitter]
+
+> Old links:
+> - [Demo](http://kentcdodds.github.io/genie/)
+> - [Tests](http://kentcdodds.github.io/genie/tests/testrunner.html)
+> - [Genie Workshop](http://kentcdodds.github.io/genie/workshop) - Terrific way to learn how to use genie right in your browser.
+> - [API Docs](http://kentcdodds.github.io/genie/autodoc)
+> - [Chrome Extension](https://chrome.google.com/webstore/detail/genies-lamp/pimmaneflgfbknjkjdlnffagpgfeklko)
 
 <a href="https://app.codesponsor.io/link/PKGFLnhDiFvsUA5P4kAXfiPs/kentcdodds/genie" rel="nofollow"><img src="https://app.codesponsor.io/embed/PKGFLnhDiFvsUA5P4kAXfiPs/kentcdodds/genie.svg" style="width: 888px; height: 68px;" alt="Sponsor" /></a>
 
-[Demo](http://kentcdodds.github.io/genie/)
+## The problem
 
-[Tests](http://kentcdodds.github.io/genie/tests/testrunner.html)
+You want to enable users to power through your application with the keyboard,
+but you're limited on the kinds of reasonable keyboard shortcuts you can use.
 
-[Genie Workshop](http://kentcdodds.github.io/genie/workshop) - Terrific way to learn how to use genie right in your browser.
+## This solution
 
-[API Docs](http://kentcdodds.github.io/genie/autodoc)
+GenieJS is a library to emulate the same kind of behavior seen in apps like
+[Alfred](http://www.alfredapp.com/). Essentially, you register actions
+associated with keywords. Then you can request the genie to perform that action
+based on the best keyword match for a given keyword.
 
-[Chrome Extension](https://chrome.google.com/webstore/detail/genies-lamp/pimmaneflgfbknjkjdlnffagpgfeklko)
-
-[![Build Status](https://travis-ci.org/kentcdodds/genie.png)](https://travis-ci.org/kentcdodds/genie)
-
-[![Bower version](https://badge.fury.io/bo/geniejs.png)](http://bower.io/search/?q=genie) `bower install geniejs`
-
-[![NPM version](http://img.shields.io/npm/v/geniejs.svg)](https://www.npmjs.org/package/geniejs) `npm install geniejs`
-
-[![Built with Grunt](https://cdn.gruntjs.com/builtwith.png)](http://gruntjs.com/)
-
-## Watered Down Explanation
-
-GenieJS is a simple library to emulate the same kind of behavior seen in apps like
-[Alfred](http://www.alfredapp.com/). Essentially, you register actions associated with
-keywords. Then you can request the genie to perform that action based on the best keyword
-match for a given keyword.
-
-Over time, the genie will learn the actions more associated with specific keywords and
-those will be come first when a list of matching actions is requested. If that didn't
-make sense, don't worry, hopefully the tutorial, tests, and demo will help explain how
-it works.
+Over time, the genie will learn the actions more associated with specific
+keywords and those will be come first when a list of matching actions is
+requested. If that didn't make sense, don't worry, hopefully the tutorial,
+tests, and demo will help explain how it works.
 
 ## Vernacular
 
@@ -48,7 +59,7 @@ it works.
 *Magic Word*: Keywords for a wish used to match it with given magic words.
 
 *On Deck*: The second wish of preference for a certain magic word which will be King of
-the Hill if chosen again. 
+the Hill if chosen again.
 
 *King of the Hill*: The wish which gets preference for a certain magic word until the
 On Deck wish is chosen again (it then becomes On Deck).
@@ -206,7 +217,7 @@ genie.deregisterWishesWithContext(context [string || array | required]);
  */
 genie.reset();
 
-/* 
+/*
  * Returns an array of wishes which match in order:
  *  1. Most recently made wishes with the given magicWord
  *  2. Following the order of their initial registration
@@ -230,7 +241,7 @@ genie.overrideMatchingAlgorithm(function(wishes, magicWord, context, enteredMagi
  */
 genie.restoreMatchingAlgorithm();
 
-/* 
+/*
  * Executes the given wish's action.
  * If a magicWord is provided, adds the given wish to the enteredMagicWords
  *   to be given preferential treatment of order in the array returned
@@ -282,7 +293,7 @@ genie.getWishesWithContext(context [string || array | required], type [string | 
  *   a registered wish, it will be undefined
  */
 genie.getWish(id [string || array | required]);
- 
+
 /*
  * Allows you to set the attributes of genie and returns the current genie options.
  *  1. wishes: All wishes (wishObject described above) currently registered
@@ -313,7 +324,7 @@ genie.options({
  */
 genie.mergeWishes(wishes);
 
-/* 
+/*
  * Sets and returns the current context to newContext if provided
  * Also sets an internal variable: _previousContext for the revertContext function
  */
@@ -324,12 +335,12 @@ genie.context(newContext [string || array | optional]);
  */
 genie.addContext(newContext [string || array | optional]);
 
-/* 
+/*
  * Removes the context(s) to genie's current context
  */
 genie.removeContext(newContext [string || array | optional]);
 
-/* 
+/*
  * Sets and returns the current context to the default context: ['universe']
  */
 genie.restoreContext();
@@ -466,9 +477,10 @@ There are a few ways for a wish to **definitely** be in context:
 If none of these are true, then these things must be true for the wish to be in context:
  1. Genie's context does **not** contain any of the wish's `context.none` contexts if it exists.
  2. Genie's context contains **at least one** of the wish's `context.any` contexts if it exists.
- 3. Genie's context contains **all** of the wish's `context.all` contexts if it exists. 
+ 3. Genie's context contains **all** of the wish's `context.all` contexts if it exists.
 
-Checkout [the tests](test/tests.js) for #context to see more how this works. Here's a simple demonstration:
+Checkout [the tests](src/__tests__/index.js) for #context to see more how this
+works. Here's a simple demonstration:
 
 ```javascript
 // Simple stuff
@@ -537,7 +549,7 @@ and the `genie.removePathContext(pathContext)` methods. A `pathContext` object l
 
 ```javascript
 {
-  paths: string || array of strings | optional (either this or regexes), 
+  paths: string || array of strings | optional (either this or regexes),
   regexes: regex || array of regexes | optional (either this or paths),
   contexts: string || array of strings | required
 }
@@ -591,65 +603,58 @@ To completely overwrite the existing wishes, simply pass in `noWishMerge` along 
 
 Note: Genie provides direct access to the `mergeWishes` function as well.
 
-## UX-Genie
+## Inspiration
 
-There is a [AngularJS](https://www.angularjs.org) directive available for GenieJS. Genie is
-awesome, but it's not too useful without a way to interact with it. It is used in the demo for
-GenieJS. Feel free to go to that project [here](https://www.github.com/kentcdodds/ux-genie).
+I built this after I was trying to add keyboard shortcuts to an application at
+work and ran out of letters that made sense. I was heavily inspired by
+[Alfred](http://www.alfredapp.com/).
 
-## Contributing
+## Other Solutions
 
-I'd love to accept [pull requests](https://github.com/kentcdodds/genie/pulls). I'm in the middle
-of moving all tests to mocha, so please make sure that test the old tests still runs (test/index.html).
-Also before you push, make sure to do the following:
- 1. Run `grunt bumpup:patch` (or minor, or major as the case may be)
- 2. Run `grunt` to build the library (don't push if this fails :))
+I'm not aware of any, if you are please [make a pull request][prs] and add it
+here!
 
-**Note:** genie has a jshint grunt task which enforces some of the styling we want to be consistent
-in the project. Take a look at the configuration for this task to know what those requirements are.
+## Contributors
 
-## Issues
+Thanks goes to these people ([emoji key][emojis]):
 
-If you have a problem with GenieJS please don't hesitate to use GitHub's
-[issue tracker](https://github.com/kentcdodds/genie/issues) to report it. I'll do my best
-to get it resolved as quickly as I can.
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+| [<img src="https://avatars.githubusercontent.com/u/1500684?v=3" width="100px;"/><br /><sub>Kent C. Dodds</sub>](https://kentcdodds.com)<br />[💻](https://github.com/kentcdodds/genie/commits?author=kentcdodds "Code") [📖](https://github.com/kentcdodds/genie/commits?author=kentcdodds "Documentation") [🚇](#infra-kentcdodds "Infrastructure (Hosting, Build-Tools, etc)") [⚠️](https://github.com/kentcdodds/genie/commits?author=kentcdodds "Tests") [📢](#talk-kentcdodds "Talks") |
+| :---: |
+<!-- ALL-CONTRIBUTORS-LIST:END -->
 
-## Special Thanks
+This project follows the [all-contributors][all-contributors] specification.
+Contributions of any kind welcome!
 
-To the developers that make software development awesome. Thanks to pull requesters and issue reporters.
-And a special thanks to these projects:
+## LICENSE
 
- - [NodeJS](http://nodejs.org/)
- - [NPM](https://npmjs.org/)
- - [Bower](http://bower.io/)
- - [GruntJS](http://gruntjs.com/)
- - [Travis-CI](https://travis-ci.org/)
- - [Mocha](http://visionmedia.github.io/mocha/)
- - [Chai](http://chaijs.com/)
- - And of course [GitHub](http://www.github.com)
+MIT
 
-## License
-
-The MIT License (MIT)
-
-Copyright (c) 2013 Kent C. Dodds
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of
-this software and associated documentation files (the "Software"), to deal in
-the Software without restriction, including without limitation the rights to
-use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-the Software, and to permit persons to whom the Software is furnished to do so,
-subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/kentcdodds/genie/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+[npm]: https://www.npmjs.com/
+[node]: https://nodejs.org
+[build-badge]: https://img.shields.io/travis/kentcdodds/genie.svg?style=flat-square
+[build]: https://travis-ci.org/kentcdodds/genie
+[coverage-badge]: https://img.shields.io/codecov/c/github/kentcdodds/genie.svg?style=flat-square
+[coverage]: https://codecov.io/github/kentcdodds/genie
+[version-badge]: https://img.shields.io/npm/v/genie.svg?style=flat-square
+[package]: https://www.npmjs.com/package/genie
+[downloads-badge]: https://img.shields.io/npm/dm/genie.svg?style=flat-square
+[npmcharts]: http://npmcharts.com/compare/genie
+[license-badge]: https://img.shields.io/npm/l/genie.svg?style=flat-square
+[license]: https://github.com/kentcdodds/genie/blob/master/LICENSE
+[prs-badge]: https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square
+[prs]: http://makeapullrequest.com
+[coc-badge]: https://img.shields.io/badge/code%20of-conduct-ff69b4.svg?style=flat-square
+[coc]: https://github.com/kentcdodds/genie/blob/master/other/CODE_OF_CONDUCT.md
+[gzip-badge]: http://img.badgesize.io/https://unpkg.com/genie/dist/genie.umd.min.js?compression=gzip&label=gzip%20size&style=flat-square
+[size-badge]: http://img.badgesize.io/https://unpkg.com/genie/dist/genie.umd.min.js?label=size&style=flat-square
+[unpkg-dist]: https://unpkg.com/genie/dist/
+[module-formats-badge]: https://img.shields.io/badge/module%20formats-umd%2C%20cjs%2C%20es-green.svg?style=flat-square
+[github-watch-badge]: https://img.shields.io/github/watchers/kentcdodds/genie.svg?style=social
+[github-watch]: https://github.com/kentcdodds/genie/watchers
+[github-star-badge]: https://img.shields.io/github/stars/kentcdodds/genie.svg?style=social
+[github-star]: https://github.com/kentcdodds/genie/stargazers
+[twitter]: https://twitter.com/intent/tweet?text=Check%20out%20genie!%20https://github.com/kentcdodds/genie%20%F0%9F%91%8D
+[twitter-badge]: https://img.shields.io/twitter/url/https/github.com/kentcdodds/genie.svg?style=social
+[emojis]: https://github.com/kentcdodds/all-contributors#emoji-key
+[all-contributors]: https://github.com/kentcdodds/all-contributors
