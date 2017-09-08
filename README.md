@@ -1,5 +1,5 @@
 <div align="center">
-<h1>GenieJS</h1>
+<h1>GenieJS 🧞</h1>
 
 <img src="https://rawgit.com/kentcdodds/genie/master/other/logo.png" alt="genie logo" title="genie logo" width="300">
 
