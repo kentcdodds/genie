@@ -1,8 +1,7 @@
 {
   "name": "geniejs",
-  "version": "0.5.0",
-  "description":
-    "A JavaScript library committed to improving user experience by empowering users to interact with web apps using the keyboard (better than cryptic shortcuts).",
+  "version": "0.0.0-semantically-released",
+  "description": "A JavaScript library committed to improving user experience by empowering users to interact with web apps using the keyboard (better than cryptic shortcuts).",
   "homepage": "https://github.com/kentcdodds/genie",
   "author": "Kent C. Dodds <kent@doddsfamily.us>",
   "main": "dist/geniejs.cjs.js",
@@ -17,10 +16,13 @@
     "validate": "kcd-scripts validate",
     "precommit": "kcd-scripts precommit"
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "keywords": [],
   "devDependencies": {
-    "kcd-scripts": "^0.6.0"
+    "kcd-scripts": "^0.39.2",
+    "semantic-release": "^15.8.1"
   },
   "eslintConfig": {
     "extends": "./node_modules/kcd-scripts/eslint.js",
@@ -28,10 +30,14 @@
       "max-lines": "off"
     }
   },
-  "eslintIgnore": ["node_modules", "coverage", "dist"],
+  "eslintIgnore": [
+    "node_modules",
+    "coverage",
+    "dist"
+  ],
   "repository": {
     "type": "git",
-    "url": "https://kentcdodds@github.com/kentcdodds/genie.git"
+    "url": "https://github.com/kentcdodds/genie.git"
   },
   "license": "MIT",
   "bugs": {
