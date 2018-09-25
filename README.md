@@ -31,8 +31,6 @@ within a bottle or oil lamp, and capable of granting wishes when summoned.</p>
 > - [API Docs](http://kentcdodds.github.io/genie/autodoc)
 > - [Chrome Extension](https://chrome.google.com/webstore/detail/genies-lamp/pimmaneflgfbknjkjdlnffagpgfeklko)
 
-<a href="https://app.codesponsor.io/link/PKGFLnhDiFvsUA5P4kAXfiPs/kentcdodds/genie" rel="nofollow"><img src="https://app.codesponsor.io/embed/PKGFLnhDiFvsUA5P4kAXfiPs/kentcdodds/genie.svg" style="width: 888px; height: 68px;" alt="Sponsor" /></a>
-
 ## The problem
 
 You want to enable users to power through your application with the keyboard,
