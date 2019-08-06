@@ -25,7 +25,7 @@ within a bottle or oil lamp, and capable of granting wishes when summoned.</p>
 [![Tweet][twitter-badge]][twitter]
 
 > Old links:
-> - [Demo](http://kentcdodds.github.io/genie/)
+> - [Demo](http://kentcdodds.github.io/genie/) ([Demo with React and Downshift](https://codesandbox.io/s/jrlkrxwgl))
 > - [Tests](http://kentcdodds.github.io/genie/tests/testrunner.html)
 > - [Genie Workshop](http://kentcdodds.github.io/genie/workshop) - Terrific way to learn how to use genie right in your browser.
 > - [API Docs](http://kentcdodds.github.io/genie/autodoc)
@@ -609,7 +609,15 @@ work and ran out of letters that made sense. I was heavily inspired by
 
 ## Other Solutions
 
-I'm not aware of any, if you are please [make a pull request][prs] and add it
+Nothing integrates keypresses and stateful sort/autocomplete like genie does, but you can cobble together your own solution:
+
+- https://github.com/mixmaxhq/frecency
+- https://github.com/greena13/react-hotkeys
+- https://github.com/jaywcjlove/react-hotkeys#readme
+	- https://wangchujiang.com/hotkeys/ (underlying library)
+- https://github.com/avocode/react-shortcuts
+
+If you are aware of other solutions please [make a pull request][prs] and add it
 here!
 
 ## Contributors
