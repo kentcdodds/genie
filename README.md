@@ -609,13 +609,9 @@ work and ran out of letters that made sense. I was heavily inspired by
 
 ## Other Solutions
 
-Nothing integrates keypresses and stateful sort/autocomplete like genie does, but you can cobble together your own solution:
+Similar solutions we know of:
 
 - https://github.com/mixmaxhq/frecency
-- https://github.com/greena13/react-hotkeys
-- https://github.com/jaywcjlove/react-hotkeys#readme
-	- https://wangchujiang.com/hotkeys/ (underlying library)
-- https://github.com/avocode/react-shortcuts
 
 If you are aware of other solutions please [make a pull request][prs] and add it
 here!
