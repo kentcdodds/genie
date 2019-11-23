@@ -1,6 +1,7 @@
-const {jest} = require('kcd-scripts/config')
+const jest = require('kcd-scripts/jest')
 
-module.exports = Object.assign(jest, {
+module.exports = {
+  ...jest,
   coverageThreshold: {
     global: {
       statements: 78,
@@ -9,4 +10,4 @@ module.exports = Object.assign(jest, {
       functions: 78,
     },
   },
-})
+}
