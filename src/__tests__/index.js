@@ -494,7 +494,7 @@ describe('#getMatchingWishes', () => {
     genie.deregisterWish(lucy)
     genie.makeWish(fred, wordToGet)
     mertzMatch = genie.getMatchingWishes(wordToGet)
-    expect(mertzMatch.length).toBe(3)
+    expect(mertzMatch).toHaveLength(3)
     expect(mertzMatch[0]).toBe(ethel)
     expect(mertzMatch[1]).toBe(fred)
   })
@@ -563,5 +563,8 @@ function prepForTest(done) {
   genie.restoreContext()
   genie.enabled(true)
   genie.returnOnDisabled(true)
-  done && done()
+
+  if (done) {
+    done()
+  }
 }
