@@ -1,3 +1,28 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+- [GenieJS 🧞](#geniejs-)
+  - [The problem](#the-problem)
+  - [This solution](#this-solution)
+  - [Vernacular](#vernacular)
+  - [How to use it](#how-to-use-it)
+  - [API](#api)
+    - [Objects](#objects)
+  - [Special Wish Actions](#special-wish-actions)
+    - [Navigation](#navigation)
+  - [About Matching Priority](#about-matching-priority)
+  - [About Optimistic Anticipation](#about-optimistic-anticipation)
+  - [About Context](#about-context)
+    - [Path Context](#path-context)
+  - [Enabling & Disabling](#enabling--disabling)
+  - [Merging Wishes](#merging-wishes)
+  - [Inspiration](#inspiration)
+  - [Other Solutions](#other-solutions)
+  - [Contributors](#contributors)
+  - [LICENSE](#license)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 <p align="center">
 <a href="https://codefund.io/properties/493/visit-sponsor">
 <img src="https://codefund.io/properties/493/sponsor" />
@@ -18,22 +43,23 @@ within a bottle or oil lamp, and capable of granting wishes when summoned.</p>
 
 [![Build Status][build-badge]][build]
 [![Code Coverage][coverage-badge]][coverage]
-[![version][version-badge]][package]
-[![downloads][downloads-badge]][npmcharts]
-[![MIT License][license-badge]][LICENSE]
+[![version][version-badge]][package] [![downloads][downloads-badge]][npmcharts]
+[![MIT License][license-badge]][license]
 
 [![All Contributors](https://img.shields.io/badge/all_contributors-3-orange.svg?style=flat-square)](#contributors)
-[![PRs Welcome][prs-badge]][prs]
-[![Code of Conduct][coc-badge]][coc]
+[![PRs Welcome][prs-badge]][prs] [![Code of Conduct][coc-badge]][coc]
 
 [![Watch on GitHub][github-watch-badge]][github-watch]
 [![Star on GitHub][github-star-badge]][github-star]
 [![Tweet][twitter-badge]][twitter]
 
 > Old links:
-> - [Demo](http://kentcdodds.github.io/genie/) ([Demo with React and Downshift](https://codesandbox.io/s/jrlkrxwgl))
+>
+> - [Demo](http://kentcdodds.github.io/genie/)
+>   ([Demo with React and Downshift](https://codesandbox.io/s/jrlkrxwgl))
 > - [Tests](http://kentcdodds.github.io/genie/tests/testrunner.html)
-> - [Genie Workshop](http://kentcdodds.github.io/genie/workshop) - Terrific way to learn how to use genie right in your browser.
+> - [Genie Workshop](http://kentcdodds.github.io/genie/workshop) - Terrific way
+>   to learn how to use genie right in your browser.
 > - [API Docs](http://kentcdodds.github.io/genie/autodoc)
 > - [Chrome Extension](https://chrome.google.com/webstore/detail/genies-lamp/pimmaneflgfbknjkjdlnffagpgfeklko)
 
@@ -56,30 +82,30 @@ tests, and demo will help explain how it works.
 
 ## Vernacular
 
-*Wish*: An object with an id, action, and magic words.
+_Wish_: An object with an id, action, and magic words.
 
-*Action*: What to call when this wish is to be executed.
+_Action_: What to call when this wish is to be executed.
 
-*Magic Word*: Keywords for a wish used to match it with given magic words.
+_Magic Word_: Keywords for a wish used to match it with given magic words.
 
-*On Deck*: The second wish of preference for a certain magic word which will be King of
-the Hill if chosen again.
+_On Deck_: The second wish of preference for a certain magic word which will be
+King of the Hill if chosen again.
 
-*King of the Hill*: The wish which gets preference for a certain magic word until the
-On Deck wish is chosen again (it then becomes On Deck).
+_King of the Hill_: The wish which gets preference for a certain magic word
+until the On Deck wish is chosen again (it then becomes On Deck).
 
 ## How to use it
 
-If you're using [RequireJS](http://requirejs.org/) then you can simply `require('path/to/genie')`.
-Or you could simply include the regular script tag:
+If you're using [RequireJS](http://requirejs.org/) then you can simply
+`require('path/to/genie')`. Or you could simply include the regular script tag:
 
 ```html
 <script src="./bower_components/genie.js"></script>
 <!-- This will place `genie` on the global namespace for your delight. -->
 ```
 
-`genie` is a function with a few useful functions as properties of `genie`.
-The flow of using GenieJS is simple:
+`genie` is a function with a few useful functions as properties of `genie`. The
+flow of using GenieJS is simple:
 
 ```javascript
 /* Register wishes */
@@ -87,47 +113,48 @@ The flow of using GenieJS is simple:
 var trashWish = genie({
   magicWords: 'Take out the trash',
   action: function() {
-    console.log('Yes! I love taking out the trash!');
-  }
-});
+    console.log('Yes! I love taking out the trash!')
+  },
+})
 // Multiple magic words
 var vacuumWish = genie({
   magicWords: ['Get dust out of the carpet', 'vacuum'],
   action: function() {
-    console.log('Can NOT wait to get that dust out of that carpet!');
-  }
-});
+    console.log('Can NOT wait to get that dust out of that carpet!')
+  },
+})
 
 /* Get wishes based on magic word matches */
-genie.getMatchingWishes('vacuum'); // returns [vacuumWish];
-genie.getMatchingWishes('out'); // returns [trashWish, vacuumWish];
+genie.getMatchingWishes('vacuum') // returns [vacuumWish];
+genie.getMatchingWishes('out') // returns [trashWish, vacuumWish];
 
 // Make wish based on wish object or id of wish object
-genie.makeWish(trashWish.id); // logs: 'Yes! I love taking out the trash!'
-genie.makeWish(vacuumWish); // logs: 'Can NOT wait to get that dust out of that carpet!'
+genie.makeWish(trashWish.id) // logs: 'Yes! I love taking out the trash!'
+genie.makeWish(vacuumWish) // logs: 'Can NOT wait to get that dust out of that carpet!'
 ```
 
-So far it doesn't look too magical, but the true magic comes in the form of genie giving
-preference to wishes that were recently chosen with a given keyword. To do this, you need
-to provide genie with a magic word to associate the wish with, like so:
+So far it doesn't look too magical, but the true magic comes in the form of
+genie giving preference to wishes that were recently chosen with a given
+keyword. To do this, you need to provide genie with a magic word to associate
+the wish with, like so:
 
 ```javascript
-genie.makeWish(vacuumWish, 'out'); // logs as above
-genie.getMatchingWishes('out'); // returns [vacuumWish, trashWish]; <-- Notice difference from above
+genie.makeWish(vacuumWish, 'out') // logs as above
+genie.getMatchingWishes('out') // returns [vacuumWish, trashWish]; <-- Notice difference from above
 ```
 
-As you'll notice, the order of the two wishes is changed because genie gave preference
-to the `vacuumWish` because the last time `makeWish` was called with the the `'out'`
-magic word, `vacuumWish` was the wish given.
+As you'll notice, the order of the two wishes is changed because genie gave
+preference to the `vacuumWish` because the last time `makeWish` was called with
+the the `'out'` magic word, `vacuumWish` was the wish given.
 
-This behavior simulates apps such as [Alfred](http://www.alfredapp.com/) which is the
-goal of this library!
-
+This behavior simulates apps such as [Alfred](http://www.alfredapp.com/) which
+is the goal of this library!
 
 ## API
 
-Genie is undergoing an overhaul on the API documentation using [autodocs](https://github.com/dtao/autodoc).
-It is still being worked on, but you can see that documentation
+Genie is undergoing an overhaul on the API documentation using
+[autodocs](https://github.com/dtao/autodoc). It is still being worked on, but
+you can see that documentation
 [here](http://kentcdodds.github.io/genie/autodoc).
 
 Below you can see full documentation. It's just less enjoyable to read...
@@ -143,42 +170,42 @@ var wishObject = {
     timesMade: {
       total: 0,
       magicWords: {
-        "Magic Word": 1
-      }
-    }
+        'Magic Word': 1,
+      },
+    },
   },
   context: {
     all: ['string'],
     any: ['string'],
-    none: ['string']
+    none: ['string'],
   },
   keywords: ['string'],
-  action: function(wish, magicWord) { }
-};
+  action: function(wish, magicWord) {},
+}
 
 var enteredMagicWords = {
-  'h': {
+  h: {
     wishes: ['wishid1', 'wishid2'],
-    'e': {
-      'l': {
-        'l': {
-          'o': {
-            wishes: ['wishid3', 'wishid4']
-          }
+    e: {
+      l: {
+        l: {
+          o: {
+            wishes: ['wishid3', 'wishid4'],
+          },
         },
-        'p': {
-          wishes: ['wishid5', 'wishid2']
-        }
-      }
-    }
-  }
-};
+        p: {
+          wishes: ['wishid5', 'wishid2'],
+        },
+      },
+    },
+  },
+}
 
 var pathContext = {
   paths: ['string'],
   regexes: [/regex/gi],
-  contexts: 'The context to apply'
-};
+  contexts: 'The context to apply',
+}
 ```
 
 You have the following api to use at your discretion:
@@ -385,27 +412,37 @@ genie.returnOnDisabled(boolean | optional);
 
 ## Special Wish Actions
 
-There are some actions that are common use cases, so genie helps with these (currently only one
-special wish action):
+There are some actions that are common use cases, so genie helps with these
+(currently only one special wish action):
 
 ### Navigation
 
-You for the action of the wish you can provide either a string (URL) or an object with a destination
-property (URL). If the action is an object this gives you a few options:
- - openNewTab - If truthy, this will open the URL using '_blank'. Otherwise opens in the current window.
- - That's all for now... any [other](https://github.com/kentcdodds/genie/pulls) [ideas?](https://github.com/kentcdodds/genie/issues)
+You for the action of the wish you can provide either a string (URL) or an
+object with a destination property (URL). If the action is an object this gives
+you a few options:
+
+- openNewTab - If truthy, this will open the URL using '\_blank'. Otherwise
+  opens in the current window.
+- That's all for now... any [other](https://github.com/kentcdodds/genie/pulls)
+  [ideas?](https://github.com/kentcdodds/genie/issues)
 
 ## About Matching Priority
 
-The wishes returned from `getMatchingWishes` are ordered with the following priority
-  1. King of the Hill for the given `magicWords` (genie optimistically anticipates this as well)
-  2. On Deck for the given `magicWords` (also optimistically anticipated)
-  3. If the given magic word is equal to any magic words of a wish
-  4. If the given magic word is the start to any magic word of a wish (i.e. 'he' in 'hello');
-  5. If the given magic word is the start to any word in a magic word (i.e. 'wo' in 'hello world');
-  6. If the given magic word is contained in any magic words of a wish
-  7. If the given magic word is an acronym of any magic words of a wish
-  8. If the given magic word matches the order of characters in any magic words of a wish.
+The wishes returned from `getMatchingWishes` are ordered with the following
+priority
+
+1. King of the Hill for the given `magicWords` (genie optimistically anticipates
+   this as well)
+2. On Deck for the given `magicWords` (also optimistically anticipated)
+3. If the given magic word is equal to any magic words of a wish
+4. If the given magic word is the start to any magic word of a wish (i.e. 'he'
+   in 'hello');
+5. If the given magic word is the start to any word in a magic word (i.e. 'wo'
+   in 'hello world');
+6. If the given magic word is contained in any magic words of a wish
+7. If the given magic word is an acronym of any magic words of a wish
+8. If the given magic word matches the order of characters in any magic words of
+   a wish.
 
 Just trust the genie. He knows best. And if you think otherwise,
 [let me know](https://github.com/kentcdodds/genie/issues) or (even better)
@@ -413,14 +450,18 @@ Just trust the genie. He knows best. And if you think otherwise,
 
 ## About Optimistic Anticipation
 
-Genie keeps track of which wishes were executed with which magic words so it knows which wish is "King of the Hill" and
-"On Deck." But it's not a simple string-to-string comparison. If I have a wish with the magic words of `'Do laundry'`
-and another with `'Laundry stinks`' then make the `'Do laundry`' wish with `'laundry`', I would have to type the entire
-word `'laundry`' before `'Do laundry'` came up to the top. So genie will anticipate that what I'm typing to be
-`'laundry'` until I type something that renders this impossible (like if I type `'lan'`, it will anticipate `'laundry`'
-until I type the `'n'` and keep `'Do laundry'` at the top until I do).
+Genie keeps track of which wishes were executed with which magic words so it
+knows which wish is "King of the Hill" and "On Deck." But it's not a simple
+string-to-string comparison. If I have a wish with the magic words of
+`'Do laundry'` and another with `'Laundry stinks`' then make the `'Do laundry`'
+wish with `'laundry`', I would have to type the entire word `'laundry`' before
+`'Do laundry'` came up to the top. So genie will anticipate that what I'm typing
+to be `'laundry'` until I type something that renders this impossible (like if I
+type `'lan'`, it will anticipate `'laundry`' until I type the `'n'` and keep
+`'Do laundry'` at the top until I do).
 
-This is possible because the structure of object that genie uses to keep track of entered magic words:
+This is possible because the structure of object that genie uses to keep track
+of entered magic words:
 
 ```json
 "enteredMagicWords": {
@@ -446,11 +487,12 @@ If you're curious, look in the code :-)
 
 ## About Context
 
-Genie has a concept of context that allows you to switch between sets of wishes easily.
-It's a toss up between context and the matching algorithm on which is more complex but
-hopefully I can explain it well enough for you! Each wish is given the default context
-which is `universe` unless one is provided when it is registered. Wishes will only
-behave normally in `getMatchingWishes` and `makeWish` when they are in context.
+Genie has a concept of context that allows you to switch between sets of wishes
+easily. It's a toss up between context and the matching algorithm on which is
+more complex but hopefully I can explain it well enough for you! Each wish is
+given the default context which is `universe` unless one is provided when it is
+registered. Wishes will only behave normally in `getMatchingWishes` and
+`makeWish` when they are in context.
 
 The easiest way to think of a wish context is that it is structured like so:
 
@@ -467,21 +509,28 @@ If you set a wish's context to a string or array of strings, it behaves like so:
 ```javascript
 // what you set:
 var wish = genie({
-  context: ['context1', 'context2']
-});
+  context: ['context1', 'context2'],
+})
 
-console.log(wish.context); // logs {any: ['context', 'context2']}
+console.log(wish.context) // logs {any: ['context', 'context2']}
 ```
 
 There are a few ways for a wish to **definitely** be in context:
- 1. Genie's current context is the default context
- 2. The wish's context is the default context (does not apply if it simply contains the default context)
- 3. The wish's context is equal to the current context
 
-If none of these are true, then these things must be true for the wish to be in context:
- 1. Genie's context does **not** contain any of the wish's `context.none` contexts if it exists.
- 2. Genie's context contains **at least one** of the wish's `context.any` contexts if it exists.
- 3. Genie's context contains **all** of the wish's `context.all` contexts if it exists.
+1.  Genie's current context is the default context
+2.  The wish's context is the default context (does not apply if it simply
+    contains the default context)
+3.  The wish's context is equal to the current context
+
+If none of these are true, then these things must be true for the wish to be in
+context:
+
+1.  Genie's context does **not** contain any of the wish's `context.none`
+    contexts if it exists.
+2.  Genie's context contains **at least one** of the wish's `context.any`
+    contexts if it exists.
+3.  Genie's context contains **all** of the wish's `context.all` contexts if it
+    exists.
 
 Checkout [the tests](src/__tests__/index.js) for #context to see more how this
 works. Here's a simple demonstration:
@@ -491,65 +540,69 @@ works. Here's a simple demonstration:
 
 // Before setting context, genie.context is default
 wish0.context // returns the default context
-wish1.context = 'context1';
-wish2.context = ['context1', 'context2'];
-wish3.context = 'context3';
+wish1.context = 'context1'
+wish2.context = ['context1', 'context2']
+wish3.context = 'context3'
 
-genie.getMatchingWishes(); // returns [wish0, wish1, wish2, wish3]
+genie.getMatchingWishes() // returns [wish0, wish1, wish2, wish3]
 
-genie.context('context1');
-genie.getMatchingWishes(); // returns [wish0, wish1, wish2]
+genie.context('context1')
+genie.getMatchingWishes() // returns [wish0, wish1, wish2]
 
-genie.context('context2');
-genie.getMatchingWishes(); // returns [wish0, wish2]
+genie.context('context2')
+genie.getMatchingWishes() // returns [wish0, wish2]
 
-genie.context('context3');
-genie.getMatchingWishes(); // returns [wish0, wish3]
+genie.context('context3')
+genie.getMatchingWishes() // returns [wish0, wish3]
 
-genie.context(['context1', 'context2']);
-genie.getMatchingWishes(); // returns [wish0, wish1, wish2]
+genie.context(['context1', 'context2'])
+genie.getMatchingWishes() // returns [wish0, wish1, wish2]
 
-genie.context(['context1', 'context3']);
-genie.getMatchingWishes(); // returns [wish0, wish1, wish2, wish3]
+genie.context(['context1', 'context3'])
+genie.getMatchingWishes() // returns [wish0, wish1, wish2, wish3]
 ```
 
 ```javascript
 // Complex stuff
 
-genie.context = ['context1', 'context2', 'context3', 'context4'];
+genie.context = ['context1', 'context2', 'context3', 'context4']
 
 wish0.context // returns the default context
 wish1.context = {
-  any: ['context2', 'context5']
-};
+  any: ['context2', 'context5'],
+}
 wish2.context = {
-  none: ['context3', 'context5']
-};
+  none: ['context3', 'context5'],
+}
 wish3.context = {
-  all: ['context1', 'context5']
-};
+  all: ['context1', 'context5'],
+}
 
-genie.getMatchingWishes(); // returns [wish0, wish1]
+genie.getMatchingWishes() // returns [wish0, wish1]
 
-genie.context(['context5', 'context1']);
-genie.getMatchingWishes(); // returns [wish0, wish1, wish3]
+genie.context(['context5', 'context1'])
+genie.getMatchingWishes() // returns [wish0, wish1, wish3]
 
-genie.context(['context2']);
-genie.getMatchingWishes(); // returns [wish0, wish1, wish2]
+genie.context(['context2'])
+genie.getMatchingWishes() // returns [wish0, wish1, wish2]
 
-genie.restoreContext(); // resets genie's context to default
-genie.getMatchingWishes(); // returns [wish0, wish2]
+genie.restoreContext() // resets genie's context to default
+genie.getMatchingWishes() // returns [wish0, wish2]
 ```
 
 ### Path Context
 
-A big use case for context is to have a url path (or route) represent the context for genie. For example,
-if you have an email app, you can have the `/index` and the `/message/:id` routes which would have
-different contexts. Instead of managing this yourself, genie can help you a little. Genie will not watch
-the URL for you, so you have to do that yourself. This is by design. At any time, you can call
-`genie.updatePathContext(window.location.pathname)` and genie will update the context based on an internal
-variable called `_pathContexts`. You have control over what's in this array using the `genie.addPathContext(pathContext)`
-and the `genie.removePathContext(pathContext)` methods. A `pathContext` object looks like this:
+A big use case for context is to have a url path (or route) represent the
+context for genie. For example, if you have an email app, you can have the
+`/index` and the `/message/:id` routes which would have different contexts.
+Instead of managing this yourself, genie can help you a little. Genie will not
+watch the URL for you, so you have to do that yourself. This is by design. At
+any time, you can call `genie.updatePathContext(window.location.pathname)` and
+genie will update the context based on an internal variable called
+`_pathContexts`. You have control over what's in this array using the
+`genie.addPathContext(pathContext)` and the
+`genie.removePathContext(pathContext)` methods. A `pathContext` object looks
+like this:
 
 ```javascript
 {
@@ -559,8 +612,8 @@ and the `genie.removePathContext(pathContext)` methods. A `pathContext` object l
 }
 ```
 
-The `contexts` variable is special and is associated with the regexes variable. The easiest way to describe this
-is via an example:
+The `contexts` variable is special and is associated with the regexes variable.
+The easiest way to describe this is via an example:
 
 If I have a pathContext object like this:
 
@@ -574,36 +627,41 @@ If I have a pathContext object like this:
 }
 ```
 
-Then, when I call `genie.updatePathContext('/pizza/1234')` it will match this pathContext and genie will
-automatically change `a-page-{{1}}` to `a-page-1234`.
+Then, when I call `genie.updatePathContext('/pizza/1234')` it will match this
+pathContext and genie will automatically change `a-page-{{1}}` to `a-page-1234`.
 
-The `1` in `a-page-{{1}}` represents the group that is matched on the path in the regex. It will replace the
-digit in `{{\d}}` with the group that's matched (Note: in true JavaScript form, group 0 represents the entire
-match string, hence, 1 is the first group in parentheses).
+The `1` in `a-page-{{1}}` represents the group that is matched on the path in
+the regex. It will replace the digit in `{{\d}}` with the group that's matched
+(Note: in true JavaScript form, group 0 represents the entire match string,
+hence, 1 is the first group in parentheses).
 
 ## Enabling & Disabling
 
-To give you a little more control, you can enable and disable genie globally. All genie
-functions go through a check to make sure genie is enabled. If it is enabled, everything
-works as expected. If it is disabled, then genie will return an empty object/array/string
-depending on what the function you're calling is expecting. This behavior is to prevent
-the need to do null/undefined checking everywhere you use `genie` and can be disabled as
-well via the returnOnDisabled function.
+To give you a little more control, you can enable and disable genie globally.
+All genie functions go through a check to make sure genie is enabled. If it is
+enabled, everything works as expected. If it is disabled, then genie will return
+an empty object/array/string depending on what the function you're calling is
+expecting. This behavior is to prevent the need to do null/undefined checking
+everywhere you use `genie` and can be disabled as well via the returnOnDisabled
+function.
 
 ## Merging Wishes
 
-To persist the user's experience, you may want to store the result of `genie.options()` in
-`localStorage` or even a database associated with the user. Then after you have registered
-all the wishes for the user you load the options by calling `genie.options({wishes: usersOptions})`.
-The problem with this is that `usersOptions` wont have the actions for wishes, so this would
-overwrite the wishes with a bunch that don't have actions.
+To persist the user's experience, you may want to store the result of
+`genie.options()` in `localStorage` or even a database associated with the user.
+Then after you have registered all the wishes for the user you load the options
+by calling `genie.options({wishes: usersOptions})`. The problem with this is
+that `usersOptions` wont have the actions for wishes, so this would overwrite
+the wishes with a bunch that don't have actions.
 
-To prevent this, by default when you call `genie.options` genie will merge the wishes. So
-any new wishes provided will either overwrite wishes with the same ID, but preserve the
-action of the old version if the new version doesn't have an action already. It will also
-preserve wishes which existed before and don't have matching ids.
+To prevent this, by default when you call `genie.options` genie will merge the
+wishes. So any new wishes provided will either overwrite wishes with the same
+ID, but preserve the action of the old version if the new version doesn't have
+an action already. It will also preserve wishes which existed before and don't
+have matching ids.
 
-To completely overwrite the existing wishes, simply pass in `noWishMerge` along with the wishes.
+To completely overwrite the existing wishes, simply pass in `noWishMerge` along
+with the wishes.
 
 Note: Genie provides direct access to the `mergeWishes` function as well.
 
@@ -647,9 +705,11 @@ MIT
 
 [npm]: https://www.npmjs.com/
 [node]: https://nodejs.org
-[build-badge]: https://img.shields.io/travis/kentcdodds/genie.svg?style=flat-square
+[build-badge]:
+  https://img.shields.io/travis/kentcdodds/genie.svg?style=flat-square
 [build]: https://travis-ci.org/kentcdodds/genie
-[coverage-badge]: https://img.shields.io/codecov/c/github/kentcdodds/genie.svg?style=flat-square
+[coverage-badge]:
+  https://img.shields.io/codecov/c/github/kentcdodds/genie.svg?style=flat-square
 [coverage]: https://codecov.io/github/kentcdodds/genie
 [version-badge]: https://img.shields.io/npm/v/genie.svg?style=flat-square
 [package]: https://www.npmjs.com/package/genie
@@ -657,19 +717,28 @@ MIT
 [npmcharts]: http://npmcharts.com/compare/genie
 [license-badge]: https://img.shields.io/npm/l/genie.svg?style=flat-square
 [license]: https://github.com/kentcdodds/genie/blob/master/LICENSE
-[prs-badge]: https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square
+[prs-badge]:
+  https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square
 [prs]: http://makeapullrequest.com
-[coc-badge]: https://img.shields.io/badge/code%20of-conduct-ff69b4.svg?style=flat-square
+[coc-badge]:
+  https://img.shields.io/badge/code%20of-conduct-ff69b4.svg?style=flat-square
 [coc]: https://github.com/kentcdodds/genie/blob/master/other/CODE_OF_CONDUCT.md
-[gzip-badge]: http://img.badgesize.io/https://unpkg.com/genie/dist/genie.umd.min.js?compression=gzip&label=gzip%20size&style=flat-square
-[size-badge]: http://img.badgesize.io/https://unpkg.com/genie/dist/genie.umd.min.js?label=size&style=flat-square
+[gzip-badge]:
+  http://img.badgesize.io/https://unpkg.com/genie/dist/genie.umd.min.js?compression=gzip&label=gzip%20size&style=flat-square
+[size-badge]:
+  http://img.badgesize.io/https://unpkg.com/genie/dist/genie.umd.min.js?label=size&style=flat-square
 [unpkg-dist]: https://unpkg.com/genie/dist/
-[module-formats-badge]: https://img.shields.io/badge/module%20formats-umd%2C%20cjs%2C%20es-green.svg?style=flat-square
-[github-watch-badge]: https://img.shields.io/github/watchers/kentcdodds/genie.svg?style=social
+[module-formats-badge]:
+  https://img.shields.io/badge/module%20formats-umd%2C%20cjs%2C%20es-green.svg?style=flat-square
+[github-watch-badge]:
+  https://img.shields.io/github/watchers/kentcdodds/genie.svg?style=social
 [github-watch]: https://github.com/kentcdodds/genie/watchers
-[github-star-badge]: https://img.shields.io/github/stars/kentcdodds/genie.svg?style=social
+[github-star-badge]:
+  https://img.shields.io/github/stars/kentcdodds/genie.svg?style=social
 [github-star]: https://github.com/kentcdodds/genie/stargazers
-[twitter]: https://twitter.com/intent/tweet?text=Check%20out%20genie!%20https://github.com/kentcdodds/genie%20%F0%9F%91%8D
-[twitter-badge]: https://img.shields.io/twitter/url/https/github.com/kentcdodds/genie.svg?style=social
+[twitter]:
+  https://twitter.com/intent/tweet?text=Check%20out%20genie!%20https://github.com/kentcdodds/genie%20%F0%9F%91%8D
+[twitter-badge]:
+  https://img.shields.io/twitter/url/https/github.com/kentcdodds/genie.svg?style=social
 [emojis]: https://github.com/kentcdodds/all-contributors#emoji-key
 [all-contributors]: https://github.com/kentcdodds/all-contributors
