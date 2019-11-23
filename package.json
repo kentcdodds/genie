@@ -22,7 +22,6 @@
   "scripts": {
     "build": "kcd-scripts build --bundle --environment BUILD_NAME:genie",
     "lint": "kcd-scripts lint",
-    "precommit": "kcd-scripts precommit",
     "setup": "npm install && npm run validate -s",
     "test": "kcd-scripts test --env=jsdom",
     "test:update": "npm test -- --updateSnapshot --coverage",
@@ -30,8 +29,8 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "kcd-scripts": "^0.39.2",
-    "semantic-release": "^15.8.1"
+    "kcd-scripts": "^1.11.0",
+    "semantic-release": "^15.13.31"
   },
   "engines": {
     "node": ">=8",
