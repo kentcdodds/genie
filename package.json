@@ -36,5 +36,17 @@
     "node": ">=8",
     "npm": ">=6",
     "yarn": ">=1"
+  },
+  "eslintConfig": {
+    "extends": "./node_modules/kcd-scripts/eslint.js",
+    "rules": {
+      "max-lines": "off",
+      "max-lines-per-function": "off"
+    }
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "kcd-scripts pre-commit"
+    }
   }
 }
