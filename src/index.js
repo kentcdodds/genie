@@ -474,7 +474,8 @@ function reset() {
 function getMatchingWishes(magicWord) {
   magicWord = (_isNullOrUndefined(magicWord)
     ? ''
-    : `${magicWord}`).toLowerCase()
+    : `${magicWord}`
+  ).toLowerCase()
   const allWishIds = _getWishIdsInEnteredMagicWords(magicWord)
   const allWishes = getWish(allWishIds)
   const matchingWishes = _filterInContextWishes(allWishes)
