@@ -10,4 +10,5 @@ module.exports = {
       functions: 78,
     },
   },
+  testEnvironment: 'jsdom',
 }
