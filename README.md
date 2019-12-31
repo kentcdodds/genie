@@ -704,11 +704,11 @@ MIT
 [coverage-badge]:
   https://img.shields.io/codecov/c/github/kentcdodds/genie.svg?style=flat-square
 [coverage]: https://codecov.io/github/kentcdodds/genie
-[version-badge]: https://img.shields.io/npm/v/genie.svg?style=flat-square
-[package]: https://www.npmjs.com/package/genie
-[downloads-badge]: https://img.shields.io/npm/dm/genie.svg?style=flat-square
-[npmcharts]: http://npmcharts.com/compare/genie
-[license-badge]: https://img.shields.io/npm/l/genie.svg?style=flat-square
+[version-badge]: https://img.shields.io/npm/v/geniejs.svg?style=flat-square
+[package]: https://www.npmjs.com/package/geniejs
+[downloads-badge]: https://img.shields.io/npm/dm/geniejs.svg?style=flat-square
+[npmcharts]: http://npmcharts.com/compare/geniejs
+[license-badge]: https://img.shields.io/npm/l/geniejs.svg?style=flat-square
 [license]: https://github.com/kentcdodds/genie/blob/master/LICENSE
 [prs-badge]:
   https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square
@@ -717,10 +717,10 @@ MIT
   https://img.shields.io/badge/code%20of-conduct-ff69b4.svg?style=flat-square
 [coc]: https://github.com/kentcdodds/genie/blob/master/other/CODE_OF_CONDUCT.md
 [gzip-badge]:
-  http://img.badgesize.io/https://unpkg.com/genie/dist/genie.umd.min.js?compression=gzip&label=gzip%20size&style=flat-square
+  http://img.badgesize.io/https://unpkg.com/geniejs/dist/genie.umd.min.js?compression=gzip&label=gzip%20size&style=flat-square
 [size-badge]:
-  http://img.badgesize.io/https://unpkg.com/genie/dist/genie.umd.min.js?label=size&style=flat-square
-[unpkg-dist]: https://unpkg.com/genie/dist/
+  http://img.badgesize.io/https://unpkg.com/geniejs/dist/genie.umd.min.js?label=size&style=flat-square
+[unpkg-dist]: https://unpkg.com/geniejs/dist/
 [module-formats-badge]:
   https://img.shields.io/badge/module%20formats-umd%2C%20cjs%2C%20es-green.svg?style=flat-square
 [github-watch-badge]:
