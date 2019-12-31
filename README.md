@@ -1,34 +1,3 @@
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-
-- [GenieJS 🧞](#geniejs-)
-  - [The problem](#the-problem)
-  - [This solution](#this-solution)
-  - [Vernacular](#vernacular)
-  - [How to use it](#how-to-use-it)
-  - [API](#api)
-    - [Objects](#objects)
-  - [Special Wish Actions](#special-wish-actions)
-    - [Navigation](#navigation)
-  - [About Matching Priority](#about-matching-priority)
-  - [About Optimistic Anticipation](#about-optimistic-anticipation)
-  - [About Context](#about-context)
-    - [Path Context](#path-context)
-  - [Enabling & Disabling](#enabling--disabling)
-  - [Merging Wishes](#merging-wishes)
-  - [Inspiration](#inspiration)
-  - [Other Solutions](#other-solutions)
-  - [Contributors](#contributors)
-  - [LICENSE](#license)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
-
-<p align="center">
-<a href="https://codefund.io/properties/493/visit-sponsor">
-<img src="https://codefund.io/properties/493/sponsor" />
-</a>
-</p>
-
 <div align="center">
 <h1>GenieJS 🧞</h1>
 
@@ -79,6 +48,29 @@ Over time, the genie will learn the actions more associated with specific
 keywords and those will be come first when a list of matching actions is
 requested. If that didn't make sense, don't worry, hopefully the tutorial,
 tests, and demo will help explain how it works.
+
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+- [Vernacular](#vernacular)
+- [How to use it](#how-to-use-it)
+- [API](#api)
+  - [Objects](#objects)
+- [Special Wish Actions](#special-wish-actions)
+  - [Navigation](#navigation)
+- [About Matching Priority](#about-matching-priority)
+- [About Optimistic Anticipation](#about-optimistic-anticipation)
+- [About Context](#about-context)
+  - [Path Context](#path-context)
+- [Enabling & Disabling](#enabling--disabling)
+- [Merging Wishes](#merging-wishes)
+- [Inspiration](#inspiration)
+- [Other Solutions](#other-solutions)
+- [Contributors](#contributors)
+- [LICENSE](#license)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 
 ## Vernacular
 
