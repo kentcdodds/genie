@@ -8,19 +8,21 @@
 within a bottle or oil lamp, and capable of granting wishes when summoned.</p>
 </div>
 
-<hr />
+---
 
+<!-- prettier-ignore-start -->
 [![Build Status][build-badge]][build]
 [![Code Coverage][coverage-badge]][coverage]
-[![version][version-badge]][package] [![downloads][downloads-badge]][npmcharts]
+[![version][version-badge]][package]
+[![downloads][downloads-badge]][npmtrends]
 [![MIT License][license-badge]][license]
 
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-4-orange.svg?style=flat-square)](#contributors)
-[![PRs Welcome][prs-badge]][prs] [![Code of Conduct][coc-badge]][coc]
-
-[![Watch on GitHub][github-watch-badge]][github-watch]
-[![Star on GitHub][github-star-badge]][github-star]
-[![Tweet][twitter-badge]][twitter]
+<!-- ALL-CONTRIBUTORS-BADGE:END -->
+[![PRs Welcome][prs-badge]][prs]
+[![Code of Conduct][coc-badge]][coc]
+<!-- prettier-ignore-end -->
 
 > Old links:
 >
@@ -66,11 +68,13 @@ tests, and demo will help explain how it works.
 - [Merging Wishes](#merging-wishes)
 - [Inspiration](#inspiration)
 - [Other Solutions](#other-solutions)
-- [Contributors](#contributors)
+- [Issues](#issues)
+  - [🐛 Bugs](#-bugs)
+  - [💡 Feature Requests](#-feature-requests)
+- [Contributors ✨](#contributors-)
 - [LICENSE](#license)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
-
 
 ## Vernacular
 
@@ -104,14 +108,14 @@ flow of using GenieJS is simple:
 // One magic word
 var trashWish = genie({
   magicWords: 'Take out the trash',
-  action: function() {
+  action: function () {
     console.log('Yes! I love taking out the trash!')
   },
 })
 // Multiple magic words
 var vacuumWish = genie({
   magicWords: ['Get dust out of the carpet', 'vacuum'],
-  action: function() {
+  action: function () {
     console.log('Can NOT wait to get that dust out of that carpet!')
   },
 })
@@ -172,7 +176,7 @@ var wishObject = {
     none: ['string'],
   },
   keywords: ['string'],
-  action: function(wish, magicWord) {},
+  action: function (wish, magicWord) {},
 }
 
 var enteredMagicWords = {
@@ -672,7 +676,25 @@ Similar solutions we know of:
 If you are aware of other solutions please [make a pull request][prs] and add it
 here!
 
-## Contributors
+## Issues
+
+_Looking to contribute? Look for the [Good First Issue][good-first-issue]
+label._
+
+### 🐛 Bugs
+
+Please file an issue for bugs, missing documentation, or unexpected behavior.
+
+[**See Bugs**][bugs]
+
+### 💡 Feature Requests
+
+Please file an issue to suggest new features. Vote on feature requests by adding
+a 👍. This helps maintainers prioritize what to work on.
+
+[**See Feature Requests**][requests]
+
+## Contributors ✨
 
 Thanks goes to these people ([emoji key][emojis]):
 
@@ -696,42 +718,23 @@ Contributions of any kind welcome!
 
 MIT
 
-[npm]: https://www.npmjs.com/
+<!-- prettier-ignore-start -->
+[npm]: https://www.npmjs.com
 [node]: https://nodejs.org
-[build-badge]:
-  https://img.shields.io/travis/kentcdodds/genie.svg?style=flat-square
+[build-badge]: https://img.shields.io/travis/kentcdodds/genie.svg?style=flat-square
 [build]: https://travis-ci.org/kentcdodds/genie
-[coverage-badge]:
-  https://img.shields.io/codecov/c/github/kentcdodds/genie.svg?style=flat-square
+[coverage-badge]: https://img.shields.io/codecov/c/github/kentcdodds/genie.svg?style=flat-square
 [coverage]: https://codecov.io/github/kentcdodds/genie
-[version-badge]: https://img.shields.io/npm/v/geniejs.svg?style=flat-square
-[package]: https://www.npmjs.com/package/geniejs
-[downloads-badge]: https://img.shields.io/npm/dm/geniejs.svg?style=flat-square
-[npmcharts]: http://npmcharts.com/compare/geniejs
-[license-badge]: https://img.shields.io/npm/l/geniejs.svg?style=flat-square
-[license]: https://github.com/kentcdodds/genie/blob/master/LICENSE
-[prs-badge]:
-  https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square
+[version-badge]: https://img.shields.io/npm/v/genie.svg?style=flat-square
+[package]: https://www.npmjs.com/package/genie
+[downloads-badge]: https://img.shields.io/npm/dm/genie.svg?style=flat-square
+[npm-trends]: https://www.npmtrends.com/genie
+[license-badge]: https://img.shields.io/npm/l/genie.svg?style=flat-square
+[license]: https://github.com/kentcdodds/genie/blob/master/other/LICENSE
+[prs-badge]: https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square
 [prs]: http://makeapullrequest.com
-[coc-badge]:
-  https://img.shields.io/badge/code%20of-conduct-ff69b4.svg?style=flat-square
+[coc-badge]: https://img.shields.io/badge/code%20of-conduct-ff69b4.svg?style=flat-square
 [coc]: https://github.com/kentcdodds/genie/blob/master/other/CODE_OF_CONDUCT.md
-[gzip-badge]:
-  http://img.badgesize.io/https://unpkg.com/geniejs/dist/genie.umd.min.js?compression=gzip&label=gzip%20size&style=flat-square
-[size-badge]:
-  http://img.badgesize.io/https://unpkg.com/geniejs/dist/genie.umd.min.js?label=size&style=flat-square
-[unpkg-dist]: https://unpkg.com/geniejs/dist/
-[module-formats-badge]:
-  https://img.shields.io/badge/module%20formats-umd%2C%20cjs%2C%20es-green.svg?style=flat-square
-[github-watch-badge]:
-  https://img.shields.io/github/watchers/kentcdodds/genie.svg?style=social
-[github-watch]: https://github.com/kentcdodds/genie/watchers
-[github-star-badge]:
-  https://img.shields.io/github/stars/kentcdodds/genie.svg?style=social
-[github-star]: https://github.com/kentcdodds/genie/stargazers
-[twitter]:
-  https://twitter.com/intent/tweet?text=Check%20out%20genie!%20https://github.com/kentcdodds/genie%20%F0%9F%91%8D
-[twitter-badge]:
-  https://img.shields.io/twitter/url/https/github.com/kentcdodds/genie.svg?style=social
 [emojis]: https://github.com/kentcdodds/all-contributors#emoji-key
 [all-contributors]: https://github.com/kentcdodds/all-contributors
+<!-- prettier-ignore-end -->
