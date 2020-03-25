@@ -16,7 +16,7 @@ series [How to Contribute to an Open Source Project on GitHub][egghead]
 > pull requests from branches on your fork. To do this, run:
 >
 > ```
-> git remote add upstream https://github.com/kentcdodds/genie.git
+> git remote add upstream https://github.com/kentcdodds/genie
 > git fetch upstream
 > git branch --set-upstream-to=upstream/master master
 > ```
@@ -33,18 +33,6 @@ Please make sure to run the tests before you commit your changes. You can run
 `npm run test:update` which will update any snapshots that need updating. Make
 sure to include those changes (if they exist) in your commit.
 
-### opt into git hooks
-
-There are git hooks set up with this project that are automatically installed
-when you install dependencies. They're really handy, but are turned off by
-default (so as to not hinder new contributors). You can opt into these by
-creating a file called `.opt-in` at the root of the project and putting this
-inside:
-
-```
-pre-commit
-```
-
 ## Help needed
 
 Please checkout the [the open issues][issues]
@@ -52,7 +40,7 @@ Please checkout the [the open issues][issues]
 Also, please watch the repo and respond to questions/bug reports/feature
 requests! Thanks!
 
-[egghead]:
-  https://egghead.io/series/how-to-contribute-to-an-open-source-project-on-github
-[all-contributors]: https://github.com/kentcdodds/all-contributors
-[issues]: https://github.com/kentcdodds/genie/issues
+<!-- prettier-ignore-start -->
+[egghead]: https://egghead.io/series/how-to-contribute-to-an-open-source-project-on-github
+[issues]: https://github.com/kentcdodds/generator-kcd-oss/issues
+<!-- prettier-ignore-end -->

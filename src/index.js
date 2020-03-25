@@ -219,10 +219,10 @@ function _createAction(action) {
     }
   }
   if (_isObject(action)) {
-    action = (function() {
+    action = (function () {
       const openNewTab = action.openNewTab
       const destination = action.destination
-      return function() {
+      return function () {
         if (openNewTab) {
           window.open(destination, '_blank')
         } else {

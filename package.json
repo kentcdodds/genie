@@ -6,7 +6,7 @@
   "module": "dist/geniejs.es.js",
   "jsnext:main": "dist/geniejs.es.js",
   "keywords": [],
-  "author": "Kent C. Dodds <kent@doddsfamily.us> (http://kentcdodds.com)",
+  "author": "Kent C. Dodds <me@kentcdodds.com> (https://kentcdodds.com)",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -29,13 +29,7 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "kcd-scripts": "^1.11.0",
-    "semantic-release": "^15.13.31"
-  },
-  "engines": {
-    "node": ">=8",
-    "npm": ">=6",
-    "yarn": ">=1"
+    "kcd-scripts": "^5.6.0"
   },
   "eslintConfig": {
     "extends": "./node_modules/kcd-scripts/eslint.js",
@@ -44,9 +38,9 @@
       "max-lines-per-function": "off"
     }
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "kcd-scripts pre-commit"
-    }
-  }
+  "eslintIgnore": [
+    "node_modules",
+    "coverage",
+    "dist"
+  ]
 }
